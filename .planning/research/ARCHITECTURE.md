@@ -1,81 +1,82 @@
-# Architecture Patterns
+# Research: Architecture
 
-**Domain:** Brownfield roster optimization web app
-**Researched:** 2026-03-19
+## Target Shape
 
-## Recommended Architecture
+The product should remain a split system:
 
-SkoleGeni should keep its current three-part shape:
-- React admin client
-- relational persistence layer
-- dedicated optimization service
+- A desktop-first React client for admin workflows
+- A persistence boundary around Postgres/Supabase
+- A separate optimization service for heavy constraint solving
 
-The main architectural change is not a rewrite. It is adding safer boundaries between them.
+That basic decomposition is sound. The main architectural improvement is to reduce unsafe direct writes and make optimization runs and manual edits first-class persisted objects.
 
-## Component Boundaries
+## Recommended Component Boundaries
 
-| Component | Responsibility | Communicates With |
-|-----------|---------------|-------------------|
-| Admin UI | Project setup, data entry, review, editor workflows | App data service, optimizer API |
-| App data service | Validated reads/writes for projects, pupils, chemistry, runs, edits | Postgres/Supabase |
-| Optimizer API | Constraint solving and score generation | App data service or validated client payloads |
-| Run history store | Snapshot constraints, outputs, status, and metadata | App data service, results UI |
-| Editor scoring layer | Fast local feedback plus persisted edits | Admin UI, run history store |
+### Client App
+
+- Project selection and workflow routing
+- Constraint editing
+- Pupil import and editing
+- Results review
+- Class editor interactions
+- Read-only explainability views
+
+### Application Persistence Layer
+
+- Safe mutation endpoints or trusted server-side actions for destructive or multi-step writes
+- Validation of roster state before optimizer execution
+- Transactional handling for pupil, chemistry, and assignment updates
+- Storage of manual edit state and optimization-run metadata
+
+### Optimizer Service
+
+- Accept validated, normalized input
+- Produce assignments, scores, and debug/explainability payloads
+- Return structured failure reasons for infeasible or conflicting input
+
+### Database
+
+- Core relational entities for project, pupils, constraints, chemistry, and saved assignments
+- Optimization run history
+- Potential future tables for saved manual assignment revisions
 
 ## Data Flow
 
 1. User creates or opens a project.
-2. UI loads constraints, pupils, and prior runs through a consistent data-access layer.
-3. User edits data with client-side validation and server-side shape validation.
-4. Optimizer is invoked with a normalized payload.
-5. Result, score, and metadata are stored as an optimization run.
-6. Results screen reads the latest run plus warnings or unmet constraints.
-7. Class editor reads a saved run, applies manual adjustments, recalculates quick feedback, and persists the refined state.
+2. Client loads project state from persistence.
+3. User updates constraints or pupil data through validated save paths.
+4. Client requests an optimization run using normalized project state.
+5. Optimizer returns assignments plus score/explanation metadata.
+6. Persistence stores the run as a traceable artifact.
+7. Results view renders the latest saved run.
+8. Class editor loads persisted assignments and writes manual adjustments back as explicit saved state.
 
-## Patterns to Follow
+## Brownfield Migration Priorities
 
-### Pattern 1: Normalize at the boundary
-**What:** Convert UI-friendly data into one canonical backend shape before writing or optimizing.
-**When:** Pupil edits, chemistry edits, constraints save, optimizer request creation.
-**Why:** The current code manually maps camelCase to snake_case in multiple places, which is easy to drift.
+### First
 
-### Pattern 2: Snapshot every optimization run
-**What:** Treat each optimization execution as a recoverable artifact with inputs, outputs, and timestamps.
-**When:** Every time the optimizer runs.
-**Why:** Trust improves when users can recover or compare a prior result.
+- Move high-risk writes out of ad hoc client delete-and-reinsert patterns.
+- Introduce assignment persistence for class editor changes.
+- Improve results data so names and explanations are available in the UI.
 
-### Pattern 3: Persist manual edits explicitly
-**What:** Store refined class assignments separately from raw optimizer output.
-**When:** After drag-and-drop or when the user saves a refined arrangement.
-**Why:** Manual changes are part of the real workflow, not disposable UI state.
+### Second
 
-## Anti-Patterns to Avoid
+- Separate solver logic from API transport in Python.
+- Extract shared scoring/explainability logic into testable modules.
+- Normalize migration flow between `supabase/migrations/` and local init SQL.
 
-### Anti-Pattern 1: Browser owns all write rules
-**Why bad:** Makes permissions, validation, and auditability too weak for admin workflows.
-**Instead:** Centralize risky writes behind stricter policies or validated service boundaries.
+### Third
 
-### Anti-Pattern 2: Destructive replace-all saves
-**Why bad:** Partial failures can erase good data and make the workflow feel fragile.
-**Instead:** Use transactional upserts or staged replacement with rollback semantics.
-
-### Anti-Pattern 3: Divergent scoring logic
-**Why bad:** Users lose trust if the editor’s score and optimizer’s score disagree without explanation.
-**Instead:** Define clear "optimizer score" vs "editor quick score" semantics and show both when needed.
+- Add richer run comparison, audit, and export capabilities if the product needs them.
 
 ## Build Order Implications
-1. Fix data integrity and write boundaries first.
-2. Improve import/validation and optimizer request consistency next.
-3. Upgrade results readability and editor persistence after the data layer is dependable.
-4. Apply visual polish and design-system tightening once the workflow is stable.
-5. Add automated quality gates alongside or immediately after the higher-risk workflow changes.
 
-## Confidence
-- Brownfield architecture direction: HIGH
-- Migration details: MEDIUM
+- Stabilize persistence and result shape before heavy UI polish.
+- Add automated tests before expanding optimizer complexity.
+- Improve explainability after the stored data model can support it.
 
-## Sources
-- `.planning/codebase/ARCHITECTURE.md`
-- `.planning/codebase/CONCERNS.md`
-- Supabase docs: https://supabase.com/docs
-- FastAPI docs: https://fastapi.tiangolo.com/
+## Architectural Risks to Avoid
+
+- Keeping the browser as the only mutation layer for complex writes.
+- Treating optimization output as disposable UI state rather than a persisted decision artifact.
+- Letting manual edits diverge permanently from the persisted model.

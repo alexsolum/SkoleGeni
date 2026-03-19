@@ -1,69 +1,42 @@
-# Research Summary: SkoleGeni
+# Research Summary
 
-**Domain:** Desktop-first school roster optimization web app
-**Researched:** 2026-03-19
-**Overall confidence:** MEDIUM
+## Context
 
-## Executive Summary
+SkoleGeni should be planned as a brownfield product-hardening effort, not a rewrite. The current stack and workflow are fundamentally sound for the problem; the main issues are safety, trust, persistence durability, and missing verification.
 
-SkoleGeni does not need a greenfield reset. The research supports keeping the current product shape: a React-based admin client, relational data storage, and a dedicated optimization service. The main v1 opportunity is to turn the existing MVP into a workflow that administrators can trust with real roster work.
+## Stack
 
-The most important product features are not flashy additions. They are trustworthy saves, clear validation, understandable optimization results, and persistence of manual refinement. These are table stakes for a tool that asks staff to rely on automated class assignments while remaining accountable for the final roster.
+- Keep React, Vite, Tailwind, Postgres/Supabase patterns, FastAPI, and OR-Tools.
+- Pin versions and clean up wildcard dependencies.
+- Add Vitest and React Testing Library for unit/integration coverage.
+- Add Playwright for the end-to-end admin workflow.
+- Reintroduce safer Supabase patterns instead of broad anonymous writes.
 
-The current repo already covers the core path from project setup to manual class editing. That means the roadmap should focus first on fragile boundaries: open write permissions, destructive save patterns, weak result explainability, and lack of automated verification. Once those are stable, UI polish and higher-value differentiators become much safer to add.
+## Table Stakes
 
-## Key Findings
+- Reliable project persistence
+- Safer pupil and chemistry editing
+- Readable optimization results
+- Durable manual refinement
+- Clear explanation of constraint outcomes
 
-**Stack:** Keep the existing React + Python + Postgres/Supabase shape, but add validation, query-state discipline, and automated testing.
-**Architecture:** Introduce safer data boundaries and treat optimization runs plus manual edits as persistent artifacts.
-**Critical pitfall:** Opaque scores and fragile save semantics will undermine trust faster than any missing visual polish.
+## Biggest Risks
 
-## Implications for Roadmap
+- Anonymous broad database access
+- Delete-and-reinsert save semantics
+- Non-persistent class editor changes
+- Weak explainability of optimizer output
+- No automated tests around critical logic
 
-Based on research, suggested phase structure:
+## Roadmap Implication
 
-1. **Data Integrity and Safety** - tighten persistence, validation, and access rules
-   - Addresses: trustworthy saves, safer write model, recoverable project state
-   - Avoids: fragile save semantics, weak admin-grade controls
+Plan the work in this order:
 
-2. **Input Workflow Hardening** - improve import, field validation, and chemistry editing clarity
-   - Addresses: bulk import, manual editing, conflict feedback
-   - Avoids: import friction and silent data quality issues
+1. Security and persistence hardening
+2. Results and editor workflow completion
+3. Design-system alignment and UX polish
+4. Testing and release confidence improvements where not already folded into earlier phases
 
-3. **Results and Editor Trust** - make outputs readable, explainable, and persistent
-   - Addresses: optimization review, manual refinement, run history
-   - Avoids: opaque scores and non-persistent edits
+## Product Principle
 
-4. **UI System Polish** - align screens with the intended SkoleGeni design language
-   - Addresses: visual coherence, shared patterns, admin-grade readability
-   - Avoids: inconsistent screen-level polish work
-
-5. **Quality Gates and Release Readiness** - add tests and verification around the core flow
-   - Addresses: regression safety, deployment confidence
-   - Avoids: breaking critical flows while polishing the app
-
-**Phase ordering rationale:**
-- Data trust comes before UI trust.
-- Input correctness comes before interpreting optimization output.
-- Results and editor improvements are more meaningful once saved data is dependable.
-- Visual polish should consolidate stable workflows, not hide unstable ones.
-
-**Research flags for phases:**
-- Phase 1: Needs careful validation of auth/data access decisions.
-- Phase 3: Needs alignment between optimizer scoring and editor scoring semantics.
-- Phase 5: Standard patterns, low research risk.
-
-## Confidence Assessment
-
-| Area | Confidence | Notes |
-|------|------------|-------|
-| Stack | MEDIUM | Brownfield fit is clear; exact supporting library adoption is still a planning choice |
-| Features | HIGH | The trust and workflow needs are strongly supported by the domain and current product shape |
-| Architecture | MEDIUM | Direction is clear, but implementation depth depends on how much of the existing browser-write model is retained |
-| Pitfalls | HIGH | The main failure modes are already visible in the repo and common in admin tooling |
-
-## Gaps to Address
-
-- Exact v1 posture for access control and whether write paths stay fully client-driven
-- Whether manual class edits should overwrite the latest run or create a separate saved refinement artifact
-- Whether scenario comparison is in scope for this milestone or deferred to later
+For this product, “polish” means administrators can trust the workflow end to end. Visual refinement matters, but only after the data model, save semantics, and optimization outputs are dependable.

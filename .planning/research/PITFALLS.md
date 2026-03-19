@@ -1,70 +1,49 @@
-# Domain Pitfalls
+# Research: Pitfalls
 
-**Domain:** Class roster optimization for school administrators
-**Researched:** 2026-03-19
+## Pitfall 1: Users cannot trust why a result happened
 
-## Critical Pitfalls
+- Warning signs: administrators ask “why did these pupils end up together?” and the product cannot answer clearly.
+- Prevention: store and render constraint summaries, tradeoff notes, and clearer score explanations.
+- Phase implication: address in optimization/results polish phase.
 
-### Pitfall 1: Trusting opaque scores
-**What goes wrong:** Users see percentages but cannot understand why the result is good or where it compromised.
-**Why it happens:** Optimization output is treated as self-explanatory.
-**Consequences:** Admins revert to manual processes or distrust the solver.
-**Prevention:** Show constraint-level explanations, unmet rules, and readable class summaries.
-**Detection:** Users ask "why did it place this pupil here?" or export results to re-check manually.
+## Pitfall 2: Destructive saves corrupt roster data
 
-### Pitfall 2: Fragile save semantics
-**What goes wrong:** Data entry sessions are lost or partially corrupted during save operations.
-**Why it happens:** Replace-all writes and loosely validated payloads are easy to implement in MVPs.
-**Consequences:** Lost confidence, duplicate work, difficult bug reports.
-**Prevention:** Transactional writes, staged validation, recoverable run snapshots.
-**Detection:** Intermittent missing pupils, broken chemistry rows, or stale results after edits.
+- Warning signs: edits disappear after save failures, chemistry links drift from pupil rows, or partial writes leave projects inconsistent.
+- Prevention: replace delete-and-reinsert flows with safer persistence and transactional mutation boundaries.
+- Phase implication: address early, before UI polish.
 
-### Pitfall 3: Weak admin-grade data controls
-**What goes wrong:** Sensitive pupil data is too broadly readable or writable.
-**Why it happens:** MVPs often disable policy controls to move faster.
-**Consequences:** Security risk, compliance risk, and organizational distrust.
-**Prevention:** Restore scoped access rules, validate writes centrally, and minimize public privileges.
-**Detection:** Anonymous roles can perform broad CRUD or local configs contain secrets longer than intended.
+## Pitfall 3: Manual edits are not durable
 
-## Moderate Pitfalls
+- Warning signs: users refine classes in the editor and later discover the system has no memory of those edits.
+- Prevention: make assignments and revisions persisted domain objects, not just in-memory UI state.
+- Phase implication: address in core workflow hardening.
 
-### Pitfall 1: Import friction
-**What goes wrong:** CSV data is technically accepted but semantically messy.
-**Prevention:** Add row-level diagnostics, alias mapping feedback, and required-field summaries.
+## Pitfall 4: Open MVP security shortcuts leak into production
 
-### Pitfall 2: Non-persistent manual edits
-**What goes wrong:** The editor feels useful during a session but loses its value once the page reloads.
-**Prevention:** Save refined assignments explicitly and distinguish them from raw optimizer output.
+- Warning signs: anonymous full-table access remains enabled, keys/secrets stay committed in local configs, or the browser keeps privileged write access.
+- Prevention: reintroduce RLS, narrow client permissions, and move privileged mutations behind trusted code paths.
+- Phase implication: address in the foundation/security phase.
 
-### Pitfall 3: UI polish before workflow safety
-**What goes wrong:** The app looks sharper but remains hard to trust operationally.
-**Prevention:** Prioritize integrity, explainability, and persistence before visual extras.
+## Pitfall 5: Output is technically correct but operationally unusable
 
-## Minor Pitfalls
+- Warning signs: results show IDs instead of names, class summaries are hard to scan, and administrators export to spreadsheets to finish the job.
+- Prevention: optimize for human review, not just solver output correctness.
+- Phase implication: address in results/editor polish.
 
-### Pitfall 1: Over-expanding scope early
-**What goes wrong:** The roadmap adds admin dashboards, collaboration, and SIS integrations too early.
-**Prevention:** Keep the roadmap centered on the roster generation lifecycle.
+## Pitfall 6: Solver changes become too risky to ship
 
-### Pitfall 2: Treating desktop density as a design flaw
-**What goes wrong:** Simplifying too aggressively removes the information density admins need.
-**Prevention:** Polish the dense workflow instead of redesigning it into a consumer UI.
+- Warning signs: every optimizer change requires manual confidence, regressions appear in edge cases, and nobody wants to touch the scoring logic.
+- Prevention: add targeted tests around feasibility, chemistry, score behavior, and result persistence.
+- Phase implication: address early, alongside core hardening.
 
-## Phase-Specific Warnings
+## Pitfall 7: Design polish happens before workflow safety
 
-| Phase Topic | Likely Pitfall | Mitigation |
-|-------------|---------------|------------|
-| Data layer hardening | Preserving existing behavior while tightening writes | Add migration-safe data access wrappers and verify round-trips |
-| Import and validation | Fixing obvious errors but missing semantic issues | Add structured row diagnostics and mandatory-field checks |
-| Results and editor | Improving visuals without improving explainability | Add readable names, warnings, and persisted refined outputs |
-| UI polish | Reworking screens without a shared component baseline | Extract common primitives before broad redesign |
-| Testing | Writing only happy-path checks | Cover failure paths and persistence edge cases first |
+- Warning signs: UI looks better but users still lose work or cannot explain outputs.
+- Prevention: treat polish as clarity plus safety, not just visuals.
+- Phase implication: roadmap should place data integrity ahead of cosmetic refinement.
 
-## Confidence
-- Core pitfalls: HIGH
-- Phase mitigation guidance: MEDIUM
+## Pitfall 8: Scope expands into a generic school platform
 
-## Sources
-- `.planning/codebase/CONCERNS.md`
-- PRD.md in this repo
-- U.S. Department of Education student data guidance: https://studentprivacy.ed.gov/sites/default/files/resource_document/file/Policies%20for%20Users%20of%20Student%20Data%20Checklist.pdf
+- Warning signs: roadmap starts adding unrelated admin features before the roster workflow is dependable.
+- Prevention: keep the core value narrow and measure work against roster generation, balancing, review, and refinement.
+- Phase implication: apply across all phases.
