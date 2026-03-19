@@ -21,6 +21,8 @@ School staff can generate balanced, defensible class rosters quickly without los
 - ✓ User can run an optimizer that generates class assignments and score outputs — existing MVP
 - ✓ User can review generated classes in a results view — existing MVP
 - ✓ User can manually drag pupils between classes in a class editor — existing MVP
+- ✓ Authorized staff access to roster data is now enforced through owner-based project access and RLS — validated in Phase 1
+- ✓ Roster saves no longer rely on destructive browser-side replace-all writes — validated in Phase 1
 
 ### Active
 
@@ -44,6 +46,8 @@ The codebase map in `.planning/codebase/` shows that the product already impleme
 
 This project should therefore be planned as a brownfield product-shaping effort: preserve what already works, strengthen fragile areas, and polish the end-to-end experience so the baseline MVP becomes dependable enough to extend.
 
+Phase 1 established the security and persistence baseline for the rest of the roadmap. The product now uses authenticated ownership for project access, a safer trusted boundary for multi-step roster saves, and a server-backed optimizer path based on saved project state.
+
 ## Constraints
 
 - **Platform**: Desktop-first only — product and design docs do not target mobile support
@@ -59,7 +63,9 @@ This project should therefore be planned as a brownfield product-shaping effort:
 | Treat the existing MVP as validated baseline | The repository already implements the product’s core workflow end to end | — Pending |
 | Focus planning on finishing and polishing rather than broad expansion | The biggest current value comes from reliability, clarity, and trust in the baseline workflow | — Pending |
 | Keep the product desktop-first | The target users work in admin-heavy desktop contexts and the design spec explicitly excludes mobile | — Pending |
-| Preserve the current solver-centered product model | The optimizer is core to the product value and already exists in the codebase | — Pending |
+| Preserve the current solver-centered product model | The optimizer is core to the product value and already exists in the codebase | ✓ Good |
+| Keep browser reads direct under RLS and move risky multi-step writes behind a trusted boundary | This improves safety materially without forcing a full backend rewrite in Phase 1 | ✓ Good |
+| Use single authenticated staff ownership in Phase 1 while leaving room for future team concepts | This matches the immediate access model while preserving future collaboration paths | ✓ Good |
 
 ---
-*Last updated: 2026-03-19 after initialization*
+*Last updated: 2026-03-19 after Phase 1 completion*
