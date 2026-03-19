@@ -44,9 +44,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Extract project and pupil data flows into cleaner service and route boundaries
-- [ ] 02-02: Strengthen validation and error handling for constraints, CSV import, and chemistry entry
-- [ ] 02-03: Verify the full setup-to-save workflow across reloads and common failure cases
+- [ ] 02-01-PLAN.md — Create the Phase 2 test harness and make configuration restore/save authoritative
+- [ ] 02-02-PLAN.md — Add mapped CSV import, issues reporting, and debounced autosave to pupil workflow
+- [ ] 02-03-PLAN.md — Add reload/failure regressions and verify the end-to-end setup-to-save journey
 
 ### Phase 3: Trustworthy Optimization Results
 **Goal**: Make optimizer runs easier to understand, debug, and defend.
