@@ -1,92 +1,128 @@
 # Roadmap: SkoleGeni
 
 **Created:** 2026-03-19
-**Project:** SkoleGeni
-**Mode:** yolo
+**Project:** `.planning/PROJECT.md`
+**Requirements:** `.planning/REQUIREMENTS.md`
+**Research:** `.planning/research/SUMMARY.md`
 **Granularity:** standard
 
-## Summary
+## Overview
 
-This roadmap assumes the existing MVP is the baseline and focuses on finishing and polishing it into a dependable v1. The phase order is driven by trust: first make the data flow safe, then harden user input, then improve optimization review and manual refinement, then consolidate UI polish, and finally lock in quality gates.
+This roadmap treats the current MVP as a validated baseline and focuses on finishing and polishing it into a dependable v1. The phase order follows the research outcome: secure the foundation first, stabilize the workflow, improve optimization trust, make manual editing durable, tighten the product UI, then lock in regression coverage and release readiness.
 
-## Phases
+## Phase Summary
 
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
-| 1 | Data Integrity and Safety | Make project persistence and access rules trustworthy | PROJ-01, PROJ-02, PROJ-03 | 3 |
-| 2 | Input Workflow Hardening | Make data entry, CSV import, chemistry management, and constraint validation dependable | DATA-01, DATA-02, DATA-03, DATA-04 | 4 |
-| 3 | Results and Editor Trust | Make optimizer outputs understandable, persistent, and safe to refine manually | OPTM-01, OPTM-02, OPTM-03, EDIT-01, EDIT-02, EDIT-03 | 5 |
-| 4 | UI System Polish | Align the five-screen flow with the intended SkoleGeni design language and navigation quality | UX-01, UX-02 | 3 |
-| 5 | Quality Gates and Release Readiness | Add verification and developer workflow reliability around the polished product | QLTY-01, QLTY-02 | 3 |
+| 1 | Platform Hardening | Secure and type the app foundation so future work is safe to build on | TRST-01 | 4 |
+| 2 | Workflow Reliability | Make project setup, constraints, pupil entry, chemistry, and saving dependable | WFLO-01, WFLO-02, WFLO-03, CNST-01, CNST-02, PUPL-01, PUPL-02, PUPL-03, PUPL-04 | 5 |
+| 3 | Optimization Transparency | Make optimization runs trustworthy, explainable, and easy to revisit | CNST-03, OPTI-01, OPTI-02, OPTI-03 | 4 |
+| 4 | Durable Class Editing | Turn manual refinement into a persistent, understandable workflow | EDIT-01, EDIT-02, EDIT-03, EDIT-04 | 4 |
+| 5 | Product Polish | Align the experience tightly with the intended SkoleGeni design language and admin workflow quality | Cross-cutting polish supporting all v1 requirements | 4 |
+| 6 | Verification and Release Readiness | Add the automated checks and smoke paths needed to ship confidently | TRST-02 | 4 |
 
 ## Phase Details
 
-### Phase 1: Data Integrity and Safety
-**Goal:** Make project reads and writes recoverable, validated, and safer than the current MVP baseline.
+### Phase 1: Platform Hardening
+**Goal:** Replace MVP-grade trust shortcuts with a safer, typed, production-ready foundation.
 
-**Requirements:** PROJ-01, PROJ-02, PROJ-03
-
-**Success criteria:**
-1. Returning to an existing project reliably restores the last saved constraints, pupil data, chemistry links, and latest result.
-2. Save flows no longer depend on destructive replace-all writes that can silently lose data on partial failure.
-3. The persistence layer uses safer access rules or write boundaries than the current broad anonymous CRUD setup.
-
-### Phase 2: Input Workflow Hardening
-**Goal:** Make setup and data entry reliable enough that optimization runs start from clean, understandable inputs.
-
-**Requirements:** DATA-01, DATA-02, DATA-03, DATA-04
+**Requirements:**
+- TRST-01
 
 **Success criteria:**
-1. CSV import surfaces row-level problems before optimization can run.
-2. Manual pupil editing clearly marks missing or invalid required data.
-3. Chemistry relationships are easy to create, inspect, and remove without ambiguity.
-4. Constraint configuration prevents or explains invalid combinations before advancing.
+1. Sensitive project data is no longer writable through open anonymous access.
+2. The app uses typed database boundaries instead of repeated handwritten shape mapping.
+3. Multi-step or privileged writes have a safer execution path than direct ad hoc page mutations.
+4. Environment and local-development configuration clearly separate development convenience from production behavior.
 
-### Phase 3: Results and Editor Trust
-**Goal:** Make generated rosters readable, explainable, and safely refinable.
+### Phase 2: Workflow Reliability
+**Goal:** Make the project creation, configuration, pupil entry, chemistry, and save/reload experience dependable for real admin work.
 
-**Requirements:** OPTM-01, OPTM-02, OPTM-03, EDIT-01, EDIT-02, EDIT-03
-
-**Success criteria:**
-1. Each optimizer execution creates a persisted run artifact with useful metadata.
-2. Results screens show named pupils, readable summaries, and clear score breakdowns.
-3. Users can see when constraints conflict or when tradeoffs were made.
-4. Drag-and-drop editing blocks or warns on invalid moves and recalculates useful feedback.
-5. Manual refinements persist and remain distinguishable from raw optimizer output.
-
-### Phase 4: UI System Polish
-**Goal:** Bring all five product screens into a coherent desktop-first system that matches the intended SkoleGeni product identity.
-
-**Requirements:** UX-01, UX-02
+**Requirements:**
+- WFLO-01
+- WFLO-02
+- WFLO-03
+- CNST-01
+- CNST-02
+- PUPL-01
+- PUPL-02
+- PUPL-03
+- PUPL-04
 
 **Success criteria:**
-1. Shared visual patterns, spacing, typography, and interaction states are consistent across the workflow.
-2. Navigation between welcome, configuration, pupil, results, and editor screens feels deliberate and dead-end free.
-3. Dense admin workflows remain readable and efficient rather than being simplified into a consumer-style UI.
+1. Users can start a project, leave, and return without losing project state.
+2. Constraint and pupil workflows provide clear validation and failure feedback at the point of use.
+3. CSV import supports the documented format with clear row-level problem reporting.
+4. Chemistry links can be created and preserved reliably through save/reload cycles.
+5. Save operations do not leave projects in a silently corrupted partial state.
 
-### Phase 5: Quality Gates and Release Readiness
-**Goal:** Add enough automated and documented verification to make the polished workflow maintainable.
+### Phase 3: Optimization Transparency
+**Goal:** Make optimization output legible, trustworthy, and recoverable.
 
-**Requirements:** QLTY-01, QLTY-02
+**Requirements:**
+- CNST-03
+- OPTI-01
+- OPTI-02
+- OPTI-03
 
 **Success criteria:**
-1. Automated tests cover the critical project setup, input, optimization, and review flow plus major failure cases.
-2. The documented local workflow reflects the real supported build and verification path.
-3. The repo can be validated with repeatable commands before further feature work lands.
+1. Running the optimizer produces a clear success, failure, or infeasible-result state.
+2. Results explain key score components and important tradeoffs in administrator-friendly language.
+3. Users can reopen the latest run and inspect prior saved runs for the same project.
+4. Results are displayed using real pupil and class context instead of internal-only identifiers.
+
+### Phase 4: Durable Class Editing
+**Goal:** Make manual class refinement persistent, understandable, and safe.
+
+**Requirements:**
+- EDIT-01
+- EDIT-02
+- EDIT-03
+- EDIT-04
+
+**Success criteria:**
+1. Users can manually move pupils between classes and get immediate conflict/score feedback.
+2. Manual edits persist as a draft or equivalent durable state across reloads.
+3. The UI clearly distinguishes generated assignments, saved edits, and finalized roster state.
+4. Users can reopen and continue a prior editing session without reconstructing their changes manually.
+
+### Phase 5: Product Polish
+**Goal:** Bring the entire workflow into tighter alignment with the intended SkoleGeni interaction and visual standard.
+
+**Requirements:**
+- Cross-cutting polish supporting all active v1 requirements
+
+**Success criteria:**
+1. The welcome, configuration, pupil, results, and editor screens feel visually and behaviorally consistent.
+2. Dense admin workflows remain fast, legible, and desktop-first rather than decorative or sparse.
+3. Loading, empty, and error states match the intended product tone and reduce user uncertainty.
+4. The UI reflects domain language and human-readable output throughout the core journey.
+
+### Phase 6: Verification and Release Readiness
+**Goal:** Create enough automated verification and smoke coverage to support safe iteration and delivery.
+
+**Requirements:**
+- TRST-02
+
+**Success criteria:**
+1. Optimizer core logic has automated coverage for key constraint and chemistry behavior.
+2. Critical UI workflows have automated coverage for save/load and run-generation paths.
+3. The local stack supports a repeatable smoke test for the main end-to-end flow.
+4. Shipping changes to the roster workflow no longer depends entirely on manual confidence.
+
+## Coverage Check
+
+- v1 requirements mapped: 19 / 19
+- Unmapped requirements: 0
+- Brownfield baseline preserved: yes
 
 ## Ordering Rationale
 
-- Phase 1 reduces the highest-risk operational fragility.
-- Phase 2 ensures optimization runs start from trustworthy inputs.
-- Phase 3 improves the product’s core promise once the data foundation is reliable.
-- Phase 4 consolidates design quality after workflow semantics stabilize.
-- Phase 5 protects the finished baseline from regression.
-
-## Research Notes
-
-- Use the existing stack instead of rewriting.
-- Prioritize explainability and persistence before expanding feature scope.
-- Keep the product desktop-first and admin-dense.
+1. Security and data trust must come before product polish.
+2. Workflow reliability must come before optimizer and editor enhancements, because everything downstream depends on correct inputs and persistence.
+3. Optimization transparency comes before durable editing so users understand the generated baseline.
+4. Visual/system polish comes after the trust-critical structural work.
+5. Verification closes the loop once the core workflow has been reshaped into testable boundaries.
 
 ---
-*Last updated: 2026-03-19 after initial roadmap creation*
+*Last updated: 2026-03-19 after roadmap creation*

@@ -1,23 +1,16 @@
 # State
 
+**Initialized:** 2026-03-19
+**Status:** Active
+
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-03-19)
 
 **Core value:** School staff can generate balanced, defensible class rosters quickly without losing control over the final result.
-**Current focus:** Phase 1 - Data Integrity and Safety
+**Current focus:** Phase 1 - Platform Hardening
 
-## Workflow State
-
-- Project initialized: yes
-- Codebase map present: yes
-- Research complete: yes
-- Requirements defined: yes
-- Roadmap created: yes
-- Active phase: 1
-- Active phase status: pending discussion/planning
-
-## Key Artifacts
+## Current Artifacts
 
 - Project: `.planning/PROJECT.md`
 - Config: `.planning/config.json`
@@ -26,10 +19,26 @@ See: `.planning/PROJECT.md` (updated 2026-03-19)
 - Requirements: `.planning/REQUIREMENTS.md`
 - Roadmap: `.planning/ROADMAP.md`
 
-## Next Command
+## Workflow Settings
 
-- `$gsd-discuss-phase 1`
-- Optional shortcut: `$gsd-plan-phase 1`
+- Mode: yolo
+- Granularity: standard
+- Parallelization: true
+- Commit docs: true
+- Research: true
+- Plan check: true
+- Verifier: true
+- Model profile: balanced
+
+## Next Step
+
+- Run `$gsd-discuss-phase 1`
+
+## Notes
+
+- This is a brownfield project initialized from an existing MVP codebase.
+- The current project intent is to finish and polish the existing product rather than broaden scope.
+- The first planning priority is replacing MVP-grade trust shortcuts in the data layer and workflow boundaries.
 
 ---
 *Last updated: 2026-03-19 after project initialization*
