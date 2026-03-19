@@ -42,8 +42,8 @@ created: 2026-03-19
 | 01-01-02 | 01 | 1 | SECU-01 | integration | `pytest tests/test_security_foundation.py::test_owner_only_project_access -x` | ❌ W0 | ⬜ pending |
 | 01-02-01 | 02 | 2 | SECU-02 | integration | `pytest tests/test_security_foundation.py::test_transactional_roster_save -x` | ❌ W0 | ⬜ pending |
 | 01-02-02 | 02 | 2 | SECU-02 | integration | `pytest tests/test_security_foundation.py::test_transactional_roster_save -x` | ❌ W0 | ⬜ pending |
-| 01-03-01 | 03 | 3 | SECU-01 | integration | `pytest tests/test_security_foundation.py::test_server_side_optimizer_from_saved_state -x` | ❌ W0 | ⬜ pending |
-| 01-03-02 | 03 | 3 | SECU-02 | e2e | `npx playwright test tests/e2e/phase1-auth-save.spec.ts` | ❌ W0 | ⬜ pending |
+| 01-03-01 | 03 | 1 | SECU-01 | integration | `pytest tests/test_security_foundation.py::test_server_side_optimizer_from_saved_state -x` | ❌ W0 | ⬜ pending |
+| 01-03-02 | 03 | 1 | SECU-02 | e2e | `npx playwright test tests/e2e/phase1-auth-save.spec.ts` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
