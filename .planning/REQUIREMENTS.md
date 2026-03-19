@@ -7,8 +7,8 @@
 
 ### Security & Access
 
-- [ ] **SECU-01**: Authorized school staff can access roster data only through explicitly allowed project permissions and policies
-- [ ] **SECU-02**: Staff can save project changes without exposing unrestricted public CRUD access to student data
+- [x] **SECU-01**: Authorized school staff can access roster data only through explicitly allowed project permissions and policies
+- [x] **SECU-02**: Staff can save project changes without exposing unrestricted public CRUD access to student data
 
 ### Project Workflow
 
@@ -65,8 +65,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SECU-01 | Phase 1 | Pending |
-| SECU-02 | Phase 1 | Pending |
+| SECU-01 | Phase 1 | Complete |
+| SECU-02 | Phase 1 | Complete |
 | FLOW-01 | Phase 2 | Pending |
 | FLOW-02 | Phase 2 | Pending |
 | FLOW-03 | Phase 2 | Pending |
@@ -88,4 +88,4 @@
 
 ---
 *Requirements defined: 2026-03-19*  
-*Last updated: 2026-03-19 after initial definition*
+*Last updated: 2026-03-19 after Phase 1 completion*

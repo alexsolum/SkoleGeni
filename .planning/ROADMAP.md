@@ -10,7 +10,7 @@ This roadmap takes the existing SkoleGeni MVP and turns it into a more trustwort
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Secure Data Foundation** - Lock down access and remove destructive persistence patterns
+- [x] **Phase 1: Secure Data Foundation** - Lock down access and remove destructive persistence patterns
 - [ ] **Phase 2: Reliable Project Workflow** - Make project setup, constraints, import, and saving trustworthy
 - [ ] **Phase 3: Trustworthy Optimization Results** - Improve optimizer validation, outcomes, and explainability
 - [ ] **Phase 4: Durable Class Editing** - Turn manual class editing into a persistent, dependable feature
@@ -29,9 +29,9 @@ This roadmap takes the existing SkoleGeni MVP and turns it into a more trustwort
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Design and apply secure database access policies for the current project tables
-- [ ] 01-02: Refactor save paths away from destructive replace-all behavior
-- [ ] 01-03: Clean up environment and credential handling across local and deployed flows
+- [x] 01-01: Design and apply secure database access policies for the current project tables
+- [x] 01-02: Refactor save paths away from destructive replace-all behavior
+- [x] 01-03: Clean up environment and credential handling across local and deployed flows
 
 ### Phase 2: Reliable Project Workflow
 **Goal**: Make the setup and pupil-entry flow resilient, validated, and easier to trust.
@@ -100,7 +100,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Secure Data Foundation | 0/3 | Not started | - |
+| 1. Secure Data Foundation | 3/3 | Complete | 2026-03-19 |
 | 2. Reliable Project Workflow | 0/3 | Not started | - |
 | 3. Trustworthy Optimization Results | 0/3 | Not started | - |
 | 4. Durable Class Editing | 0/3 | Not started | - |
