@@ -1,67 +1,66 @@
-# Technology Stack
+# Research: Stack
 
-**Project:** SkoleGeni
-**Researched:** 2026-03-19
+## Scope
 
-## Recommended Stack
+This is brownfield stack guidance for taking the existing SkoleGeni MVP to a more dependable v1. The goal is to preserve the current product shape while removing weak points in persistence, testing, deployment safety, and developer workflow.
 
-This is a brownfield project. The right move is to keep the current product shape and harden it, not replace the stack.
+## Recommended Direction
 
-### Core Framework
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| React | Current stable line | Admin UI | Existing app already uses it well, and the product is screen-driven rather than content-driven |
-| Vite | Current stable line | Frontend build/dev | Fast iteration, already integrated, low migration cost |
-| TypeScript | Current stable line | UI correctness | Needed to reduce regressions as the data workflow becomes stricter |
-| React Router | Current stable line | Screen flow | Existing route model matches the product’s stepwise workflow |
+- **Frontend framework**: Keep React and align with current React 19.x guidance. Confidence: high.
+- **Build tooling**: Keep Vite as the SPA toolchain rather than introducing a heavier framework. Confidence: high.
+- **Styling**: Keep Tailwind, but finish the migration to modern Tailwind v4 patterns instead of maintaining partial legacy setup. Confidence: high.
+- **Database/backend platform**: Keep Postgres and Supabase-style tooling, but move away from anonymous broad-table writes in production paths. Confidence: high.
+- **Optimizer service**: Keep FastAPI + OR-Tools CP-SAT. Confidence: high.
 
-### Data and Backend
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| Postgres + Supabase patterns | Current stable line | Primary persistence | Strong fit for structured roster data, audit trails, and relational constraints |
-| FastAPI | Current stable line | Optimizer API | Existing Python service is already a good boundary around OR-Tools |
-| OR-Tools CP-SAT | Current stable line | Constraint solving | The product’s core value is optimization under multiple constraints; keep the solver-centered model |
+## Why Keep the Existing Core Stack
 
-### Supporting Libraries
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| Zod | Current stable line | Runtime validation for client forms and API payloads | Use at every browser/service boundary where invalid data can leak through |
-| TanStack Query | Current stable line | Query/mutation state | Use when replacing ad hoc `useEffect` loading and manual re-fetch logic |
-| React Hook Form | Current stable line | Complex config/data entry forms | Use for constraint forms and modal workflows if page logic keeps growing |
-| Vitest + Testing Library | Current stable line | Frontend unit/integration tests | Use for route flows, validation, and stateful UI logic |
-| Playwright | Current stable line | End-to-end verification | Use for the core setup -> optimize -> review -> edit flow |
+- The existing stack already matches the product well: admin-heavy desktop UI, structured data, and a computational backend.
+- The MVP’s biggest problems are not framework mismatch. They are trust, safety, persistence semantics, and missing verification.
+- A rewrite would delay the value of polishing without solving the real risks first.
 
-## Recommended Platform Direction
-- Keep the browser as the main admin surface.
-- Move risky persistence rules behind safer boundaries instead of relying on broad anonymous CRUD.
-- Preserve the Python solver service, but formalize API contracts and failure handling.
-- Introduce audit-friendly persistence around optimization runs and manual edits.
+## Frontend Recommendations
 
-## Alternatives Considered
+- Keep `react` and `react-dom`, but pin versions instead of using `"*"` in `package.json`.
+- Keep Vite for the web client and pin the current stable major used by the team after validation in this repo.
+- Add **Vitest** for unit/integration testing because it is Vite-native and reuses Vite transforms.
+- Add **React Testing Library** for component and workflow tests.
+- Add **Playwright** for end-to-end validation of the core flow: create project -> configure -> import pupils -> optimize -> review results.
+- Add ESLint if the team wants static guardrails beyond TypeScript, but prioritize tests first.
 
-| Category | Recommended | Alternative | Why Not |
-|----------|-------------|-------------|---------|
-| Frontend app | React + Vite | Rewrite to Next.js | Adds migration cost without solving the current trust and workflow problems |
-| Data access | Safer scoped Supabase usage | Direct broad browser CRUD everywhere | Too fragile for admin-grade data handling |
-| Form management | Add focused validation tools | Keep all form state ad hoc | Current page size already shows the limits |
-| Testing | Vitest + Playwright | Manual-only QA | Too risky once data integrity and optimization trust become product promises |
+## Styling Recommendations
+
+- Keep Tailwind as the styling layer.
+- Normalize the project on one Tailwind generation path and remove ambiguity between older `@tailwind` directives and newer package expectations.
+- Move design tokens into a clearer source of truth and explicitly reconcile `DESIGN.md`, `PRD.md`, and the code.
+- Avoid introducing a large third-party component library; the UI is product-specific and already intentionally custom.
+
+## Backend Recommendations
+
+- Keep **FastAPI** for the optimizer boundary because the service is simple and typed.
+- Keep **Pydantic** request/response models to preserve a clear contract.
+- Keep **OR-Tools CP-SAT** because the problem shape is largely discrete and constraint-driven, which fits CP-SAT well.
+- Extract solver logic from `api/optimizer.py` into smaller testable modules before adding more optimization complexity.
+
+## Data and Auth Recommendations
+
+- Keep Postgres as the source of truth.
+- Use real Supabase production patterns rather than the current MVP shortcut of broad anon CRUD access.
+- Introduce **Row Level Security** and move privileged write paths behind trusted server-side boundaries where needed.
+- Keep direct browser reads only where policy-safe and low risk.
+
+## Operational Recommendations
+
+- Pin Node and Python versions in docs and CI.
+- Add a smoke-test path for the Docker stack because the repo already depends on multi-service local orchestration.
+- Add migration discipline around `supabase/migrations/` and stop relying on drift between canonical migration files and local init SQL.
 
 ## What Not to Do
-- Do not replace the solver with heuristic-only client logic.
-- Do not introduce a heavy greenfield architecture reset before core polish lands.
-- Do not keep delete-and-reinsert persistence as the long-term write model.
-- Do not ship admin-facing roster tools without stronger validation and auditability.
 
-## Confidence
-- Stack baseline: HIGH
-- Brownfield recommendations: MEDIUM
-- Specific library additions: MEDIUM
+- Do not replace the app with Next.js just for convention; this product currently behaves like a focused internal-style SPA.
+- Do not keep wildcard dependency versions in `package.json`; they increase drift risk.
+- Do not ship the current anonymous write model to production usage.
+- Do not merge persistence, transport, and solver concerns further inside one Python file.
 
-## Sources
-- React docs: https://react.dev/
-- Vite docs: https://vite.dev/
-- Supabase docs: https://supabase.com/docs
-- FastAPI docs: https://fastapi.tiangolo.com/
-- OR-Tools docs: https://developers.google.com/optimization
-- Playwright docs: https://playwright.dev/
-- Vitest docs: https://vitest.dev/
+## Source Basis
+
+This guidance is based on the current repository plus current official docs/guidance from React, Vite, Tailwind CSS, Supabase, FastAPI, OR-Tools, Vitest, and Playwright as checked during initialization on 2026-03-19.
