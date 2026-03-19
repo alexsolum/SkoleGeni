@@ -19,15 +19,15 @@ created: 2026-03-19
 |----------|-------|
 | **Framework** | `vitest` + `@testing-library/react` + `playwright` |
 | **Config file** | `none — Wave 0 installs and configures vitest/playwright` |
-| **Quick run command** | `npm run test -- --runInBand` |
+| **Quick run command** | `npm run test -- src/pages/__tests__/workflow-reload.test.tsx` |
 | **Full suite command** | `npm run test:phase2 && npm run build` |
-| **Estimated runtime** | ~45 seconds |
+| **Estimated runtime** | ~20 seconds quick run / ~45 seconds full suite |
 
 ---
 
 ## Sampling Rate
 
-- **After every task commit:** Run `npm run test -- --runInBand`
+- **After every task commit:** Run the task-specific `<automated>` command; use `npm run test -- src/pages/__tests__/workflow-reload.test.tsx` as the default quick regression when a checkpoint needs fast feedback
 - **After every plan wave:** Run `npm run test:phase2 && npm run build`
 - **Before `$gsd-verify-work`:** Full suite must be green
 - **Max feedback latency:** 45 seconds
@@ -43,6 +43,7 @@ created: 2026-03-19
 | 02-02-01 | 02 | 1 | FLOW-03 | component | `npm run test -- src/pages/__tests__/pupil-import-validation.test.tsx` | ❌ W0 | ⬜ pending |
 | 02-02-02 | 02 | 1 | FLOW-04 | integration | `npm run test -- src/pages/__tests__/pupil-autosave.test.tsx` | ❌ W0 | ⬜ pending |
 | 02-03-01 | 03 | 2 | FLOW-01,FLOW-02,FLOW-03,FLOW-04 | e2e | `npm run test:e2e -- --grep "phase-2 workflow"` | ❌ W0 | ⬜ pending |
+| 02-03-03 | 03 | 2 | FLOW-01,FLOW-02,FLOW-03,FLOW-04 | checkpoint regression | `npm run test -- src/pages/__tests__/workflow-reload.test.tsx` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
