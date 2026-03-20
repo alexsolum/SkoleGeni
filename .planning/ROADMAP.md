@@ -45,7 +45,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Create the Phase 2 test harness and make configuration restore/save authoritative
-- [ ] 02-02-PLAN.md — Add mapped CSV import, issues reporting, and debounced autosave to pupil workflow
+- [x] 02-02-PLAN.md — Add mapped CSV import, issues reporting, and debounced autosave to pupil workflow
 - [ ] 02-03-PLAN.md — Add reload/failure regressions and verify the end-to-end setup-to-save journey
 
 ### Phase 3: Trustworthy Optimization Results
@@ -101,7 +101,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Secure Data Foundation | 3/3 | Complete | 2026-03-19 |
-| 2. Reliable Project Workflow | 1/3 | In Progress | - |
+| 2. Reliable Project Workflow | 2/3 | In Progress | - |
 | 3. Trustworthy Optimization Results | 0/3 | Not started | - |
 | 4. Durable Class Editing | 0/3 | Not started | - |
 | 5. Polish and Release Readiness | 0/3 | Not started | - |
