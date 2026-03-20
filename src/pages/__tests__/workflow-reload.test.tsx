@@ -274,7 +274,15 @@ beforeEach(() => {
   saveProjectRosterStateMock.mockImplementation(async (projectId: string, pupils, chemistry) => {
     store.pupilsByProjectId.set(
       projectId,
-      pupils.map((pupil) => ({
+      pupils.map(
+        (pupil: {
+          id: string;
+          name: string;
+          gender: "Male" | "Female" | "Other";
+          originSchool: string;
+          needs: string;
+          zone: string;
+        }) => ({
         id: pupil.id,
         name: pupil.name,
         gender: pupil.gender,
@@ -282,19 +290,20 @@ beforeEach(() => {
         needs: pupil.needs,
         zone: pupil.zone,
         project_id: projectId
-      }))
+        })
+      )
     );
     store.chemistryByProjectId.set(
       projectId,
       chemistry.positive
-        .map(([fromPupilId, toPupilId]) => ({
+        .map(([fromPupilId, toPupilId]: [string, string]) => ({
           from_pupil_id: fromPupilId,
           to_pupil_id: toPupilId,
           relationship: "positive" as const,
           project_id: projectId
         }))
         .concat(
-          chemistry.negative.map(([fromPupilId, toPupilId]) => ({
+          chemistry.negative.map(([fromPupilId, toPupilId]: [string, string]) => ({
             from_pupil_id: fromPupilId,
             to_pupil_id: toPupilId,
             relationship: "negative" as const,
