@@ -25,7 +25,9 @@
     "react-hot-toast": "*",
     "react-router-dom": "*",
     "recharts": "^3.8.0",
-    "tailwind-merge": "*"
+    "tailwind-merge": "*",
+    "zundo": "^2.3.0",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@playwright/test": "*",
