@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-20T20:11:43.7171814+01:00"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-20T20:24:36.9171792+01:00"
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 12
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -24,15 +24,15 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 04 (durable-class-editing) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 8 min
-- Total execution time: 1.4 hours
+- Total execution time: 1.5 hours
 
 **By Phase:**
 
@@ -43,7 +43,7 @@ Plan: 2 of 3
 
 **Recent Trend:**
 
-- Last 5 plans: 02-02, 02-03, 03-01, 03-02, 03-03
+- Last 5 plans: 03-01, 03-02, 03-03, 04-01, 04-02
 - Trend: Positive
 
 | Phase 02 P01 | 10 | 2 tasks | 11 files |
@@ -53,6 +53,7 @@ Plan: 2 of 3
 | Phase 03 P02 | 6 | 3 tasks | 7 files |
 | Phase 03 P03 | 7 | 3 tasks | 6 files |
 | Phase 04 P01 | 20min | 3 tasks | 6 files |
+| Phase 04 P02 | 10min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,9 @@ Recent decisions affecting current work:
 - [Phase 04]: Session drafts only override `roster_assignments` when the local timestamp is strictly newer than the saved row.
 - [Phase 04]: Persist editor draft metadata outside zundo history so undo/redo only tracks assignment changes.
 - [Phase 04]: Resetting the editor deletes the durable assignment row and rehydrates from the latest optimizer run.
+- [Phase 04]: Subscribed the Class Editor header to zundo temporal history so undo and redo availability reflects real past and future state.
+- [Phase 04]: Guarded autosave with a persisted assignment snapshot key to avoid rewriting hydrated or reset state immediately.
+- [Phase 04]: Used the latest pupils.created_at timestamp as the available pupil-change marker because the schema does not expose pupils.updated_at.
 
 ### Pending Todos
 
@@ -93,6 +97,6 @@ None currently.
 
 ## Session Continuity
 
-Last session: 2026-03-20T20:11:43.7171814+01:00
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-20T20:24:36.9171792+01:00
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

@@ -75,7 +75,7 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md — Design and implement a saved assignment model and temporal state store
-- [ ] 04-02-PLAN.md — Connect the class editor to durable persistence and Undo/Redo behavior
+- [x] 04-02-PLAN.md — Connect the class editor to durable persistence and Undo/Redo behavior
 - [ ] 04-03-PLAN.md — Implement exhaustive validation, Red Card states, issues sidebar, and official verification
 
 ### Phase 5: Polish and Release Readiness
@@ -103,5 +103,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Secure Data Foundation | 3/3 | Complete | 2026-03-19 |
 | 2. Reliable Project Workflow | 3/3 | Complete | 2026-03-20 |
 | 3. Trustworthy Optimization Results | 3/3 | Complete | 2026-03-20 |
-| 4. Durable Class Editing | 1/3 | In progress | 2026-03-20 |
+| 4. Durable Class Editing | 2/3 | In progress | 2026-03-20 |
 | 5. Polish and Release Readiness | 0/3 | Not started | - |
