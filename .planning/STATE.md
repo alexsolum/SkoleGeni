@@ -72,7 +72,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- Make positive chemistry bidirectional — see `.planning/todos/pending/2026-03-20-make-positive-chemistry-bidirectional.md`
 
 ### Blockers/Concerns
 
