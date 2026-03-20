@@ -12,8 +12,8 @@
 
 ### Project Workflow
 
-- [ ] **FLOW-01**: User can create, reopen, and continue a roster project without losing previously saved setup data
-- [ ] **FLOW-02**: User can save and update class constraints with clear validation before moving to pupil entry
+- [x] **FLOW-01**: User can create, reopen, and continue a roster project without losing previously saved setup data
+- [x] **FLOW-02**: User can save and update class constraints with clear validation before moving to pupil entry
 - [ ] **FLOW-03**: User can import pupil data from CSV and immediately see validation feedback for missing or malformed fields
 - [ ] **FLOW-04**: User can save pupil and chemistry changes without destructive data-loss behavior during normal edits
 
@@ -67,8 +67,8 @@
 |-------------|-------|--------|
 | SECU-01 | Phase 1 | Complete |
 | SECU-02 | Phase 1 | Complete |
-| FLOW-01 | Phase 2 | Pending |
-| FLOW-02 | Phase 2 | Pending |
+| FLOW-01 | Phase 2 | Complete |
+| FLOW-02 | Phase 2 | Complete |
 | FLOW-03 | Phase 2 | Pending |
 | FLOW-04 | Phase 2 | Pending |
 | OPTI-01 | Phase 3 | Pending |
@@ -88,4 +88,4 @@
 
 ---
 *Requirements defined: 2026-03-19*  
-*Last updated: 2026-03-19 after Phase 1 completion*
+*Last updated: 2026-03-20 after Phase 2 Plan 01 completion*

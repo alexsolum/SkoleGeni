@@ -44,7 +44,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Create the Phase 2 test harness and make configuration restore/save authoritative
+- [x] 02-01-PLAN.md — Create the Phase 2 test harness and make configuration restore/save authoritative
 - [ ] 02-02-PLAN.md — Add mapped CSV import, issues reporting, and debounced autosave to pupil workflow
 - [ ] 02-03-PLAN.md — Add reload/failure regressions and verify the end-to-end setup-to-save journey
 
@@ -59,9 +59,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Improve optimizer request validation and error modeling in the Python API
-- [ ] 03-02: Redesign results presentation around names, summaries, and constraint signals
-- [ ] 03-03: Add explainability output and regression fixtures for solver behavior
+- [ ] 03-01-PLAN.md — Improve optimizer request validation and error modeling in the Python API
+- [ ] 03-02-PLAN.md — Redesign results presentation around names, summaries, and constraint signals
+- [ ] 03-03-PLAN.md — Add explainability output and regression fixtures for solver behavior
 
 ### Phase 4: Durable Class Editing
 **Goal**: Make manual class editing a persistent part of the product instead of an ephemeral client-side step.
@@ -101,7 +101,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Secure Data Foundation | 3/3 | Complete | 2026-03-19 |
-| 2. Reliable Project Workflow | 0/3 | Not started | - |
+| 2. Reliable Project Workflow | 1/3 | In Progress | - |
 | 3. Trustworthy Optimization Results | 0/3 | Not started | - |
 | 4. Durable Class Editing | 0/3 | Not started | - |
 | 5. Polish and Release Readiness | 0/3 | Not started | - |
