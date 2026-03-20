@@ -60,7 +60,8 @@ export default function Configuration() {
       return;
     }
 
-    const cached = readConfigurationCache(projectId);
+    const currentProjectId = projectId;
+    const cached = readConfigurationCache(currentProjectId);
     if (cached) {
       setForm(cached);
     } else {
@@ -74,7 +75,7 @@ export default function Configuration() {
       setSaveState("loading");
 
       try {
-        const restoredForm = await loadProjectConstraints(projectId);
+        const restoredForm = await loadProjectConstraints(currentProjectId);
         if (!active) {
           return;
         }
@@ -83,8 +84,10 @@ export default function Configuration() {
           restoredForm === DEFAULT_CONSTRAINTS && cached ? cached : restoredForm;
 
         setForm(nextForm);
-        writeConfigurationCache(projectId, nextForm);
-        setSaveState(validateConstraintForm(projectId, nextForm).length > 0 ? "blocked" : "saved");
+        writeConfigurationCache(currentProjectId, nextForm);
+        setSaveState(
+          validateConstraintForm(currentProjectId, nextForm).length > 0 ? "blocked" : "saved"
+        );
       } catch (error) {
         if (!active) {
           return;
