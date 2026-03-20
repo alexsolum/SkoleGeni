@@ -235,6 +235,7 @@ export function DraggablePupilCard({
       {...listeners}
       title={tooltip}
       data-red-card={hardViolations.length > 0 ? "true" : "false"}
+      data-highlighted={highlighted ? "true" : "false"}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -276,6 +277,7 @@ export default function ClassEditor() {
   const [optimizerAssignment, setOptimizerAssignment] = useState<string[][]>([]);
   const [optimizerScoreBaseline, setOptimizerScoreBaseline] = useState<Score | null>(null);
   const [score, setScore] = useState<Score | null>(null);
+  const [hoveredIssuePupilId, setHoveredIssuePupilId] = useState<string | null>(null);
   const [resetting, setResetting] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const lastPersistedAssignmentKeyRef = useRef("");
@@ -472,6 +474,20 @@ export default function ClassEditor() {
 
     return SCORE_LABELS.filter(({ key }) => optimizerScoreBaseline[key] - validation.scores[key] >= SCORE_DROP_THRESHOLD);
   }, [optimizerScoreBaseline, validation.scores]);
+  const sidebarIssues = useMemo(
+    () =>
+      validation.violations.flatMap((violation) => {
+        const pupilIds = violation.pupilId ? [violation.pupilId] : violation.pupilIds ?? [];
+        return pupilIds.map((pupilId) => ({
+          id: `${violation.code}-${violation.classIndex}-${pupilId}`,
+          pupilId,
+          pupilName: pupilsById.get(pupilId)?.name ?? pupilId,
+          rule: violation.rule,
+          message: violation.message
+        }));
+      }),
+    [pupilsById, validation.violations]
+  );
 
   useEffect(() => {
     if (loading || assignment.length === 0) {
@@ -667,6 +683,9 @@ export default function ClassEditor() {
               {saveState === "error" && "Save failed"}
             </div>
           </div>
+          <div className="mr-auto rounded-full border border-red-200 bg-red-50 px-3 py-1 font-mono text-xs text-red-700">
+            Conflicts: {sidebarIssues.length}
+          </div>
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -717,20 +736,57 @@ export default function ClassEditor() {
           ) : null}
         </div>
 
-        <div className="mt-4 overflow-x-auto">
-          <DndContext onDragEnd={onDragEnd}>
-            <div className="flex gap-4">
-              {assignment.map((groupClass, classIndex) => (
-                <ClassColumn
-                  key={classIndex}
-                  classIndex={classIndex}
-                  pupilIds={groupClass}
-                  pupilsById={pupilsById}
-                  violationsByPupilId={validation.violationsByPupilId}
-                />
-              ))}
+        <div className="mt-4 flex items-start gap-4">
+          <div className="min-w-0 flex-1 overflow-x-auto">
+            <DndContext onDragEnd={onDragEnd}>
+              <div className="flex gap-4">
+                {assignment.map((groupClass, classIndex) => (
+                  <ClassColumn
+                    key={classIndex}
+                    classIndex={classIndex}
+                    pupilIds={groupClass}
+                    pupilsById={pupilsById}
+                    violationsByPupilId={validation.violationsByPupilId}
+                    highlightedPupilId={hoveredIssuePupilId}
+                  />
+                ))}
+              </div>
+            </DndContext>
+          </div>
+          <aside className="sticky top-6 w-[320px] shrink-0 rounded-[4px] border border-muted/50 bg-surface p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="font-heading font-bold text-primary">Manual Issues</div>
+                <div className="mt-1 font-mono text-xs text-muted">Hover an item to find the affected pupil.</div>
+              </div>
+              <div className="rounded-full border border-red-200 bg-red-50 px-2 py-1 font-mono text-[11px] text-red-700">
+                {sidebarIssues.length}
+              </div>
             </div>
-          </DndContext>
+            {sidebarIssues.length > 0 ? (
+              <div className="mt-4 space-y-2">
+                {sidebarIssues.map((issue) => (
+                  <button
+                    key={issue.id}
+                    type="button"
+                    className="block w-full rounded-[4px] border border-muted/50 bg-background/40 p-3 text-left hover:border-accent hover:bg-background"
+                    onMouseEnter={() => setHoveredIssuePupilId(issue.pupilId)}
+                    onMouseLeave={() => setHoveredIssuePupilId(null)}
+                    onFocus={() => setHoveredIssuePupilId(issue.pupilId)}
+                    onBlur={() => setHoveredIssuePupilId(null)}
+                  >
+                    <div className="font-heading text-sm font-bold text-primary">{issue.pupilName}</div>
+                    <div className="mt-1 font-mono text-[11px] uppercase tracking-[0.2em] text-red-700">{issue.rule}</div>
+                    <div className="mt-2 text-xs text-muted">{issue.message}</div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-4 rounded-[4px] border border-dashed border-muted/50 p-3 text-sm text-muted">
+                No manual issues in the current roster.
+              </div>
+            )}
+          </aside>
         </div>
       </div>
     </div>
