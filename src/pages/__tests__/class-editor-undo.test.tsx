@@ -22,6 +22,7 @@ type PupilRow = {
   origin_school: string;
   needs: string;
   zone: string;
+  created_at?: string;
 };
 
 type ChemistryRow = {
@@ -75,12 +76,29 @@ vi.mock("../../lib/supabase", () => ({
 
       if (table === "pupils") {
         return {
-          select: vi.fn(() => ({
-            eq: vi.fn(async () => ({
-              data: store.pupils,
-              error: null
-            }))
-          }))
+          select: vi.fn((columns: string) => {
+            if (columns === "created_at") {
+              return {
+                eq: vi.fn(() => ({
+                  order: vi.fn(() => ({
+                    limit: vi.fn(() => ({
+                      maybeSingle: vi.fn(async () => ({
+                        data: store.pupils.length > 0 ? { created_at: store.pupils[0].created_at ?? null } : null,
+                        error: null
+                      }))
+                    }))
+                  }))
+                }))
+              };
+            }
+
+            return {
+              eq: vi.fn(async () => ({
+                data: store.pupils,
+                error: null
+              }))
+            };
+          })
         };
       }
 
@@ -176,7 +194,8 @@ beforeEach(() => {
       gender: "Female",
       origin_school: "West",
       needs: "Math",
-      zone: "Zone B"
+      zone: "Zone B",
+      created_at: "2026-03-20T12:00:00.000Z"
     }
   ];
   store.chemistry = [];

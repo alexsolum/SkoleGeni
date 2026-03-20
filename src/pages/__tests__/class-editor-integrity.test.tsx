@@ -1,8 +1,8 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import ClassEditor from "../ClassEditor";
-import { clearEditorDraft, useEditorStore } from "../../lib/editorStore";
+import { clearEditorDraft, EDITOR_STORAGE_NAME, useEditorStore } from "../../lib/editorStore";
 
 type ConstraintRow = {
   min_class_size: number;
@@ -30,17 +30,31 @@ type ChemistryRow = {
   relationship: "positive" | "negative";
 };
 
+type AssignmentRow = {
+  assignment: string[][];
+  score_json: {
+    overall: number;
+    genderBalance: number;
+    originMix: number;
+    needsBalance: number;
+    locationBalance: number;
+    chemistry: number;
+  } | null;
+  updated_at: string;
+};
+
+const { toastErrorMock, toastSuccessMock } = vi.hoisted(() => ({
+  toastErrorMock: vi.fn(),
+  toastSuccessMock: vi.fn()
+}));
+
 const store = vi.hoisted(() => ({
   constraints: null as ConstraintRow | null,
   pupils: [] as PupilRow[],
   chemistry: [] as ChemistryRow[],
-  assignment: null as {
-    assignment: string[][];
-    score_json: null;
-    updated_at: string;
-  } | null,
+  assignment: null as AssignmentRow | null,
   optimizerRun: null as { result_json: { classes: Array<{ classIndex: number; pupilIds: string[] }> } } | null,
-  upsertMock: vi.fn()
+  deleteAssignmentMock: vi.fn(async () => ({ error: null }))
 }));
 
 vi.mock("@dnd-kit/core", () => ({
@@ -123,9 +137,16 @@ vi.mock("../../lib/supabase", () => ({
               }))
             }))
           })),
-          upsert: store.upsertMock,
           delete: vi.fn(() => ({
-            eq: vi.fn(async () => ({ error: null }))
+            eq: store.deleteAssignmentMock
+          })),
+          upsert: vi.fn(() => ({
+            select: vi.fn(() => ({
+              maybeSingle: vi.fn(async () => ({
+                data: { updated_at: "2026-03-20T12:10:00.000Z" },
+                error: null
+              }))
+            }))
           }))
         };
       }
@@ -154,8 +175,8 @@ vi.mock("../../lib/supabase", () => ({
 
 vi.mock("react-hot-toast", () => ({
   default: {
-    error: vi.fn(),
-    success: vi.fn()
+    error: toastErrorMock,
+    success: toastSuccessMock
   }
 }));
 
@@ -187,7 +208,7 @@ beforeEach(() => {
       origin_school: "North",
       needs: "Reading",
       zone: "Zone A",
-      created_at: "2026-03-20T10:00:00.000Z"
+      created_at: "2026-03-20T12:00:00.000Z"
     },
     {
       id: "pupil-2",
@@ -200,7 +221,18 @@ beforeEach(() => {
     }
   ];
   store.chemistry = [];
-  store.assignment = null;
+  store.assignment = {
+    assignment: [["pupil-2"], ["pupil-1"]],
+    score_json: {
+      overall: 0.1,
+      genderBalance: 0.1,
+      originMix: 0.1,
+      needsBalance: 0.1,
+      locationBalance: 0.1,
+      chemistry: 0.1
+    },
+    updated_at: "2026-03-20T10:00:00.000Z"
+  };
   store.optimizerRun = {
     result_json: {
       classes: [
@@ -209,58 +241,29 @@ beforeEach(() => {
       ]
     }
   };
-  store.upsertMock = vi.fn(() => ({
-    select: vi.fn(() => ({
-      maybeSingle: vi.fn(async () => ({
-        data: { updated_at: "2026-03-20T12:00:00.000Z" },
-        error: null
-      }))
-    }))
-  }));
+  store.deleteAssignmentMock = vi.fn(async () => ({ error: null }));
+  toastErrorMock.mockReset();
+  toastSuccessMock.mockReset();
 
   clearEditorDraft();
   window.sessionStorage.clear();
+  useEditorStore
+    .getState()
+    .initialize("project-1", [["pupil-2"], ["pupil-1"]], {
+      lastSaved: "2026-03-20T10:00:00.000Z",
+      timestamp: Date.parse("2026-03-20T11:00:00.000Z")
+    });
 });
 
-afterEach(() => {
-  vi.useRealTimers();
-});
-
-it("debounces manual edit autosaves for 2000 ms and only marks saved after the upsert completes", async () => {
+it("clears saved and session manual edits when pupil data is newer than the draft state", async () => {
   renderEditor();
 
   await waitFor(() => {
-    expect(useEditorStore.getState().assignment).toEqual([["pupil-1"], ["pupil-2"]]);
+    expect(store.deleteAssignmentMock).toHaveBeenCalledWith("project_id", "project-1");
   });
 
-  vi.useFakeTimers();
-
-  act(() => {
-    useEditorStore.getState().setAssignment([["pupil-2"], ["pupil-1"]]);
-  });
-
-  expect(screen.getByText("Saving...")).toBeInTheDocument();
-  expect(store.upsertMock).not.toHaveBeenCalled();
-
-  await act(async () => {
-    vi.advanceTimersByTime(1999);
-  });
-  expect(store.upsertMock).not.toHaveBeenCalled();
-
-  await act(async () => {
-    vi.advanceTimersByTime(1);
-    await Promise.resolve();
-  });
-
-  expect(store.upsertMock).toHaveBeenCalledWith(
-    {
-      project_id: "project-1",
-      assignment: [["pupil-2"], ["pupil-1"]],
-      score_json: expect.objectContaining({
-        overall: expect.any(Number)
-      })
-    },
-    { onConflict: "project_id" }
-  );
-  expect(screen.getByText("All changes saved")).toBeInTheDocument();
+  expect(useEditorStore.getState().assignment).toEqual([["pupil-1"], ["pupil-2"]]);
+  expect(window.sessionStorage.getItem(EDITOR_STORAGE_NAME)).toContain('"assignment":[["pupil-1"],["pupil-2"]]');
+  expect(screen.getByText("Ada")).toBeInTheDocument();
+  expect(toastSuccessMock).toHaveBeenCalledWith("Manual edits cleared because pupil data has changed.");
 });

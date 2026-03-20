@@ -5,7 +5,7 @@ import { DndContext, type DragEndEvent, useDraggable, useDroppable } from "@dnd-
 import debounce from "lodash.debounce";
 
 import type { Chemistry, OptimizationConstraints, OptimizeResponse, Pupil, Score } from "../lib/api";
-import { useEditorStore, useEditorTemporalStore, readEditorDraft } from "../lib/editorStore";
+import { clearEditorDraft, useEditorStore, useEditorTemporalStore, readEditorDraft } from "../lib/editorStore";
 import { supabase } from "../lib/supabase";
 
 type ConstraintsRow = {
@@ -31,6 +31,10 @@ type PupilsDbRow = {
   origin_school: string;
   needs: string;
   zone: string;
+};
+
+type PupilTimestampRow = {
+  created_at: string;
 };
 
 type RosterAssignmentRow = {
@@ -289,9 +293,16 @@ export default function ClassEditor() {
 
       setLoading(true);
 
-      const [constraintsResult, pupilsResult, chemistryResult, savedAssignmentResult, runResult] = await Promise.all([
+      const [constraintsResult, pupilsResult, latestPupilResult, chemistryResult, savedAssignmentResult, runResult] = await Promise.all([
         supabase.from("project_constraints").select("*").eq("project_id", projectId).maybeSingle<ConstraintsRow>(),
         supabase.from("pupils").select("id,name,gender,origin_school,needs,zone,project_id").eq("project_id", projectId),
+        supabase
+          .from("pupils")
+          .select("created_at")
+          .eq("project_id", projectId)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle<PupilTimestampRow>(),
         supabase.from("chemistry_links").select("from_pupil_id,to_pupil_id,relationship").eq("project_id", projectId),
         supabase
           .from("roster_assignments")
@@ -333,6 +344,9 @@ export default function ClassEditor() {
       if (pupilsResult.error) {
         toast.error("Failed to load pupils.");
       }
+      if (latestPupilResult.error) {
+        toast.error("Failed to check pupil change status.");
+      }
 
       const nextChemistry = mapChemistryRows((chemistryResult.data ?? []) as ChemistryRow[]);
       if (chemistryResult.error) {
@@ -343,6 +357,7 @@ export default function ClassEditor() {
       const optimizerBaseline = getOptimizerAssignment(optimizerRun);
       const savedAssignment = savedAssignmentResult.data?.assignment ?? null;
       const savedTimestamp = parseSavedTimestamp(savedAssignmentResult.data?.updated_at);
+      const latestPupilTimestamp = parseSavedTimestamp(latestPupilResult.data?.created_at);
       const localDraft = readEditorDraft(projectId);
       const localTimestamp = localDraft?.timestamp ?? 0;
 
@@ -359,8 +374,33 @@ export default function ClassEditor() {
       let nextLastSaved: string | null = null;
       let nextTimestamp = localTimestamp || Date.now();
       let nextSaveState: "idle" | "saved" = "idle";
+      const hasManualDraftState = savedTimestamp > 0 || localTimestamp > 0;
+      const shouldInvalidateManualEdits =
+        hasManualDraftState && latestPupilTimestamp > Math.max(savedTimestamp, localTimestamp);
 
-      if (localDraft && (savedTimestamp === 0 || localTimestamp > savedTimestamp)) {
+      if (shouldInvalidateManualEdits) {
+        if (savedAssignmentResult.data) {
+          const { error: clearSavedError } = await supabase.from("roster_assignments").delete().eq("project_id", projectId);
+          if (clearSavedError) {
+            toast.error("Failed to clear outdated manual edits.");
+          }
+        }
+
+        clearEditorDraft();
+        nextAssignment = optimizerBaseline;
+        nextScore =
+          optimizerBaseline.length > 0
+            ? computeQuickScore({
+                pupilsById: mappedPupils,
+                classes: optimizerBaseline,
+                constraints: nextConstraints,
+                chemistry: nextChemistry
+              })
+            : null;
+        nextLastSaved = null;
+        nextTimestamp = Date.now();
+        toast.success("Manual edits cleared because pupil data has changed.");
+      } else if (localDraft && (savedTimestamp === 0 || localTimestamp > savedTimestamp)) {
         nextAssignment = localDraft.assignment;
         nextScore = computeQuickScore({
           pupilsById: mappedPupils,
