@@ -177,6 +177,7 @@ function ClassColumn({
         "w-[320px] min-w-[320px] rounded-[4px] border border-muted/50 bg-background/30 p-3",
         isOver ? "outline outline-2 outline-accent" : ""
       ].join(" ")}
+      data-testid={`class-dropzone-${classIndex}`}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="font-heading text-sm font-bold text-primary">Class {classIndex + 1}</div>
@@ -237,6 +238,7 @@ export function DraggablePupilCard({
       title={tooltip}
       data-red-card={hardViolations.length > 0 ? "true" : "false"}
       data-highlighted={highlighted ? "true" : "false"}
+      data-testid={`pupil-card-${pupil.id}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
