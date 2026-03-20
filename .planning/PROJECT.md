@@ -23,12 +23,14 @@ School staff can generate balanced, defensible class rosters quickly without los
 - ✓ User can manually drag pupils between classes in a class editor — existing MVP
 - ✓ Authorized staff access to roster data is now enforced through owner-based project access and RLS — validated in Phase 1
 - ✓ Roster saves no longer rely on destructive browser-side replace-all writes — validated in Phase 1
+- ✓ User can run the optimizer and receive a clear success or infeasibility outcome instead of a generic failure — validated in Phase 3
+- ✓ User can review generated classes using pupil names and class summaries rather than opaque identifiers — validated in Phase 3
+- ✓ User can understand optimizer tradeoffs and weakest-class highlights in the results UI — validated in Phase 3
 
 ### Active
 
 - [ ] Polish the existing five-screen workflow so the product feels coherent and production-ready
 - [ ] Close MVP gaps where data handling, persistence, and output clarity are still weak
-- [ ] Improve trust in the optimization flow through better validation, safer persistence, and clearer results
 - [ ] Bring the UI into tighter alignment with the intended SkoleGeni design language and interaction model
 - [ ] Add the minimum testing and verification needed to make further iteration safer
 
@@ -48,6 +50,8 @@ This project should therefore be planned as a brownfield product-shaping effort:
 
 Phase 1 established the security and persistence baseline for the rest of the roadmap. The product now uses authenticated ownership for project access, a safer trusted boundary for multi-step roster saves, and a server-backed optimizer path based on saved project state.
 
+Phase 3 completed the optimization trust pass. Optimizer runs now return structured diagnostics for infeasible requests, results render with real pupil names and explainability details, and the live local stack is verified against the real Supabase-backed project flow.
+
 ## Constraints
 
 - **Platform**: Desktop-first only — product and design docs do not target mobile support
@@ -66,6 +70,7 @@ Phase 1 established the security and persistence baseline for the rest of the ro
 | Preserve the current solver-centered product model | The optimizer is core to the product value and already exists in the codebase | ✓ Good |
 | Keep browser reads direct under RLS and move risky multi-step writes behind a trusted boundary | This improves safety materially without forcing a full backend rewrite in Phase 1 | ✓ Good |
 | Use single authenticated staff ownership in Phase 1 while leaving room for future team concepts | This matches the immediate access model while preserving future collaboration paths | ✓ Good |
+| Present optimizer outcomes with explicit diagnostics and explainability metadata | Staff need to understand infeasible requests, score tradeoffs, and weak classes before trusting generated rosters | ✓ Good |
 
 ---
-*Last updated: 2026-03-19 after Phase 1 completion*
+*Last updated: 2026-03-20 after Phase 3 completion*
