@@ -85,7 +85,7 @@ it("blocks save when cached constraints are invalid and surfaces the first valid
   renderConfiguration();
 
   await waitFor(() => {
-    expect(screen.getByText("All changes saved")).toBeInTheDocument();
+    expect(screen.getByText("Unsaved validation errors")).toBeInTheDocument();
   });
 
   await userEvent.click(screen.getByRole("button", { name: "Next: Pupil Data →" }));
@@ -104,7 +104,7 @@ it("saves valid constraints, syncs the session cache, and navigates to pupil ent
     expect(screen.getByText("All changes saved")).toBeInTheDocument();
   });
 
-  await userEvent.click(screen.getByLabelText("Strict (exactly equal)"));
+  await userEvent.click(screen.getByLabelText("Gender Balance: Strict (exactly equal)"));
   await userEvent.click(screen.getByRole("button", { name: "Next: Pupil Data →" }));
 
   await waitFor(() => {

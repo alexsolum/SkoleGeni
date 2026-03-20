@@ -91,10 +91,10 @@ it("replaces default values with saved database constraints after load", async (
 
   expect(screen.getByText("Min: 23")).toBeInTheDocument();
   expect(screen.getByText("Max: 29")).toBeInTheDocument();
-  expect(screen.getByLabelText("Strict (exactly equal)")).toBeChecked();
-  expect(screen.getByLabelText("Flexible")).toBeChecked();
-  expect(screen.getByLabelText("Not considered")).toBeChecked();
-  expect(screen.getByLabelText("Strict")).toBeChecked();
+  expect(screen.getByLabelText("Gender Balance: Strict (exactly equal)")).toBeChecked();
+  expect(screen.getByLabelText("Origin School Mix: Flexible")).toBeChecked();
+  expect(screen.getByLabelText("Location / Zone Constraints: Not considered")).toBeChecked();
+  expect(screen.getByLabelText("Academic Needs Distribution: Strict")).toBeChecked();
 });
 
 it("shows a blocking retry state and prevents navigation when loading saved setup fails", async () => {
