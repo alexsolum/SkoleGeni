@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { CsvMappingModal } from "../components/pupil/CsvMappingModal";
 import { IssuesPanel } from "../components/pupil/IssuesPanel";
+import { WorkflowStatusHeader } from "../components/project/WorkflowStatusHeader";
 import {
   optimizeProject,
   saveProjectRosterState,
@@ -12,12 +13,17 @@ import {
   type OptimizationConstraints,
   type Pupil
 } from "../lib/api";
+import type { WorkflowSaveState } from "../lib/projectWorkflow";
 import {
   autoDetectFieldMap,
   buildImportPreview,
+  clearRosterDraft,
   collectPupilIssues,
+  createRosterAutosave,
   detectCsvHeaders,
+  readRosterDraft,
   summarizeFailedImports,
+  writeRosterDraft,
   type ExpectedPupilField,
   type FailedImportSummary,
   type PupilFieldMap,
@@ -78,6 +84,24 @@ function mapDatabasePupil(row: PupilRow): Pupil {
   };
 }
 
+function mergeDraftPupils(savedPupils: Pupil[], draftPupils: Pupil[] | null) {
+  if (!draftPupils || draftPupils.length === 0) {
+    return savedPupils;
+  }
+
+  const savedById = new Map(savedPupils.map((pupil) => [pupil.id, pupil]));
+  const draftById = new Map(draftPupils.map((pupil) => [pupil.id, pupil]));
+  const merged: Pupil[] = savedPupils.map((savedPupil) => draftById.get(savedPupil.id) ?? savedPupil);
+
+  draftPupils.forEach((draftPupil) => {
+    if (!savedById.has(draftPupil.id)) {
+      merged.push(draftPupil);
+    }
+  });
+
+  return merged;
+}
+
 export default function PupilData() {
   const navigate = useNavigate();
   const { projectId } = useParams();
@@ -86,8 +110,8 @@ export default function PupilData() {
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [chemistry, setChemistry] = useState<Chemistry>({ positive: [], negative: [] });
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [optimizerLoading, setOptimizerLoading] = useState(false);
+  const [saveState, setSaveState] = useState<WorkflowSaveState>("loading");
+  const [hasQueuedSave, setHasQueuedSave] = useState(false);
   const [failedImports, setFailedImports] = useState<FailedImportSummary[]>([]);
   const [pendingImport, setPendingImport] = useState<PendingImportState | null>(null);
   const [touchedFields, setTouchedFields] = useState<Record<string, true>>({});
@@ -95,12 +119,64 @@ export default function PupilData() {
     null
   );
   const [chemSearch, setChemSearch] = useState("");
+  const [optimizerLoading, setOptimizerLoading] = useState(false);
+
+  const pupilsRef = useRef<Pupil[]>([]);
+  const chemistryRef = useRef<Chemistry>({ positive: [], negative: [] });
+  const autosaveRef = useRef<ReturnType<typeof createRosterAutosave> | null>(null);
+  const hydrationCompleteRef = useRef(false);
+  const pendingSaveReasonRef = useRef<"autosave" | "retry" | null>(null);
 
   const positiveCount = chemistry.positive.length;
   const negativeCount = chemistry.negative.length;
 
   const pupilById = useMemo(() => new Map(pupils.map((pupil) => [pupil.id, pupil])), [pupils]);
   const issues = useMemo(() => collectPupilIssues(pupils, chemistry), [pupils, chemistry]);
+  const hasBlockingIssues = issues.errors.length > 0;
+
+  useEffect(() => {
+    pupilsRef.current = pupils;
+  }, [pupils]);
+
+  useEffect(() => {
+    chemistryRef.current = chemistry;
+  }, [chemistry]);
+
+  useEffect(() => {
+    if (!projectId) {
+      setSaveState("blocked");
+      return;
+    }
+
+    autosaveRef.current?.cancel();
+    autosaveRef.current = createRosterAutosave({
+      delayMs: 2000,
+      onSave: async () => {
+        await saveProjectRosterState(projectId, pupilsRef.current, chemistryRef.current);
+        clearRosterDraft(projectId);
+      },
+      onStateChange: (state) => {
+        if (state === "queued") {
+          setHasQueuedSave(true);
+          setSaveState("idle");
+        } else if (state === "saving") {
+          setHasQueuedSave(false);
+          setSaveState("saving");
+        } else if (state === "saved") {
+          setHasQueuedSave(false);
+          setSaveState("saved");
+        } else if (state === "error") {
+          setHasQueuedSave(false);
+          setSaveState("error");
+          writeRosterDraft(projectId, pupilsRef.current, chemistryRef.current);
+        }
+      }
+    });
+
+    return () => {
+      autosaveRef.current?.cancel();
+    };
+  }, [projectId]);
 
   useEffect(() => {
     let mounted = true;
@@ -111,6 +187,16 @@ export default function PupilData() {
       }
 
       setLoading(true);
+      setSaveState("loading");
+      hydrationCompleteRef.current = false;
+
+      const draft = readRosterDraft(projectId);
+      if (draft.pupils) {
+        setPupils(draft.pupils);
+      }
+      if (draft.chemistry) {
+        setChemistry(draft.chemistry);
+      }
 
       const { data: cData, error: cError } = await supabase
         .from("project_constraints")
@@ -145,10 +231,9 @@ export default function PupilData() {
         return;
       }
 
+      const savedPupils = pError ? [] : ((pData ?? []) as PupilRow[]).map(mapDatabasePupil);
       if (pError) {
         toast.error("Failed to load pupils.");
-      } else {
-        setPupils(((pData ?? []) as PupilRow[]).map(mapDatabasePupil));
       }
 
       const { data: chData, error: chError } = await supabase
@@ -160,27 +245,59 @@ export default function PupilData() {
         return;
       }
 
+      const savedChemistry = chError
+        ? { positive: [], negative: [] }
+        : {
+            positive: ((chData ?? []) as ChemistryRow[])
+              .filter((row) => row.relationship === "positive")
+              .map((row) => [row.from_pupil_id, row.to_pupil_id] as [string, string]),
+            negative: ((chData ?? []) as ChemistryRow[])
+              .filter((row) => row.relationship === "negative")
+              .map((row) => [row.from_pupil_id, row.to_pupil_id] as [string, string])
+          };
+
       if (chError) {
         toast.error("Failed to load chemistry links.");
-      } else {
-        const rows = (chData ?? []) as ChemistryRow[];
-        setChemistry({
-          positive: rows
-            .filter((row) => row.relationship === "positive")
-            .map((row) => [row.from_pupil_id, row.to_pupil_id]),
-          negative: rows
-            .filter((row) => row.relationship === "negative")
-            .map((row) => [row.from_pupil_id, row.to_pupil_id])
-        });
       }
 
+      setPupils(mergeDraftPupils(savedPupils, draft.pupils));
+      setChemistry(draft.chemistry ?? savedChemistry);
       setLoading(false);
+      hydrationCompleteRef.current = true;
+      setSaveState(draft.pupils || draft.chemistry ? "blocked" : "saved");
     })();
 
     return () => {
       mounted = false;
     };
   }, [projectId]);
+
+  useEffect(() => {
+    if (!projectId || loading || !hydrationCompleteRef.current) {
+      return;
+    }
+
+    if (hasBlockingIssues) {
+      autosaveRef.current?.cancel();
+      setHasQueuedSave(false);
+      setSaveState("blocked");
+      writeRosterDraft(projectId, pupils, chemistry);
+      return;
+    }
+
+    if (pendingSaveReasonRef.current) {
+      pendingSaveReasonRef.current = null;
+      autosaveRef.current?.queue();
+    }
+  }, [chemistry, hasBlockingIssues, loading, projectId, pupils]);
+
+  function queueAutosave() {
+    if (!projectId || loading || !hydrationCompleteRef.current) {
+      return;
+    }
+
+    pendingSaveReasonRef.current = "autosave";
+  }
 
   function addBlankRow() {
     const id =
@@ -197,10 +314,20 @@ export default function PupilData() {
         zone: ""
       }
     ]);
+    queueAutosave();
   }
 
   function updatePupil(id: string, patch: Partial<Pupil>) {
     setPupils((rows) => rows.map((row) => (row.id === id ? { ...row, ...patch } : row)));
+    queueAutosave();
+  }
+
+  function updateChemistry(nextChemistry: Chemistry | ((current: Chemistry) => Chemistry)) {
+    setChemistry((current) => {
+      const resolved = typeof nextChemistry === "function" ? nextChemistry(current) : nextChemistry;
+      return resolved;
+    });
+    queueAutosave();
   }
 
   function touchField(pupilId: string, field: ExpectedPupilField) {
@@ -224,6 +351,7 @@ export default function PupilData() {
 
     if (preview.validRows.length > 0) {
       setPupils((current) => [...current, ...preview.validRows]);
+      queueAutosave();
     }
 
     setFailedImports(summarizeFailedImports(preview.failedRows));
@@ -259,29 +387,15 @@ export default function PupilData() {
     });
   }
 
-  function validateMandatory() {
-    if (issues.errors.length > 0) {
-      return issues.errors.map((issue) => issue.message);
-    }
-
-    if (pupils.length === 0) {
-      return ["Add at least one pupil."];
-    }
-
-    return [];
-  }
-
-  async function saveToSupabase() {
-    if (!projectId) {
+  async function retrySave() {
+    if (!projectId || hasBlockingIssues) {
       return;
     }
 
-    setSaving(true);
-
     try {
-      await saveProjectRosterState(projectId, pupils, chemistry);
-    } finally {
-      setSaving(false);
+      await autosaveRef.current?.retry();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Save failed.");
     }
   }
 
@@ -290,9 +404,11 @@ export default function PupilData() {
       return;
     }
 
-    setChemistry((current) => {
+    updateChemistry((current) => {
       const list = kind === "positive" ? current.positive : current.negative;
-      const pairExists = list.some(([existingFromId, existingToId]) => existingFromId === fromId && existingToId === toId);
+      const pairExists = list.some(
+        ([existingFromId, existingToId]) => existingFromId === fromId && existingToId === toId
+      );
       const nextList = pairExists ? list : [...list, [fromId, toId] as [string, string]];
 
       return kind === "positive"
@@ -306,16 +422,28 @@ export default function PupilData() {
       return;
     }
 
-    const errs = validateMandatory();
-    if (errs.length > 0) {
-      toast.error(errs[0]);
+    if (hasQueuedSave) {
+      try {
+        await autosaveRef.current?.flush();
+      } catch {
+        return;
+      }
+    }
+
+    if (
+      pupils.length === 0 ||
+      saveState === "saving" ||
+      hasQueuedSave ||
+      saveState === "error" ||
+      saveState === "blocked" ||
+      hasBlockingIssues
+    ) {
       return;
     }
 
     setOptimizerLoading(true);
 
     try {
-      await saveToSupabase();
       await new Promise((resolve) => setTimeout(resolve, 3000));
 
       const result = await optimizeProject(projectId);
@@ -353,6 +481,15 @@ export default function PupilData() {
       .filter((pupil) => pupil.name.toLowerCase().includes(query));
   }, [chemSearch, pupils, chemModalFor]);
 
+  const optimizerDisabled =
+    pupils.length === 0 ||
+    saveState === "saving" ||
+    hasQueuedSave ||
+    saveState === "error" ||
+    saveState === "blocked" ||
+    hasBlockingIssues ||
+    optimizerLoading;
+
   if (loading) {
     return (
       <div className="min-h-screen p-6">
@@ -376,12 +513,14 @@ export default function PupilData() {
             <button
               className="font-heading text-sm text-accent hover:underline"
               onClick={() => navigate(`/configure/${projectId}`)}
-              disabled={saving || optimizerLoading}
+              disabled={saveState === "saving" || optimizerLoading}
             >
               Edit Constraints
             </button>
           </div>
         </div>
+
+        {saveState !== "idle" && <WorkflowStatusHeader state={saveState} />}
 
         <div className="mt-6 rounded-[4px] border border-muted/50 bg-surface p-4">
           <div className="flex items-start justify-between gap-6">
@@ -407,14 +546,14 @@ export default function PupilData() {
                     }
                     event.currentTarget.value = "";
                   }}
-                  disabled={saving || optimizerLoading}
+                  disabled={saveState === "saving" || optimizerLoading}
                 />
               </label>
 
               <button
                 className="h-11 rounded-[4px] border border-muted bg-background px-4 text-sm font-heading font-bold text-primary hover:bg-background/70 disabled:opacity-60"
                 onClick={addBlankRow}
-                disabled={saving || optimizerLoading}
+                disabled={saveState === "saving" || optimizerLoading}
               >
                 Add Row
               </button>
@@ -449,7 +588,7 @@ export default function PupilData() {
                           onChange={(event) => updatePupil(pupil.id, { name: event.target.value })}
                           onBlur={() => touchField(pupil.id, "name")}
                           placeholder="Name"
-                          disabled={saving || optimizerLoading}
+                          disabled={saveState === "saving" || optimizerLoading}
                         />
                       </td>
                       <td className="border-b border-muted/30 p-2">
@@ -459,7 +598,7 @@ export default function PupilData() {
                           onChange={(event) => updatePupil(pupil.id, { originSchool: event.target.value })}
                           onBlur={() => touchField(pupil.id, "originSchool")}
                           placeholder="e.g. Oakridge Elem."
-                          disabled={saving || optimizerLoading}
+                          disabled={saveState === "saving" || optimizerLoading}
                         />
                       </td>
                       <td className="border-b border-muted/30 p-2">
@@ -467,7 +606,7 @@ export default function PupilData() {
                           className="w-full rounded-[4px] border border-muted/50 bg-transparent px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-accent"
                           value={pupil.gender}
                           onChange={(event) => updatePupil(pupil.id, { gender: event.target.value as Pupil["gender"] })}
-                          disabled={saving || optimizerLoading}
+                          disabled={saveState === "saving" || optimizerLoading}
                         >
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
@@ -481,7 +620,7 @@ export default function PupilData() {
                           onChange={(event) => updatePupil(pupil.id, { needs: event.target.value })}
                           onBlur={() => touchField(pupil.id, "needs")}
                           placeholder="e.g. Reading support"
-                          disabled={saving || optimizerLoading}
+                          disabled={saveState === "saving" || optimizerLoading}
                         />
                       </td>
                       <td className="border-b border-muted/30 p-2">
@@ -491,7 +630,7 @@ export default function PupilData() {
                           onChange={(event) => updatePupil(pupil.id, { zone: event.target.value })}
                           onBlur={() => touchField(pupil.id, "zone")}
                           placeholder="e.g. Zone A"
-                          disabled={saving || optimizerLoading}
+                          disabled={saveState === "saving" || optimizerLoading}
                         />
                       </td>
                       <td className="border-b border-muted/30 p-2">
@@ -502,7 +641,7 @@ export default function PupilData() {
                               setChemSearch("");
                               setChemModalFor({ pupilId: pupil.id, kind: "positive" });
                             }}
-                            disabled={saving || optimizerLoading}
+                            disabled={saveState === "saving" || optimizerLoading}
                             title="Positive chemistry (+)"
                           >
                             +
@@ -513,7 +652,7 @@ export default function PupilData() {
                               setChemSearch("");
                               setChemModalFor({ pupilId: pupil.id, kind: "negative" });
                             }}
-                            disabled={saving || optimizerLoading}
+                            disabled={saveState === "saving" || optimizerLoading}
                             title="Negative chemistry / do-not-match (-)"
                           >
                             -
@@ -537,11 +676,19 @@ export default function PupilData() {
             failedImports={failedImports}
           />
 
-          <div className="mt-5 flex items-center justify-end">
+          <div className="mt-5 flex items-center justify-end gap-3">
+            {saveState === "error" && (
+              <button
+                className="h-11 rounded-[4px] border border-muted bg-surface px-4 text-sm font-heading font-bold text-primary hover:bg-background"
+                onClick={retrySave}
+              >
+                Retry save
+              </button>
+            )}
             <button
               className="h-12 rounded-[4px] bg-accent px-6 text-sm font-heading font-bold text-surface disabled:cursor-not-allowed disabled:opacity-60"
               onClick={runOptimizer}
-              disabled={pupils.length === 0 || saving || optimizerLoading || issues.errors.length > 0}
+              disabled={optimizerDisabled}
             >
               {optimizerLoading ? "Running Optimizer..." : "Run Optimizer"}
             </button>

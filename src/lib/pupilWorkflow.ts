@@ -267,6 +267,71 @@ export function collectPupilIssues(pupils: Pupil[], chemistry: Chemistry): Pupil
 
 export type AutosaveState = "idle" | "queued" | "saving" | "saved" | "error" | "blocked";
 
+export const PUPIL_DRAFT_STORAGE_PREFIX = "skolegeni:pupil-draft:";
+export const CHEMISTRY_DRAFT_STORAGE_PREFIX = "skolegeni:chemistry-draft:";
+
+function getPupilDraftKey(projectId: string) {
+  return `${PUPIL_DRAFT_STORAGE_PREFIX}${projectId}`;
+}
+
+function getChemistryDraftKey(projectId: string) {
+  return `${CHEMISTRY_DRAFT_STORAGE_PREFIX}${projectId}`;
+}
+
+function normalizeDraftPupil(pupil: Pupil): Pupil {
+  return {
+    id: pupil.id,
+    name: pupil.name ?? "",
+    gender: pupil.gender ?? "Other",
+    originSchool: pupil.originSchool ?? "",
+    needs: pupil.needs ?? "",
+    zone: pupil.zone ?? ""
+  };
+}
+
+export function readRosterDraft(projectId: string) {
+  if (typeof window === "undefined") {
+    return {
+      pupils: null,
+      chemistry: null
+    };
+  }
+
+  const rawPupils = window.sessionStorage.getItem(getPupilDraftKey(projectId));
+  const rawChemistry = window.sessionStorage.getItem(getChemistryDraftKey(projectId));
+
+  try {
+    return {
+      pupils: rawPupils ? (JSON.parse(rawPupils) as Pupil[]).map(normalizeDraftPupil) : null,
+      chemistry: rawChemistry ? (JSON.parse(rawChemistry) as Chemistry) : null
+    };
+  } catch {
+    clearRosterDraft(projectId);
+    return {
+      pupils: null,
+      chemistry: null
+    };
+  }
+}
+
+export function writeRosterDraft(projectId: string, pupils: Pupil[], chemistry: Chemistry) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.setItem(getPupilDraftKey(projectId), JSON.stringify(pupils));
+  window.sessionStorage.setItem(getChemistryDraftKey(projectId), JSON.stringify(chemistry));
+}
+
+export function clearRosterDraft(projectId: string) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.removeItem(getPupilDraftKey(projectId));
+  window.sessionStorage.removeItem(getChemistryDraftKey(projectId));
+}
+
 export function createRosterAutosave({
   delayMs,
   onSave,
@@ -300,6 +365,11 @@ export function createRosterAutosave({
     queue() {
       emit("queued");
       debouncedSave();
+    },
+    async retry() {
+      emit("queued");
+      debouncedSave();
+      await debouncedSave.flush();
     },
     async flush() {
       if (currentState === "queued") {

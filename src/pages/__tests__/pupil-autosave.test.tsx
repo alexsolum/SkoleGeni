@@ -1,5 +1,5 @@
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import PupilData from "../PupilData";
@@ -100,8 +100,6 @@ async function waitForInitialLoad() {
 }
 
 beforeEach(() => {
-  vi.useFakeTimers();
-
   constraintsMaybeSingleMock.mockReset();
   pupilsOrderMock.mockReset();
   chemistryEqMock.mockReset();
@@ -138,18 +136,16 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  vi.runOnlyPendingTimers();
   vi.useRealTimers();
 });
 
 it("debounces roster saves for 2000 ms and disables the optimizer while a save is queued", async () => {
-  const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
   renderPupilData();
-
   await waitForInitialLoad();
+  vi.useFakeTimers();
 
   const nameInput = screen.getByDisplayValue("Jamie");
-  await user.type(nameInput, " Updated");
+  fireEvent.change(nameInput, { target: { value: "Jamie Updated" } });
 
   expect(saveProjectRosterStateMock).not.toHaveBeenCalled();
   expect(screen.getByRole("button", { name: "Run Optimizer" })).toBeDisabled();
@@ -161,43 +157,43 @@ it("debounces roster saves for 2000 ms and disables the optimizer while a save i
 
   await act(async () => {
     vi.advanceTimersByTime(1);
+    await Promise.resolve();
   });
 
-  await waitFor(() => {
-    expect(saveProjectRosterStateMock).toHaveBeenCalledTimes(1);
-  });
+  expect(saveProjectRosterStateMock).toHaveBeenCalledTimes(1);
 });
 
 it("shows a failed save state with retry while keeping local edits on screen", async () => {
-  const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
   saveProjectRosterStateMock.mockRejectedValueOnce(new Error("network down"));
 
   renderPupilData();
   await waitForInitialLoad();
+  vi.useFakeTimers();
 
   const nameInput = screen.getByDisplayValue("Jamie");
-  await user.clear(nameInput);
-  await user.type(nameInput, "Jamie Retry");
+  fireEvent.change(nameInput, { target: { value: "Jamie Retry" } });
 
   await act(async () => {
     vi.advanceTimersByTime(2000);
+    await Promise.resolve();
   });
 
-  expect(await screen.findByText("Save failed")).toBeInTheDocument();
+  expect(screen.getByText("Save failed")).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Retry save" })).toBeInTheDocument();
   expect(screen.getByDisplayValue("Jamie Retry")).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Run Optimizer" })).toBeDisabled();
 
   saveProjectRosterStateMock.mockResolvedValueOnce(undefined);
-  await user.click(screen.getByRole("button", { name: "Retry save" }));
-
-  await waitFor(() => {
-    expect(screen.getByText("All changes saved")).toBeInTheDocument();
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Retry save" }));
+    await Promise.resolve();
   });
+
+  expect(screen.getByText("All changes saved")).toBeInTheDocument();
 });
 
 it("stores blocked validation edits in session draft storage and restores them after remount", async () => {
-  const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+  const user = userEvent.setup();
   const firstRender = renderPupilData();
 
   await waitForInitialLoad();
@@ -222,40 +218,36 @@ it("stores blocked validation edits in session draft storage and restores them a
 });
 
 it("shows the shared saved banner after a successful autosave without blocking continued edits", async () => {
-  const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
   renderPupilData();
-
   await waitForInitialLoad();
+  vi.useFakeTimers();
 
   const nameInput = screen.getByDisplayValue("Jamie");
-  await user.type(nameInput, " Saved");
+  fireEvent.change(nameInput, { target: { value: "Jamie Saved" } });
 
   await act(async () => {
     vi.advanceTimersByTime(2000);
+    await Promise.resolve();
   });
 
-  await waitFor(() => {
-    expect(screen.getByText("All changes saved")).toBeInTheDocument();
-  });
+  expect(screen.getByText("All changes saved")).toBeInTheDocument();
 
   expect(screen.getByRole("button", { name: "Edit Constraints" })).not.toBeDisabled();
 });
 
 it("keeps the optimizer disabled for blocked, queued, saving, and failed save states", async () => {
-  const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
   renderPupilData();
-
   await waitForInitialLoad();
+  vi.useFakeTimers();
 
   const runOptimizerButton = screen.getByRole("button", { name: "Run Optimizer" });
 
-  await user.click(screen.getByRole("button", { name: "Add Row" }));
+  fireEvent.click(screen.getByRole("button", { name: "Add Row" }));
   expect(runOptimizerButton).toBeDisabled();
 
   const nameInputs = screen.getAllByPlaceholderText("Name");
-  await user.type(nameInputs[1], "Queued Save");
-  await user.clear(nameInputs[0]);
-  await user.type(nameInputs[0], "Jamie Queue");
+  fireEvent.change(nameInputs[1], { target: { value: "Queued Save" } });
+  fireEvent.change(nameInputs[0], { target: { value: "Jamie Queue" } });
 
   expect(runOptimizerButton).toBeDisabled();
 });

@@ -85,7 +85,7 @@ vi.mock("react-hot-toast", () => ({
 
 function renderPupilData() {
   return render(
-    <MemoryRouter initialEntries={["/pupils/project-1"]}>
+    <MemoryRouter initialEntries={["/pupils/project-import"]}>
       <Routes>
         <Route path="/pupils/:projectId" element={<PupilData />} />
       </Routes>
@@ -251,12 +251,13 @@ it("keeps validation feedback synchronized between the grid and the issues panel
   renderPupilData();
 
   await waitFor(() => {
-    expect(screen.getByText("Upload CSV or add row manually")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add Row" })).toBeInTheDocument();
   });
 
   await userEvent.click(screen.getByRole("button", { name: "Add Row" }));
 
-  const nameInput = screen.getByPlaceholderText("Name");
+  const nameInputs = screen.getAllByPlaceholderText("Name");
+  const nameInput = nameInputs[nameInputs.length - 1];
   await userEvent.click(nameInput);
   await userEvent.tab();
 
