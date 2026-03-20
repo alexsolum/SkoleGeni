@@ -247,6 +247,12 @@ export function ClassCard({
           ) : (
             pupils.map((pupil) => {
               const chemistryStatus = chemistryStatusByPupil.get(pupil.id);
+              const positiveNames = chemistryStatus?.positiveTargets.map(
+                (targetId) => pupilsById.get(targetId)?.name ?? targetId
+              );
+              const negativeNames = chemistryStatus?.negativeTargets.map(
+                (targetId) => pupilsById.get(targetId)?.name ?? targetId
+              );
 
               return (
                 <div
@@ -266,14 +272,14 @@ export function ClassCard({
                       <ChemistryBadge
                         tone="positive"
                         symbol="♥"
-                        title={`Positive chemistry satisfied with ${chemistryStatus.positiveTargets.join(", ")}`}
+                        title={`Positive chemistry satisfied with ${positiveNames?.join(", ")}`}
                       />
                     ) : null}
                     {chemistryStatus?.negativeViolation ? (
                       <ChemistryBadge
                         tone="negative"
                         symbol="●"
-                        title={`Negative chemistry conflict with ${chemistryStatus.negativeTargets.join(", ")}`}
+                        title={`Negative chemistry conflict with ${negativeNames?.join(", ")}`}
                       />
                     ) : null}
                   </div>
