@@ -114,20 +114,23 @@ it("opens a mapping modal when the csv is missing internal headers and imports o
     options.complete({
       data: [
         {
-          student_name: "Jamie",
-          origin_school: "North",
-          sex: "girl",
-          academic_needs: "Reading",
-          location_zone: "A"
+          student: "Jamie",
+          school: "North",
+          sex_value: "girl",
+          support: "Reading",
+          area: "A"
         },
         {
-          student_name: "",
-          origin_school: "North",
-          sex: "boy",
-          academic_needs: "Math",
-          location_zone: "B"
+          student: "",
+          school: "North",
+          sex_value: "boy",
+          support: "Math",
+          area: "B"
         }
-      ]
+      ],
+      meta: {
+        fields: ["student", "school", "sex_value", "support", "area"]
+      }
     });
   });
 
@@ -144,16 +147,16 @@ it("opens a mapping modal when the csv is missing internal headers and imports o
   expect(screen.getByRole("button", { name: "Apply Mapping" })).toBeInTheDocument();
 
   const nameSelect = screen.getByLabelText("name");
-  await userEvent.selectOptions(nameSelect, "student_name");
-  await userEvent.selectOptions(screen.getByLabelText("originSchool"), "origin_school");
-  await userEvent.selectOptions(screen.getByLabelText("gender"), "sex");
-  await userEvent.selectOptions(screen.getByLabelText("needs"), "academic_needs");
-  await userEvent.selectOptions(screen.getByLabelText("zone"), "location_zone");
+  await userEvent.selectOptions(nameSelect, "student");
+  await userEvent.selectOptions(screen.getByLabelText("originSchool"), "school");
+  await userEvent.selectOptions(screen.getByLabelText("gender"), "sex_value");
+  await userEvent.selectOptions(screen.getByLabelText("needs"), "support");
+  await userEvent.selectOptions(screen.getByLabelText("zone"), "area");
   await userEvent.click(screen.getByRole("button", { name: "Apply Mapping" }));
 
   expect(await screen.findByDisplayValue("Jamie")).toBeInTheDocument();
   expect(screen.getByText("Failed Imports")).toBeInTheDocument();
-  expect(screen.getByText(/Row 2/i)).toBeInTheDocument();
+  expect(screen.getByText(/Row 3/i)).toBeInTheDocument();
 });
 
 it("normalizes imported genders from common freeform values", () => {
@@ -230,7 +233,9 @@ it("flags duplicate pupils as blocking errors until an edited row becomes unique
   await userEvent.upload(screen.getByLabelText("Import CSV"), csvFile());
 
   expect(await screen.findByText("Errors")).toBeInTheDocument();
-  expect(screen.getByText(/Duplicate pupil row/i)).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.getAllByText(/Duplicate pupil row/i)).toHaveLength(2);
+  });
 
   const nameInputs = screen.getAllByPlaceholderText("Name");
   await userEvent.clear(nameInputs[1]);
