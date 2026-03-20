@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { DndContext, type DragEndEvent, useDraggable, useDroppable } from "@dnd-kit/core";
+import debounce from "lodash.debounce";
 
 import type { Chemistry, OptimizationConstraints, OptimizeResponse, Pupil, Score } from "../lib/api";
 import { useEditorStore, useEditorTemporalStore, readEditorDraft } from "../lib/editorStore";
@@ -259,6 +260,7 @@ export default function ClassEditor() {
   const assignment = useEditorStore((state) => state.assignment);
   const initialize = useEditorStore((state) => state.initialize);
   const setAssignment = useEditorStore((state) => state.setAssignment);
+  const setLastSaved = useEditorStore((state) => state.setLastSaved);
   const { undo, redo, canUndo, canRedo } = useEditorTemporalStore((state) => ({
     undo: state.undo,
     redo: state.redo,
@@ -274,6 +276,8 @@ export default function ClassEditor() {
   const [optimizerAssignment, setOptimizerAssignment] = useState<string[][]>([]);
   const [score, setScore] = useState<Score | null>(null);
   const [resetting, setResetting] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const lastPersistedAssignmentKeyRef = useRef("");
 
   useEffect(() => {
     let mounted = true;
@@ -354,6 +358,7 @@ export default function ClassEditor() {
           : null;
       let nextLastSaved: string | null = null;
       let nextTimestamp = localTimestamp || Date.now();
+      let nextSaveState: "idle" | "saved" = "idle";
 
       if (localDraft && (savedTimestamp === 0 || localTimestamp > savedTimestamp)) {
         nextAssignment = localDraft.assignment;
@@ -374,9 +379,10 @@ export default function ClassEditor() {
             classes: savedAssignment,
             constraints: nextConstraints,
             chemistry: nextChemistry
-          });
+        });
         nextLastSaved = savedAssignmentResult.data?.updated_at ?? null;
         nextTimestamp = savedTimestamp || Date.now();
+        nextSaveState = "saved";
       } else if (optimizerBaseline.length === 0) {
         toast.error("No results found.");
         nextAssignment = [];
@@ -390,7 +396,9 @@ export default function ClassEditor() {
       setNegativeSet(buildNegativeSet(nextChemistry));
       setOptimizerAssignment(optimizerBaseline);
       initialize(projectId, nextAssignment, { lastSaved: nextLastSaved, timestamp: nextTimestamp });
+      lastPersistedAssignmentKeyRef.current = JSON.stringify(nextAssignment);
       setScore(nextScore);
+      setSaveState(nextSaveState);
       setLoading(false);
     })();
 
@@ -415,6 +423,73 @@ export default function ClassEditor() {
       })
     );
   }, [assignment, chemistry, constraints, loading, pupilsById]);
+
+  const autosaveAssignment = useMemo(
+    () =>
+      debounce(async (nextAssignment: string[][]) => {
+        if (!projectId) {
+          return;
+        }
+
+        setSaveState("saving");
+
+        const nextScore = computeQuickScore({
+          pupilsById,
+          classes: nextAssignment,
+          constraints,
+          chemistry
+        });
+
+        const { data, error } = await supabase
+          .from("roster_assignments")
+          .upsert(
+            {
+              project_id: projectId,
+              assignment: nextAssignment,
+              score_json: nextScore
+            },
+            { onConflict: "project_id" }
+          )
+          .select("updated_at")
+          .maybeSingle<{ updated_at: string }>();
+
+        if (error) {
+          setSaveState("error");
+          toast.error("Failed to save manual edits.");
+          return;
+        }
+
+        const updatedAt = data?.updated_at ?? new Date().toISOString();
+        lastPersistedAssignmentKeyRef.current = JSON.stringify(nextAssignment);
+        setLastSaved(updatedAt);
+        setSaveState("saved");
+      }, 2000),
+    [chemistry, constraints, projectId, pupilsById, setLastSaved]
+  );
+
+  useEffect(() => {
+    if (loading || !projectId || assignment.length === 0) {
+      return;
+    }
+
+    const assignmentKey = JSON.stringify(assignment);
+    if (assignmentKey === lastPersistedAssignmentKeyRef.current) {
+      autosaveAssignment.cancel();
+      setSaveState("saved");
+      return;
+    }
+
+    setSaveState("saving");
+    autosaveAssignment(assignment.map((groupClass) => [...groupClass]));
+
+    return () => {
+      autosaveAssignment.cancel();
+    };
+  }, [assignment, autosaveAssignment, loading, projectId]);
+
+  useEffect(() => {
+    return () => autosaveAssignment.cancel();
+  }, [autosaveAssignment]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -510,6 +585,7 @@ export default function ClassEditor() {
     }
 
     initialize(projectId, optimizerAssignment, { lastSaved: null, timestamp: Date.now() });
+    lastPersistedAssignmentKeyRef.current = JSON.stringify(optimizerAssignment);
     setScore(
       computeQuickScore({
         pupilsById,
@@ -519,6 +595,7 @@ export default function ClassEditor() {
       })
     );
     toast.success("Restored optimizer assignment.");
+    setSaveState("saved");
     setResetting(false);
   }
 
@@ -548,6 +625,11 @@ export default function ClassEditor() {
               Drag-and-drop with persistent session drafts and durable saved assignments.
             </p>
             <div className="mt-2 font-mono text-xs text-muted">{headerMeta}</div>
+            <div className="mt-2 font-mono text-xs text-muted" aria-live="polite">
+              {saveState === "saving" && "Saving..."}
+              {saveState === "saved" && "All changes saved"}
+              {saveState === "error" && "Save failed"}
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <button
