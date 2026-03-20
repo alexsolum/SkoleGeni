@@ -89,6 +89,52 @@ def _raise_diagnostic_error(violations: List[Violation]) -> None:
     raise HTTPException(status_code=400, detail=_diagnostic_detail(violations))
 
 
+def _dedupe_violations(violations: List[Violation]) -> List[Violation]:
+    seen: set[Tuple[str, str, str]] = set()
+    unique: List[Violation] = []
+    for violation in violations:
+        key = (violation.category, violation.message, violation.suggestion)
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(violation)
+    return unique
+
+
+def _class_size_bound_violations(n: int, min_size: int, max_size: int) -> List[Violation]:
+    violations: List[Violation] = []
+    if n < min_size:
+        violations.append(
+            Violation(
+                category="Min Class Size",
+                message=(
+                    f"Minimum class size of {min_size} requires at least {min_size} pupils per class, "
+                    f"but only {n} pupils are available."
+                ),
+                suggestion="Decrease Min Class Size or add more pupils before rerunning the optimizer.",
+            )
+        )
+    if max_size < min_size:
+        violations.append(
+            Violation(
+                category="Class Size Bounds",
+                message=(
+                    f"Maximum class size of {max_size} is smaller than minimum class size of {min_size}."
+                ),
+                suggestion="Raise Max Class Size or lower Min Class Size so the bounds do not conflict.",
+            )
+        )
+    if not violations:
+        violations.append(
+            Violation(
+                category="Class Size Bounds",
+                message="Current minimum and maximum class sizes do not allow any valid class count.",
+                suggestion="Lower the minimum class size or raise the maximum class size before rerunning the optimizer.",
+            )
+        )
+    return violations
+
+
 def _supabase_url() -> str:
     return (
         os.getenv("SUPABASE_URL")
@@ -239,7 +285,7 @@ def _solve_for_k(
     idx_by_id: Dict[str, int],
     undirected_negative_blocks: set[str],
     k: int,
-) -> Tuple[Optional[List[List[int]]], Optional[Dict[str, int]], Optional[int]]:
+) -> Tuple[Optional[List[List[int]]], Optional[Dict[str, int]], Optional[int], Optional[List[Violation]]]:
     # Variables
     model = cp_model.CpModel()
     n = len(pupils)
@@ -247,6 +293,7 @@ def _solve_for_k(
     max_size = req.constraints.maxClassSize
 
     assign = [[model.NewBoolVar(f"a_{i}_{c}") for c in range(k)] for i in range(n)]
+    assumption_violations: Dict[int, Violation] = {}
 
     # Each pupil assigned to exactly one class
     for i in range(n):
@@ -255,8 +302,27 @@ def _solve_for_k(
     # Class sizes
     for c in range(k):
         size = sum(assign[i][c] for i in range(n))
-        model.Add(size >= min_size)
-        model.Add(size <= max_size)
+        min_size_lit = model.NewBoolVar(f"min_size_{c}")
+        model.Add(size >= min_size).OnlyEnforceIf(min_size_lit)
+        model.AddAssumption(min_size_lit)
+        assumption_violations[min_size_lit.Index()] = Violation(
+            category="Min Class Size",
+            message=(
+                f"Minimum class size of {min_size} cannot be satisfied across {k} classes with {n} pupils."
+            ),
+            suggestion="Decrease Min Class Size or reduce the number of classes before rerunning the optimizer.",
+        )
+
+        max_size_lit = model.NewBoolVar(f"max_size_{c}")
+        model.Add(size <= max_size).OnlyEnforceIf(max_size_lit)
+        model.AddAssumption(max_size_lit)
+        assumption_violations[max_size_lit.Index()] = Violation(
+            category="Max Class Size",
+            message=(
+                f"Maximum class size of {max_size} cannot be satisfied across {k} classes with {n} pupils."
+            ),
+            suggestion="Increase Max Class Size or allow more classes before rerunning the optimizer.",
+        )
 
     # Precompute groups
     genders = ["Male", "Female", "Other"]
@@ -291,8 +357,27 @@ def _solve_for_k(
                 counts.append(cnt)
 
                 if genderPriority == "strict":
-                    model.Add(cnt >= base)
-                    model.Add(cnt <= base + 1)
+                    lower_lit = model.NewBoolVar(f"gender_{g}_strict_low_{c}")
+                    model.Add(cnt >= base).OnlyEnforceIf(lower_lit)
+                    model.AddAssumption(lower_lit)
+                    assumption_violations[lower_lit.Index()] = Violation(
+                        category="Gender Priority",
+                        message=(
+                            f"Strict gender balance for {g} pupils cannot be satisfied across {k} classes."
+                        ),
+                        suggestion="Change Gender Priority to flexible or adjust class-size bounds before rerunning.",
+                    )
+
+                    upper_lit = model.NewBoolVar(f"gender_{g}_strict_high_{c}")
+                    model.Add(cnt <= base + 1).OnlyEnforceIf(upper_lit)
+                    model.AddAssumption(upper_lit)
+                    assumption_violations[upper_lit.Index()] = Violation(
+                        category="Gender Priority",
+                        message=(
+                            f"Strict gender balance for {g} pupils cannot be satisfied across {k} classes."
+                        ),
+                        suggestion="Change Gender Priority to flexible or adjust class-size bounds before rerunning.",
+                    )
                 else:
                     avg = total / k if k else 0
                     # "Flexible allow 10% variance" -> hard tolerance for the MVP.
@@ -319,8 +404,27 @@ def _solve_for_k(
                 model.Add(cnt == sum(assign[i][c] for i in range(n) if pupils[i].originSchool == origin))
 
                 if originPriority == "strict":
-                    model.Add(cnt >= base)
-                    model.Add(cnt <= base + 1)
+                    lower_lit = model.NewBoolVar(f"origin_{origin}_strict_low_{c}")
+                    model.Add(cnt >= base).OnlyEnforceIf(lower_lit)
+                    model.AddAssumption(lower_lit)
+                    assumption_violations[lower_lit.Index()] = Violation(
+                        category="Origin Priority",
+                        message=(
+                            f"Strict origin-school balancing for {origin} cannot be satisfied across {k} classes."
+                        ),
+                        suggestion="Set Origin Priority to flexible or best effort before rerunning the optimizer.",
+                    )
+
+                    upper_lit = model.NewBoolVar(f"origin_{origin}_strict_high_{c}")
+                    model.Add(cnt <= base + 1).OnlyEnforceIf(upper_lit)
+                    model.AddAssumption(upper_lit)
+                    assumption_violations[upper_lit.Index()] = Violation(
+                        category="Origin Priority",
+                        message=(
+                            f"Strict origin-school balancing for {origin} cannot be satisfied across {k} classes."
+                        ),
+                        suggestion="Set Origin Priority to flexible or best effort before rerunning the optimizer.",
+                    )
                 elif originPriority == "flexible":
                     avg = total / k if k else 0
                     low = int(math.floor((1 - 0.10) * avg))
@@ -347,8 +451,23 @@ def _solve_for_k(
                 model.Add(cnt == sum(assign[i][c] for i in range(n) if pupils[i].zone == zone))
 
                 if locationPriority == "strict":
-                    model.Add(cnt >= base)
-                    model.Add(cnt <= base + 1)
+                    lower_lit = model.NewBoolVar(f"zone_{zone}_strict_low_{c}")
+                    model.Add(cnt >= base).OnlyEnforceIf(lower_lit)
+                    model.AddAssumption(lower_lit)
+                    assumption_violations[lower_lit.Index()] = Violation(
+                        category="Location Priority",
+                        message=f"Strict zone balancing for {zone} cannot be satisfied across {k} classes.",
+                        suggestion="Change Location Priority to flexible or widen the class-size limits before rerunning.",
+                    )
+
+                    upper_lit = model.NewBoolVar(f"zone_{zone}_strict_high_{c}")
+                    model.Add(cnt <= base + 1).OnlyEnforceIf(upper_lit)
+                    model.AddAssumption(upper_lit)
+                    assumption_violations[upper_lit.Index()] = Violation(
+                        category="Location Priority",
+                        message=f"Strict zone balancing for {zone} cannot be satisfied across {k} classes.",
+                        suggestion="Change Location Priority to flexible or widen the class-size limits before rerunning.",
+                    )
                 elif locationPriority == "flexible":
                     avg = total / k if k else 0
                     low = int(math.floor((1 - 0.10) * avg))
@@ -371,8 +490,27 @@ def _solve_for_k(
 
                 avg = total / k if k else 0
                 if needsPriority == "strict":
-                    model.Add(cnt >= base)
-                    model.Add(cnt <= base + 1)
+                    lower_lit = model.NewBoolVar(f"needs_{need}_strict_low_{c}")
+                    model.Add(cnt >= base).OnlyEnforceIf(lower_lit)
+                    model.AddAssumption(lower_lit)
+                    assumption_violations[lower_lit.Index()] = Violation(
+                        category="Needs Priority",
+                        message=(
+                            f"Strict needs balancing for {need} cannot be satisfied across {k} classes."
+                        ),
+                        suggestion="Change Needs Priority to flexible before rerunning the optimizer.",
+                    )
+
+                    upper_lit = model.NewBoolVar(f"needs_{need}_strict_high_{c}")
+                    model.Add(cnt <= base + 1).OnlyEnforceIf(upper_lit)
+                    model.AddAssumption(upper_lit)
+                    assumption_violations[upper_lit.Index()] = Violation(
+                        category="Needs Priority",
+                        message=(
+                            f"Strict needs balancing for {need} cannot be satisfied across {k} classes."
+                        ),
+                        suggestion="Change Needs Priority to flexible before rerunning the optimizer.",
+                    )
                 else:
                     low = int(math.floor((1 - 0.10) * avg))
                     high = int(math.ceil((1 + 0.10) * avg))
@@ -450,11 +588,15 @@ def _solve_for_k(
 
     solver = cp_model.CpSolver()
     solver.parameters.max_time_in_seconds = 8.0
-    solver.parameters.num_search_workers = 8
+    solver.parameters.num_search_workers = 1
 
     status = solver.Solve(model)
+    if status == cp_model.INFEASIBLE:
+        core = solver.SufficientAssumptionsForInfeasibility()
+        violations = [assumption_violations[idx] for idx in core if idx in assumption_violations]
+        return None, None, None, _dedupe_violations(violations)
     if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-        return None, None, None
+        return None, None, None, None
 
     classes: List[List[int]] = [[] for _ in range(k)]
     for i in range(n):
@@ -465,7 +607,7 @@ def _solve_for_k(
 
     obj_value = int(solver.ObjectiveValue())
     debug = {"objective": obj_value}
-    return classes, debug, obj_value
+    return classes, debug, obj_value, None
 
 
 def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
@@ -480,15 +622,7 @@ def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
 
     k_options = _derive_k_options(n, min_size, max_size)
     if not k_options:
-        _raise_diagnostic_error(
-            [
-                Violation(
-                    category="class_size",
-                    message="Current minimum and maximum class sizes do not allow any valid class count.",
-                    suggestion="Lower the minimum class size or raise the maximum class size before rerunning the optimizer.",
-                )
-            ]
-        )
+        _raise_diagnostic_error(_class_size_bound_violations(n, min_size, max_size))
 
     # Negative blocks: treat directed edges as undirected blocks
     undirected_negative_blocks: set[str] = set()
@@ -500,15 +634,18 @@ def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
     best_debug = None
     best_obj = None
     best_k = None
+    collected_violations: List[Violation] = []
 
     for k in k_options:
-        solution, debug, obj = _solve_for_k(
+        solution, debug, obj, diagnostics = _solve_for_k(
             req=req,
             pupils=pupils,
             idx_by_id=idx_by_id,
             undirected_negative_blocks=undirected_negative_blocks,
             k=k,
         )
+        if diagnostics:
+            collected_violations.extend(diagnostics)
         if solution is None:
             continue
         if best_obj is None or (obj is not None and obj < best_obj):
@@ -518,10 +655,12 @@ def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
             best_k = k
 
     if best_solution is None or best_debug is None or best_k is None:
+        if collected_violations:
+            _raise_diagnostic_error(_dedupe_violations(collected_violations))
         _raise_diagnostic_error(
             [
                 Violation(
-                    category="optimizer",
+                    category="Optimizer",
                     message="The optimizer could not find a feasible solution with the current hard constraints.",
                     suggestion="Relax one or more strict priorities or class-size limits and try again.",
                 )
