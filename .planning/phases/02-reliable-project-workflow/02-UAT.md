@@ -1,11 +1,11 @@
 ---
-status: complete
+status: diagnosed
 phase: 02-reliable-project-workflow
 source:
   - 02-01-SUMMARY.md
   - 02-02-SUMMARY.md
 started: 2026-03-20T15:35:00+01:00
-updated: 2026-03-20T15:42:00+01:00
+updated: 2026-03-20T15:47:00+01:00
 ---
 
 ## Current Test
@@ -51,5 +51,16 @@ skipped: 0
   reason: "User reported: Nothing happens when i press the +/- and see also that the UI is very basic"
   severity: major
   test: 4
-  artifacts: []
-  missing: []
+  root_cause: "Investigation inconclusive in the current checkout. The current runtime repro opens the chemistry picker and updates the count correctly, so the reported failure likely came from a different build/environment or from poor modal discoverability in the minimally styled UI."
+  artifacts:
+    - path: "src/pages/PupilData.tsx"
+      issue: "Button handlers and modal state wiring appear correct in the current checkout."
+    - path: "src/index.css"
+      issue: "Styling pipeline was previously broken during UAT, which may have made the modal interaction hard to perceive."
+    - path: ".planning/debug/chemistry-picker-uat-gap.md"
+      issue: "Debug session found no reproducible code-level failure in the current workspace."
+  missing:
+    - "Re-run the chemistry-picker UAT against the exact current build after hard refresh and CSS fix."
+    - "Capture a fresh screenshot or video if the chemistry modal still appears non-responsive."
+    - "Add dedicated automated coverage for opening the chemistry modal and incrementing the row count."
+  debug_session: .planning/debug/chemistry-picker-uat-gap.md
