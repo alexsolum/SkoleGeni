@@ -11,7 +11,7 @@ This roadmap takes the existing SkoleGeni MVP and turns it into a more trustwort
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Secure Data Foundation** - Lock down access and remove destructive persistence patterns
-- [ ] **Phase 2: Reliable Project Workflow** - Make project setup, constraints, import, and saving trustworthy
+- [x] **Phase 2: Reliable Project Workflow** - Make project setup, constraints, import, and saving trustworthy
 - [ ] **Phase 3: Trustworthy Optimization Results** - Improve optimizer validation, outcomes, and explainability
 - [ ] **Phase 4: Durable Class Editing** - Turn manual class editing into a persistent, dependable feature
 - [ ] **Phase 5: Polish and Release Readiness** - Align the UI, test stack, and toolchain for safer ongoing delivery
@@ -46,7 +46,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — Create the Phase 2 test harness and make configuration restore/save authoritative
 - [x] 02-02-PLAN.md — Add mapped CSV import, issues reporting, and debounced autosave to pupil workflow
-- [ ] 02-03-PLAN.md — Add reload/failure regressions and verify the end-to-end setup-to-save journey
+- [x] 02-03-PLAN.md — Add reload/failure regressions and verify the end-to-end setup-to-save journey
 
 ### Phase 3: Trustworthy Optimization Results
 **Goal**: Make optimizer runs easier to understand, debug, and defend.
@@ -101,7 +101,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Secure Data Foundation | 3/3 | Complete | 2026-03-19 |
-| 2. Reliable Project Workflow | 2/3 | In Progress | - |
+| 2. Reliable Project Workflow | 3/3 | Complete | 2026-03-20 |
 | 3. Trustworthy Optimization Results | 0/3 | Not started | - |
 | 4. Durable Class Editing | 0/3 | Not started | - |
 | 5. Polish and Release Readiness | 0/3 | Not started | - |
