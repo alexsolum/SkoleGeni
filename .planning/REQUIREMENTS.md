@@ -26,7 +26,7 @@
 ### Manual Editing
 
 - [x] **EDIT-01**: User can manually move pupils between classes and keep those edits after refresh or later return
-- [x] **EDIT-02**: User is blocked from invalid manual moves and receives a clear explanation of the violated rule
+- [x] **EDIT-02**: User can make an invalid manual move, immediately sees it flagged as a conflict, and receives a clear explanation of the violated rule while continuing to edit.
 - [x] **EDIT-03**: User can reopen the class editor and continue from the latest saved assignment state
 
 ### Quality & Experience
