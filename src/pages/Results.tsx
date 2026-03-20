@@ -68,6 +68,15 @@ function Meter({ label, value }: { label: string; value: number }) {
   );
 }
 
+const SCORE_LABELS: Record<keyof Score, string> = {
+  overall: "Overall Satisfaction",
+  genderBalance: "Gender Balance",
+  originMix: "Origin Mix",
+  needsBalance: "Needs Balance",
+  locationBalance: "Location Balance",
+  chemistry: "Chemistry Links"
+};
+
 export default function Results() {
   const { projectId } = useParams();
   const navigate = useNavigate();
@@ -146,6 +155,23 @@ export default function Results() {
   }, [projectId]);
 
   const score = run?.score;
+  const sacrificedPriorities = run?.debug?.sacrificed_priorities ?? [];
+  const worstClassHighlights = run?.debug?.worst_class_highlights ?? {};
+  const highlightedCategoriesByClass = useMemo(() => {
+    const highlights = new Map<number, Array<keyof Score>>();
+
+    Object.entries(worstClassHighlights).forEach(([category, classIndex]) => {
+      if (typeof classIndex !== "number") {
+        return;
+      }
+
+      const current = highlights.get(classIndex) ?? [];
+      current.push(category as keyof Score);
+      highlights.set(classIndex, current);
+    });
+
+    return highlights;
+  }, [worstClassHighlights]);
 
   const classesCount = run?.classes.length ?? 0;
   const pupilsCount = useMemo(() => {
@@ -199,12 +225,42 @@ export default function Results() {
             </div>
           </div>
           <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Meter label="Gender Balance" value={score.genderBalance} />
-            <Meter label="Origin Mix" value={score.originMix} />
-            <Meter label="Needs Balance" value={score.needsBalance} />
-            <Meter label="Location Balance" value={score.locationBalance} />
-            <Meter label="Chemistry" value={score.chemistry} />
+            <Meter label="Gender Balance Satisfaction" value={score.genderBalance} />
+            <Meter label="Origin Mix Satisfaction" value={score.originMix} />
+            <Meter label="Needs Balance Satisfaction" value={score.needsBalance} />
+            <Meter label="Location Balance Satisfaction" value={score.locationBalance} />
+            <Meter label="Chemistry Satisfaction" value={score.chemistry} />
           </div>
+        </div>
+
+        <div className="mt-6 border border-muted/50 bg-surface rounded-[4px] p-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="font-heading font-bold text-primary">Tradeoffs and Sacrifices</div>
+            <div className="text-xs text-muted font-mono">Explainability for score tradeoffs</div>
+          </div>
+
+          {sacrificedPriorities.length === 0 ? (
+            <p className="mt-3 text-sm text-muted">
+              The solver did not report any materially sacrificed priorities in this run.
+            </p>
+          ) : (
+            <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
+              {sacrificedPriorities.map((priority) => (
+                <div
+                  key={priority.key}
+                  className="rounded-[4px] border border-amber-200 bg-amber-50/70 px-4 py-3"
+                >
+                  <div className="font-heading text-sm font-bold text-primary">{priority.label}</div>
+                  <p className="mt-1 text-sm text-slate-700">
+                    {priority.label} was reduced to {priority.satisfactionPct}% satisfaction in this roster.
+                    {priority.gapFromBestPct > 0
+                      ? ` That is ${priority.gapFromBestPct} percentage points behind the strongest satisfied priority.`
+                      : " This category still required compromise to satisfy the overall roster."}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="mt-6 border border-muted/50 bg-surface rounded-[4px] p-4">
@@ -223,6 +279,9 @@ export default function Results() {
                   pupilsById={pupilsById}
                   classes={run.classes.map((entry) => entry.pupilIds)}
                   chemistryLinks={chemistryLinks}
+                  highlightCategories={(highlightedCategoriesByClass.get(c.classIndex) ?? []).map(
+                    (category) => SCORE_LABELS[category]
+                  )}
                 />
               ))}
             </div>

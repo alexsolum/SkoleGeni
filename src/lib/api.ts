@@ -78,6 +78,14 @@ export type OptimizeResponse = {
   debug?: {
     chosenClassCount?: number;
     objective?: number;
+    sacrificed_priorities?: Array<{
+      key: keyof Score;
+      label: string;
+      score: number;
+      satisfactionPct: number;
+      gapFromBestPct: number;
+    }>;
+    worst_class_highlights?: Partial<Record<keyof Score, number>>;
   };
 };
 

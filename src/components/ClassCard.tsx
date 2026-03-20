@@ -159,6 +159,7 @@ export type ClassCardProps = {
   pupilsById: Map<string, Pupil>;
   classes: string[][];
   chemistryLinks: Chemistry;
+  highlightCategories?: string[];
 };
 
 export function ClassCard({
@@ -166,7 +167,8 @@ export function ClassCard({
   pupilIds,
   pupilsById,
   classes,
-  chemistryLinks
+  chemistryLinks,
+  highlightCategories = []
 }: ClassCardProps) {
   const pupils = mapClassPupils(pupilIds, pupilsById);
   const genderData = buildGenderDistribution(pupils);
@@ -177,15 +179,36 @@ export function ClassCard({
   });
 
   return (
-    <section className="min-w-[340px] rounded-[4px] border border-muted/50 bg-background/40 p-4">
+    <section
+      className={[
+        "min-w-[340px] rounded-[4px] border bg-background/40 p-4 transition-colors",
+        highlightCategories.length > 0
+          ? "border-amber-400/80 shadow-[0_0_0_1px_rgba(251,191,36,0.4)]"
+          : "border-muted/50"
+      ].join(" ")}
+    >
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="font-heading text-lg font-bold text-primary">Class {classIndex + 1}</h2>
           <p className="mt-1 text-xs font-mono text-muted">{pupils.length} pupils</p>
         </div>
-        <div className="grid grid-cols-2 gap-2 text-right text-xs text-muted">
-          <div>{genderData.length} gender groups</div>
-          <div>{originData.length} origin groups</div>
+        <div className="text-right">
+          <div className="grid grid-cols-2 gap-2 text-xs text-muted">
+            <div>{genderData.length} gender groups</div>
+            <div>{originData.length} origin groups</div>
+          </div>
+          {highlightCategories.length > 0 ? (
+            <div className="mt-2 inline-flex flex-wrap justify-end gap-2">
+              {highlightCategories.map((category) => (
+                <span
+                  key={category}
+                  className="rounded-full bg-amber-100 px-2 py-1 text-[11px] font-mono font-bold text-amber-800"
+                >
+                  Weakest {category}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
 
