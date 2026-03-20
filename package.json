@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "verify:phase1": "npm run build"
+    "verify:phase1": "npm run build",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:phase2": "npm run test -- src/pages/__tests__/configuration-load.test.tsx src/pages/__tests__/configuration-save.test.tsx src/pages/__tests__/pupil-import-validation.test.tsx src/pages/__tests__/pupil-autosave.test.tsx src/pages/__tests__/workflow-reload.test.tsx && npm run test:e2e -- tests/phase2-workflow.spec.ts && npm run build"
   },
   "dependencies": {
     "@dnd-kit/core": "*",
@@ -20,19 +23,26 @@
     "react-dom": "*",
     "react-hot-toast": "*",
     "react-router-dom": "*",
+    "lodash.debounce": "*",
     "tailwind-merge": "*"
   },
   "devDependencies": {
+    "@playwright/test": "*",
     "@tailwindcss/postcss": "^4.2.2",
+    "@testing-library/jest-dom": "*",
+    "@testing-library/react": "*",
+    "@testing-library/user-event": "*",
     "@types/node": "*",
     "@types/papaparse": "^5.5.2",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "*",
     "autoprefixer": "*",
+    "jsdom": "*",
     "postcss": "*",
     "tailwindcss": "*",
     "typescript": "*",
-    "vite": "*"
+    "vite": "*",
+    "vitest": "*"
   }
 }
