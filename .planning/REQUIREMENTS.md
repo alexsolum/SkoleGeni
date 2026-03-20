@@ -25,9 +25,9 @@
 
 ### Manual Editing
 
-- [ ] **EDIT-01**: User can manually move pupils between classes and keep those edits after refresh or later return
+- [x] **EDIT-01**: User can manually move pupils between classes and keep those edits after refresh or later return
 - [ ] **EDIT-02**: User is blocked from invalid manual moves and receives a clear explanation of the violated rule
-- [ ] **EDIT-03**: User can reopen the class editor and continue from the latest saved assignment state
+- [x] **EDIT-03**: User can reopen the class editor and continue from the latest saved assignment state
 
 ### Quality & Experience
 
@@ -74,9 +74,9 @@
 | OPTI-01 | Phase 3 | Complete |
 | OPTI-02 | Phase 3 | Complete |
 | OPTI-03 | Phase 3 | Complete |
-| EDIT-01 | Phase 4 | Pending |
+| EDIT-01 | Phase 4 | Complete |
 | EDIT-02 | Phase 4 | Pending |
-| EDIT-03 | Phase 4 | Pending |
+| EDIT-03 | Phase 4 | Complete |
 | QUAL-01 | Phase 5 | Pending |
 | QUAL-02 | Phase 5 | Pending |
 | UX-01 | Phase 5 | Pending |
@@ -88,4 +88,4 @@
 
 ---
 *Requirements defined: 2026-03-19*  
-*Last updated: 2026-03-20 after Phase 3 Plan 03 completion*
+*Last updated: 2026-03-20 after Phase 4 Plan 01 completion*

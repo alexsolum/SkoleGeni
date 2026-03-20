@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-03-20T18:49:24.144Z"
+status: executing
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-20T20:11:43.7171814+01:00"
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 12
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -23,16 +23,16 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 ## Current Position
 
-Phase: 04 (durable-class-editing) — READY
-Plan: 0 of 3
+Phase: 04 (durable-class-editing) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 9
-- Average duration: 7 min
-- Total execution time: 0.0 hours
+- Total plans completed: 10
+- Average duration: 8 min
+- Total execution time: 1.4 hours
 
 **By Phase:**
 
@@ -52,6 +52,7 @@ Plan: 0 of 3
 | Phase 03 P01 | 7 | 3 tasks | 5 files |
 | Phase 03 P02 | 6 | 3 tasks | 7 files |
 | Phase 03 P03 | 7 | 3 tasks | 6 files |
+| Phase 04 P01 | 20min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,9 @@ Recent decisions affecting current work:
 - [Phase 03]: Treat satisfied positive chemistry links as symmetric within a class card so both linked pupils show the relationship signal.
 - [Phase 03]: Treat materially imperfect active score categories as sacrificed priorities so tradeoff explanations stay populated for real solver compromises.
 - [Phase 03]: Expose worst-class highlights through optimizer debug metadata and let the frontend translate those indices into visible class badges.
+- [Phase 04]: Session drafts only override `roster_assignments` when the local timestamp is strictly newer than the saved row.
+- [Phase 04]: Persist editor draft metadata outside zundo history so undo/redo only tracks assignment changes.
+- [Phase 04]: Resetting the editor deletes the durable assignment row and rehydrates from the latest optimizer run.
 
 ### Pending Todos
 
@@ -89,6 +93,6 @@ None currently.
 
 ## Session Continuity
 
-Last session: 2026-03-20T16:15:52.000Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-03-20T20:11:43.7171814+01:00
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None
