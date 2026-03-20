@@ -22,6 +22,7 @@ type PupilRow = {
   origin_school: string;
   needs: string;
   zone: string;
+  created_at?: string;
 };
 
 type ChemistryRow = {
