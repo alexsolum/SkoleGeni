@@ -1,3 +1,4 @@
+import type { StoreApi } from "zustand";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { temporal } from "zundo";
@@ -20,6 +21,10 @@ type EditorStoreActions = {
 
 export type EditorStore = EditorStoreState & EditorStoreActions;
 
+type TemporalControls = StoreApi<{
+  clear: () => void;
+}>;
+
 const initialState: EditorStoreState = {
   assignment: [],
   projectId: null,
@@ -33,6 +38,11 @@ function cloneAssignment(next: string[][]) {
 
 function nowTimestamp() {
   return Date.now();
+}
+
+function clearTemporalHistory(store: unknown) {
+  const temporalStore = (store as { temporal?: TemporalControls }).temporal;
+  temporalStore?.getState().clear();
 }
 
 export const useEditorStore = create<EditorStore>()(
@@ -53,14 +63,14 @@ export const useEditorStore = create<EditorStore>()(
             lastSaved: options?.lastSaved ?? null,
             timestamp: options?.timestamp ?? nowTimestamp()
           });
-          store.temporal.getState().clear();
+          clearTemporalHistory(store);
         },
         setLastSaved: (value) => {
           set({ lastSaved: value });
         },
         reset: () => {
           set({ ...initialState });
-          store.temporal.getState().clear();
+          clearTemporalHistory(store);
         }
       }),
       {
@@ -82,7 +92,7 @@ export const useEditorStore = create<EditorStore>()(
 );
 
 export function readEditorDraft(projectId: string) {
-  const state = useEditorStore.persist.getState();
+  const state = useEditorStore.getState();
   if (state.projectId !== projectId || state.assignment.length === 0) {
     return null;
   }
