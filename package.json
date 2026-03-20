@@ -18,12 +18,13 @@
     "@dnd-kit/utilities": "*",
     "@supabase/supabase-js": "*",
     "clsx": "*",
+    "lodash.debounce": "*",
     "papaparse": "*",
     "react": "*",
     "react-dom": "*",
     "react-hot-toast": "*",
     "react-router-dom": "*",
-    "lodash.debounce": "*",
+    "recharts": "^3.8.0",
     "tailwind-merge": "*"
   },
   "devDependencies": {
