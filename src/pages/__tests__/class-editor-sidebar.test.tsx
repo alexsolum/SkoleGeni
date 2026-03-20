@@ -272,6 +272,7 @@ it("lists active issues and highlights the related pupil card on hover", async (
   });
 
   const adaIssue = screen.getByRole("button", { name: /Ada.*Ada cannot be in the same class as Bea\./i });
+  expect(document.querySelector("[data-red-card='true']")).toBeTruthy();
   expect(screen.getByText("Manual Issues")).toBeInTheDocument();
   expect(screen.getAllByText("Negative chemistry").length).toBeGreaterThan(0);
   expect(screen.getByText("Ada cannot be in the same class as Bea.")).toBeInTheDocument();
