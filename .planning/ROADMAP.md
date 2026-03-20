@@ -12,7 +12,7 @@ This roadmap takes the existing SkoleGeni MVP and turns it into a more trustwort
 
 - [x] **Phase 1: Secure Data Foundation** - Lock down access and remove destructive persistence patterns
 - [x] **Phase 2: Reliable Project Workflow** - Make project setup, constraints, import, and saving trustworthy
-- [ ] **Phase 3: Trustworthy Optimization Results** - Improve optimizer validation, outcomes, and explainability
+- [x] **Phase 3: Trustworthy Optimization Results** - Improve optimizer validation, outcomes, and explainability
 - [ ] **Phase 4: Durable Class Editing** - Turn manual class editing into a persistent, dependable feature
 - [ ] **Phase 5: Polish and Release Readiness** - Align the UI, test stack, and toolchain for safer ongoing delivery
 
@@ -61,7 +61,7 @@ Plans:
 Plans:
 - [x] 03-01-PLAN.md — Improve optimizer request validation and error modeling in the Python API
 - [x] 03-02-PLAN.md — Redesign results presentation around names, summaries, and constraint signals
-- [ ] 03-03-PLAN.md — Add explainability output and regression fixtures for solver behavior
+- [x] 03-03-PLAN.md — Add explainability output and regression fixtures for solver behavior
 
 ### Phase 4: Durable Class Editing
 **Goal**: Make manual class editing a persistent part of the product instead of an ephemeral client-side step.
@@ -102,6 +102,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Secure Data Foundation | 3/3 | Complete | 2026-03-19 |
 | 2. Reliable Project Workflow | 3/3 | Complete | 2026-03-20 |
-| 3. Trustworthy Optimization Results | 2/3 | In Progress | - |
+| 3. Trustworthy Optimization Results | 3/3 | Complete | 2026-03-20 |
 | 4. Durable Class Editing | 0/3 | Not started | - |
 | 5. Polish and Release Readiness | 0/3 | Not started | - |
