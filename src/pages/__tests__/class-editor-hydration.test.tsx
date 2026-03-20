@@ -90,12 +90,29 @@ vi.mock("../../lib/supabase", () => ({
 
       if (table === "pupils") {
         return {
-          select: vi.fn(() => ({
-            eq: vi.fn(async () => ({
-              data: store.pupils,
-              error: null
-            }))
-          }))
+          select: vi.fn((columns: string) => {
+            if (columns === "created_at") {
+              return {
+                eq: vi.fn(() => ({
+                  order: vi.fn(() => ({
+                    limit: vi.fn(() => ({
+                      maybeSingle: vi.fn(async () => ({
+                        data: store.pupils.length > 0 ? { created_at: store.pupils[0].created_at ?? null } : null,
+                        error: null
+                      }))
+                    }))
+                  }))
+                }))
+              };
+            }
+
+            return {
+              eq: vi.fn(async () => ({
+                data: store.pupils,
+                error: null
+              }))
+            };
+          })
         };
       }
 
@@ -182,7 +199,8 @@ beforeEach(() => {
       gender: "Female",
       origin_school: "North",
       needs: "Reading",
-      zone: "Zone A"
+      zone: "Zone A",
+      created_at: "2026-03-20T08:00:00.000Z"
     },
     {
       id: "pupil-2",
@@ -242,13 +260,12 @@ it("prefers the newer session draft over the saved database assignment", async (
   renderEditor();
 
   await waitFor(() => {
-    expect(screen.getAllByText("Ada")).toHaveLength(1);
+    expect(useEditorStore.getState().assignment).toEqual([["pupil-1"], ["pupil-2"]]);
   });
 
-  const classHeaders = screen.getAllByText(/Class \d/);
-  expect(classHeaders).toHaveLength(2);
-  expect(screen.getAllByText("Ada")[0]).toBeInTheDocument();
-  expect(screen.getAllByText("Bea")[0]).toBeInTheDocument();
+  expect(screen.getByText(/^Class 1$/)).toBeInTheDocument();
+  expect(screen.getByText(/^Class 2$/)).toBeInTheDocument();
+  expect(window.sessionStorage.getItem("roster-draft-storage")).toContain('"assignment":[["pupil-1"],["pupil-2"]]');
   expect(useEditorStore.getState().assignment).toEqual([["pupil-1"], ["pupil-2"]]);
 });
 

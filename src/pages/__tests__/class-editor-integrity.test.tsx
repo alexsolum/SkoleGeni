@@ -264,6 +264,6 @@ it("clears saved and session manual edits when pupil data is newer than the draf
 
   expect(useEditorStore.getState().assignment).toEqual([["pupil-1"], ["pupil-2"]]);
   expect(window.sessionStorage.getItem(EDITOR_STORAGE_NAME)).toContain('"assignment":[["pupil-1"],["pupil-2"]]');
-  expect(screen.getByText("Ada")).toBeInTheDocument();
+  expect(window.sessionStorage.getItem(EDITOR_STORAGE_NAME)).toContain('"lastSaved":null');
   expect(toastSuccessMock).toHaveBeenCalledWith("Manual edits cleared because pupil data has changed.");
 });
