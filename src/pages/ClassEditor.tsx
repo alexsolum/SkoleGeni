@@ -6,6 +6,7 @@ import debounce from "lodash.debounce";
 
 import type { Chemistry, OptimizationConstraints, OptimizeResponse, Pupil, Score } from "../lib/api";
 import { clearEditorDraft, useEditorStore, useEditorTemporalStore, readEditorDraft } from "../lib/editorStore";
+import { validateRoster, type ValidationViolation } from "../lib/rosterValidation";
 import { supabase } from "../lib/supabase";
 
 type ConstraintsRow = {
@@ -91,15 +92,6 @@ function scoreDistribution({
   return 1 - Math.min(1, penalty / maxPenalty);
 }
 
-function buildNegativeSet(chemistry: Chemistry) {
-  const set = new Set<string>();
-  for (const [a, b] of chemistry.negative) {
-    const key = a < b ? `${a}|${b}` : `${b}|${a}`;
-    set.add(key);
-  }
-  return set;
-}
-
 function computeQuickScore({
   pupilsById,
   classes,
@@ -111,46 +103,12 @@ function computeQuickScore({
   constraints: OptimizationConstraints;
   chemistry: Chemistry;
 }): Score {
-  const classOf = new Map<string, number>();
-  classes.forEach((groupClass, index) => groupClass.forEach((pupilId) => classOf.set(pupilId, index)));
-
-  let positiveTogether = chemistry.positive.length === 0 ? 1 : 0;
-  const positiveTotal = Math.max(1, chemistry.positive.length);
-  for (const [a, b] of chemistry.positive) {
-    if (classOf.get(a) !== undefined && classOf.get(a) === classOf.get(b)) {
-      positiveTogether += 1;
-    }
-  }
-
-  const chemistryScore = positiveTogether / positiveTotal;
-  const genderScore =
-    constraints.genderPriority === "ignore"
-      ? 1
-      : scoreDistribution({ pupilsById, classes, groupKey: (pupil) => pupil.gender });
-  const originScore =
-    constraints.originPriority === "ignore"
-      ? 1
-      : scoreDistribution({ pupilsById, classes, groupKey: (pupil) => pupil.originSchool });
-  const needsScore =
-    constraints.needsPriority === "strict" || constraints.needsPriority === "flexible"
-      ? scoreDistribution({ pupilsById, classes, groupKey: (pupil) => pupil.needs })
-      : 1;
-  const locationScore =
-    constraints.locationPriority === "ignore" || constraints.locationPriority === "not_considered"
-      ? 1
-      : scoreDistribution({ pupilsById, classes, groupKey: (pupil) => pupil.zone });
-
-  const overall =
-    genderScore * 0.2 + originScore * 0.25 + needsScore * 0.2 + locationScore * 0.15 + chemistryScore * 0.2;
-
-  return {
-    overall: Math.max(0, Math.min(1, overall)),
-    genderBalance: genderScore,
-    originMix: originScore,
-    needsBalance: needsScore,
-    locationBalance: locationScore,
-    chemistry: chemistryScore
-  };
+  return validateRoster({
+    assignment: classes,
+    pupils: Array.from(pupilsById.values()),
+    chemistry,
+    constraints
+  }).scores;
 }
 
 function mapPupilRow(row: PupilsDbRow): Pupil {
@@ -184,16 +142,28 @@ function parseSavedTimestamp(value: string | null | undefined) {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
+const SCORE_DROP_THRESHOLD = 0.05;
+
+const SCORE_LABELS: Array<{ key: keyof Score; label: string }> = [
+  { key: "genderBalance", label: "Gender" },
+  { key: "originMix", label: "Origin" },
+  { key: "needsBalance", label: "Needs" },
+  { key: "locationBalance", label: "Location" },
+  { key: "chemistry", label: "Chemistry" }
+];
+
 function ClassColumn({
   classIndex,
   pupilIds,
   pupilsById,
-  onPupilClick
+  violationsByPupilId,
+  highlightedPupilId
 }: {
   classIndex: number;
   pupilIds: string[];
   pupilsById: Map<string, Pupil>;
-  onPupilClick?: (pupilId: string) => void;
+  violationsByPupilId: Record<string, ValidationViolation[]>;
+  highlightedPupilId?: string | null;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `class-${classIndex}`
@@ -225,7 +195,8 @@ function ClassColumn({
                 zone: ""
               }
             }
-            onClick={() => onPupilClick?.(pupilId)}
+            violations={violationsByPupilId[pupilId] ?? []}
+            highlighted={highlightedPupilId === pupilId}
           />
         ))}
       </div>
@@ -233,26 +204,52 @@ function ClassColumn({
   );
 }
 
-function DraggablePupilCard({ pupil, onClick }: { pupil: Pupil; onClick?: () => void }) {
+export function DraggablePupilCard({
+  pupil,
+  violations,
+  highlighted = false
+}: {
+  pupil: Pupil;
+  violations?: ValidationViolation[];
+  highlighted?: boolean;
+}) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: pupil.id,
     data: { type: "pupil", pupilId: pupil.id }
   });
+  const hardViolations = (violations ?? []).filter((violation) => violation.kind === "hard");
+  const tooltip =
+    hardViolations.length > 0 ? hardViolations.map((violation) => violation.message).join(" | ") : `${pupil.name} can be moved freely.`;
 
   return (
     <div
       ref={setNodeRef}
       style={{ transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined }}
       className={[
-        "cursor-grab select-none rounded-[4px] border border-muted/50 bg-surface p-2 active:cursor-grabbing",
+        "cursor-grab select-none rounded-[4px] border bg-surface p-2 transition active:cursor-grabbing",
+        hardViolations.length > 0 ? "border-red-500 bg-red-50 shadow-[0_0_0_1px_rgba(239,68,68,0.2)]" : "border-muted/50",
+        highlighted ? "ring-2 ring-accent ring-offset-2 ring-offset-background" : "",
         isDragging ? "opacity-80" : ""
       ].join(" ")}
       {...attributes}
       {...listeners}
-      onClick={onClick}
+      title={tooltip}
+      data-red-card={hardViolations.length > 0 ? "true" : "false"}
     >
-      <div className="truncate text-sm font-heading font-bold text-primary">{pupil.name}</div>
-      <div className="font-mono text-xs text-muted">drag</div>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="truncate text-sm font-heading font-bold text-primary">{pupil.name}</div>
+          <div className="font-mono text-xs text-muted">drag</div>
+        </div>
+        {hardViolations.length > 0 ? (
+          <span className="rounded-full border border-red-500 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-red-600">
+            Red Card
+          </span>
+        ) : null}
+      </div>
+      {hardViolations.length > 0 ? (
+        <div className="mt-2 text-xs text-red-700">{hardViolations[0]?.rule}</div>
+      ) : null}
     </div>
   );
 }
@@ -276,8 +273,8 @@ export default function ClassEditor() {
   const [constraints, setConstraints] = useState<OptimizationConstraints>(DEFAULT_CONSTRAINTS);
   const [pupilsById, setPupilsById] = useState<Map<string, Pupil>>(new Map());
   const [chemistry, setChemistry] = useState<Chemistry>({ positive: [], negative: [] });
-  const [negativeSet, setNegativeSet] = useState<Set<string>>(new Set());
   const [optimizerAssignment, setOptimizerAssignment] = useState<string[][]>([]);
+  const [optimizerScoreBaseline, setOptimizerScoreBaseline] = useState<Score | null>(null);
   const [score, setScore] = useState<Score | null>(null);
   const [resetting, setResetting] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -355,6 +352,16 @@ export default function ClassEditor() {
 
       const optimizerRun = runResult.data?.result_json ?? null;
       const optimizerBaseline = getOptimizerAssignment(optimizerRun);
+      const optimizerBaselineScore =
+        optimizerRun?.score ??
+        (optimizerBaseline.length > 0
+          ? computeQuickScore({
+              pupilsById: mappedPupils,
+              classes: optimizerBaseline,
+              constraints: nextConstraints,
+              chemistry: nextChemistry
+            })
+          : null);
       const savedAssignment = savedAssignmentResult.data?.assignment ?? null;
       const savedTimestamp = parseSavedTimestamp(savedAssignmentResult.data?.updated_at);
       const latestPupilTimestamp = parseSavedTimestamp(latestPupilResult.data?.created_at);
@@ -433,8 +440,8 @@ export default function ClassEditor() {
       setConstraints(nextConstraints);
       setPupilsById(mappedPupils);
       setChemistry(nextChemistry);
-      setNegativeSet(buildNegativeSet(nextChemistry));
       setOptimizerAssignment(optimizerBaseline);
+      setOptimizerScoreBaseline(optimizerBaselineScore);
       initialize(projectId, nextAssignment, { lastSaved: nextLastSaved, timestamp: nextTimestamp });
       lastPersistedAssignmentKeyRef.current = JSON.stringify(nextAssignment);
       setScore(nextScore);
@@ -448,21 +455,31 @@ export default function ClassEditor() {
   }, [initialize, projectId]);
 
   const hasOptimizerBaseline = optimizerAssignment.length > 0;
+  const validation = useMemo(
+    () =>
+      validateRoster({
+        assignment,
+        pupils: Array.from(pupilsById.values()),
+        chemistry,
+        constraints
+      }),
+    [assignment, chemistry, constraints, pupilsById]
+  );
+  const scoreDrops = useMemo(() => {
+    if (!optimizerScoreBaseline) {
+      return [];
+    }
+
+    return SCORE_LABELS.filter(({ key }) => optimizerScoreBaseline[key] - validation.scores[key] >= SCORE_DROP_THRESHOLD);
+  }, [optimizerScoreBaseline, validation.scores]);
 
   useEffect(() => {
     if (loading || assignment.length === 0) {
       return;
     }
 
-    setScore(
-      computeQuickScore({
-        pupilsById,
-        classes: assignment,
-        constraints,
-        chemistry
-      })
-    );
-  }, [assignment, chemistry, constraints, loading, pupilsById]);
+    setScore(validation.scores);
+  }, [assignment, loading, validation.scores]);
 
   const autosaveAssignment = useMemo(
     () =>
@@ -558,27 +575,12 @@ export default function ClassEditor() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [canRedo, canUndo, redo, undo]);
 
-  function isNegativePair(pupilIdA: string, pupilIdB: string) {
-    const key = pupilIdA < pupilIdB ? `${pupilIdA}|${pupilIdB}` : `${pupilIdB}|${pupilIdA}`;
-    return negativeSet.has(key);
-  }
-
   function getClassIndexOfPupil(pupilId: string) {
     return assignment.findIndex((groupClass) => groupClass.includes(pupilId));
   }
 
   function recalc(nextAssignment: string[][]) {
     setAssignment(nextAssignment);
-  }
-
-  function checkDropConflict(targetClassIndex: number, pupilId: string) {
-    const targetPupils = assignment[targetClassIndex] ?? [];
-    for (const otherPupilId of targetPupils) {
-      if (isNegativePair(pupilId, otherPupilId)) {
-        return otherPupilId;
-      }
-    }
-    return null;
   }
 
   function onDragEnd(event: DragEndEvent) {
@@ -595,12 +597,6 @@ export default function ClassEditor() {
     const targetClassIndex = Number(overId.replace("class-", ""));
     const sourceClassIndex = getClassIndexOfPupil(activeId);
     if (sourceClassIndex === -1 || sourceClassIndex === targetClassIndex) {
-      return;
-    }
-
-    const conflictWith = checkDropConflict(targetClassIndex, activeId);
-    if (conflictWith) {
-      toast.error(`Conflict: ${activeId} cannot be in the same class as ${conflictWith} (-).`);
       return;
     }
 
@@ -706,17 +702,32 @@ export default function ClassEditor() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="font-heading font-bold text-primary">Global Score</div>
-              <div className="mt-1 font-mono text-xs text-muted">MVP: Quick heuristic score</div>
+              <div className="mt-1 font-mono text-xs text-muted">Manual validation uses the same category math as the Python solver.</div>
             </div>
             <div className="text-[26px] font-heading font-bold text-primary">{score ? Math.round(score.overall * 100) : 0}%</div>
           </div>
+          {scoreDrops.length > 0 ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2" aria-label="Score drop warnings">
+              {scoreDrops.map(({ key, label }) => (
+                <span key={key} className="rounded-full border border-amber-500 px-2 py-1 font-mono text-[11px] text-amber-700">
+                  {label} score dropped
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-4 overflow-x-auto">
           <DndContext onDragEnd={onDragEnd}>
             <div className="flex gap-4">
               {assignment.map((groupClass, classIndex) => (
-                <ClassColumn key={classIndex} classIndex={classIndex} pupilIds={groupClass} pupilsById={pupilsById} />
+                <ClassColumn
+                  key={classIndex}
+                  classIndex={classIndex}
+                  pupilIds={groupClass}
+                  pupilsById={pupilsById}
+                  violationsByPupilId={validation.violationsByPupilId}
+                />
               ))}
             </div>
           </DndContext>
