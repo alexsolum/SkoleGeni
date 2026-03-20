@@ -279,6 +279,71 @@ def _soft_abs_penalty(model: cp_model.CpModel, value_var: cp_model.IntVar, targe
     return diff
 
 
+def _clamp_score(value: float) -> float:
+    return float(max(0.0, min(1.0, value)))
+
+
+def _score_from_penalty(penalty: float, scale: float) -> float:
+    if scale <= 0:
+        return 1.0
+    return _clamp_score(1.0 / (1.0 + (penalty / scale)))
+
+
+def _group_penalties_by_class(
+    pupils: List[Pupil],
+    classes: List[List[int]],
+    get_group,
+) -> List[float]:
+    if not classes:
+        return []
+
+    group_values = sorted({get_group(pupil) for pupil in pupils})
+    class_penalties: List[float] = [0.0 for _ in classes]
+    class_count = len(classes)
+
+    for group_value in group_values:
+        total = sum(1 for pupil in pupils if get_group(pupil) == group_value)
+        ideal = total / class_count
+        for class_index, class_idxs in enumerate(classes):
+            count = sum(1 for i in class_idxs if get_group(pupils[i]) == group_value)
+            class_penalties[class_index] += abs(count - ideal)
+
+    return class_penalties
+
+
+def _chemistry_penalties_by_class(
+    classes: List[List[int]],
+    positive_pairs: set[Tuple[int, int]],
+) -> List[float]:
+    if not classes:
+        return []
+
+    class_of: Dict[int, int] = {}
+    for class_index, class_idxs in enumerate(classes):
+        for pupil_index in class_idxs:
+            class_of[pupil_index] = class_index
+
+    penalties = [0.0 for _ in classes]
+    for first, second in positive_pairs:
+        first_class = class_of.get(first)
+        second_class = class_of.get(second)
+        if first_class is None or second_class is None or first_class == second_class:
+            continue
+        penalties[first_class] += 1.0
+        penalties[second_class] += 1.0
+
+    return penalties
+
+
+def _worst_class_index(class_penalties: List[float]) -> Optional[int]:
+    if not class_penalties:
+        return None
+    worst_value = max(class_penalties)
+    if worst_value <= 0:
+        return 0
+    return class_penalties.index(worst_value)
+
+
 def _solve_for_k(
     req: OptimizeRequest,
     pupils: List[Pupil],
@@ -673,21 +738,6 @@ def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
         pupil_ids = [pupils[i].id for i in class_idxs]
         classes_out.append(OptimizedClass(classIndex=class_index, pupilIds=pupil_ids))
 
-    # Simple scoring based on assignment penalties; returns 0..1 floats.
-    def score_from_pen(pen: float, scale: float) -> float:
-        return float(1.0 / (1.0 + (pen / scale if scale > 0 else 0.0)))
-
-    def group_penalty(get_group) -> float:
-        group_values = sorted({get_group(p) for p in pupils})
-        penalty = 0.0
-        for gv in group_values:
-            total = sum(1 for p in pupils if get_group(p) == gv)
-            ideal = total / best_k
-            for class_idxs in best_solution:
-                cnt = sum(1 for i in class_idxs if get_group(pupils[i]) == gv)
-                penalty += abs(cnt - ideal)
-        return penalty
-
     # Chemistry score as fraction of positive pairs together
     pos_pairs = {
         (min(idx_by_id[a], idx_by_id[b]), max(idx_by_id[a], idx_by_id[b]))
@@ -703,43 +753,140 @@ def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
             for i in class_idxs:
                 class_of[i] = ci
         pos_together = sum(1 for i, j in pos_pairs if class_of.get(i) == class_of.get(j))
-        chemistry_score = float(pos_together / pos_total)
+        chemistry_score = _clamp_score(float(pos_together / pos_total))
+
+    gender_penalties = (
+        [0.0 for _ in best_solution]
+        if req.constraints.genderPriority == "ignore"
+        else _group_penalties_by_class(pupils, best_solution, lambda p: p.gender)
+    )
+    origin_penalties = (
+        [0.0 for _ in best_solution]
+        if req.constraints.originPriority == "ignore"
+        else _group_penalties_by_class(pupils, best_solution, lambda p: p.originSchool)
+    )
+    needs_penalties = _group_penalties_by_class(pupils, best_solution, lambda p: p.needs)
+    location_penalties = (
+        [0.0 for _ in best_solution]
+        if req.constraints.locationPriority in ("ignore", "not_considered")
+        else _group_penalties_by_class(pupils, best_solution, lambda p: p.zone)
+    )
+    chemistry_penalties = _chemistry_penalties_by_class(best_solution, pos_pairs)
+
+    gender_penalty = sum(gender_penalties)
+    origin_penalty = sum(origin_penalties)
+    needs_penalty = sum(needs_penalties)
+    location_penalty = sum(location_penalties)
+    chemistry_penalty = sum(chemistry_penalties) / 2 if chemistry_penalties else 0.0
 
     gender_score = (
         1.0
         if req.constraints.genderPriority == "ignore"
-        else score_from_pen(group_penalty(lambda p: p.gender), scale=max(1, n))
+        else _score_from_penalty(gender_penalty, scale=max(1, n))
     )
 
     origin_score = (
         1.0
         if req.constraints.originPriority == "ignore"
-        else score_from_pen(group_penalty(lambda p: p.originSchool), scale=max(1, n))
+        else _score_from_penalty(origin_penalty, scale=max(1, n))
     )
 
-    needs_score = score_from_pen(group_penalty(lambda p: p.needs), scale=max(1, n))
+    needs_score = _score_from_penalty(needs_penalty, scale=max(1, n))
 
     location_score = (
         1.0
         if req.constraints.locationPriority in ("ignore", "not_considered")
-        else score_from_pen(group_penalty(lambda p: p.zone), scale=max(1, n))
+        else _score_from_penalty(location_penalty, scale=max(1, n))
     )
 
-    overall = (gender_score * 0.2 + origin_score * 0.25 + needs_score * 0.2 + location_score * 0.15 + chemistry_score * 0.2)
+    overall = _clamp_score(
+        gender_score * 0.2
+        + origin_score * 0.25
+        + needs_score * 0.2
+        + location_score * 0.15
+        + chemistry_score * 0.2
+    )
+
+    category_details = [
+        {
+            "key": "genderBalance",
+            "label": "Gender Balance",
+            "score": _clamp_score(gender_score),
+            "penalty": float(gender_penalty),
+            "active": req.constraints.genderPriority != "ignore",
+            "worst_class_index": _worst_class_index(gender_penalties),
+        },
+        {
+            "key": "originMix",
+            "label": "Origin Mix",
+            "score": _clamp_score(origin_score),
+            "penalty": float(origin_penalty),
+            "active": req.constraints.originPriority != "ignore",
+            "worst_class_index": _worst_class_index(origin_penalties),
+        },
+        {
+            "key": "needsBalance",
+            "label": "Needs Balance",
+            "score": _clamp_score(needs_score),
+            "penalty": float(needs_penalty),
+            "active": True,
+            "worst_class_index": _worst_class_index(needs_penalties),
+        },
+        {
+            "key": "locationBalance",
+            "label": "Location Balance",
+            "score": _clamp_score(location_score),
+            "penalty": float(location_penalty),
+            "active": req.constraints.locationPriority not in ("ignore", "not_considered"),
+            "worst_class_index": _worst_class_index(location_penalties),
+        },
+        {
+            "key": "chemistry",
+            "label": "Chemistry Links",
+            "score": _clamp_score(chemistry_score),
+            "penalty": float(chemistry_penalty),
+            "active": True,
+            "worst_class_index": _worst_class_index(chemistry_penalties),
+        },
+    ]
+
+    active_categories = [detail for detail in category_details if detail["active"]]
+    best_active_score = max((detail["score"] for detail in active_categories), default=1.0)
+    sacrificed_priorities = [
+        {
+            "key": detail["key"],
+            "label": detail["label"],
+            "score": detail["score"],
+            "satisfactionPct": int(round(detail["score"] * 100)),
+            "gapFromBestPct": int(round((best_active_score - detail["score"]) * 100)),
+        }
+        for detail in active_categories
+        if detail["penalty"] > 0 and (
+            detail["score"] <= best_active_score - 0.1 or detail["score"] < 0.95
+        )
+    ]
+
+    worst_class_highlights = {
+        detail["key"]: detail["worst_class_index"]
+        for detail in category_details
+        if detail["worst_class_index"] is not None
+    }
 
     return OptimizeResponse(
         classes=classes_out,
         score=Score(
-            overall=overall,
-            genderBalance=gender_score,
-            originMix=origin_score,
-            needsBalance=needs_score,
-            locationBalance=location_score,
-            chemistry=chemistry_score,
+            overall=_clamp_score(overall),
+            genderBalance=_clamp_score(gender_score),
+            originMix=_clamp_score(origin_score),
+            needsBalance=_clamp_score(needs_score),
+            locationBalance=_clamp_score(location_score),
+            chemistry=_clamp_score(chemistry_score),
         ),
         debug={
             "chosenClassCount": best_k,
-            "objective": int(best_obj) if best_obj is not None else None
+            "objective": int(best_obj) if best_obj is not None else None,
+            "sacrificed_priorities": sacrificed_priorities,
+            "worst_class_highlights": worst_class_highlights,
         },
     )
 

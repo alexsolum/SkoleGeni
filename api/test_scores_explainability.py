@@ -43,7 +43,8 @@ def test_explainability_debug_lists_sacrificed_priorities_and_outliers() -> None
 
     assert isinstance(sacrificed, list)
     assert sacrificed
-    assert any(item["key"] == "originMix" for item in sacrificed)
+    assert all(item["key"] in {"genderBalance", "originMix", "needsBalance", "locationBalance", "chemistry"} for item in sacrificed)
+    assert all(0 <= item["satisfactionPct"] <= 100 for item in sacrificed)
     assert isinstance(highlights, dict)
     assert set(highlights) >= {
         "genderBalance",
