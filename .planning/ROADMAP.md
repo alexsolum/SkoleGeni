@@ -69,14 +69,14 @@ Plans:
 **Requirements**: [EDIT-01, EDIT-02, EDIT-03]
 **Success Criteria** (what must be TRUE):
 1. Manual moves persist and are restored when the user returns to the editor.
-2. Invalid moves are blocked with clear explanations tied to the violated rule.
+2. Invalid moves are visually flagged (Red Card state) with clear explanations.
 3. Users can continue refining a saved roster without losing the last accepted assignment state.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: Design and implement a saved assignment or revision model for manual edits
-- [ ] 04-02: Connect the class editor to durable persistence and reload behavior
-- [ ] 04-03: Improve conflict feedback and score recalculation trust in the editor
+- [ ] 04-01-PLAN.md — Design and implement a saved assignment model and temporal state store
+- [ ] 04-02-PLAN.md — Connect the class editor to durable persistence and Undo/Redo behavior
+- [ ] 04-03-PLAN.md — Implement exhaustive validation, Red Card states, and an issues sidebar
 
 ### Phase 5: Polish and Release Readiness
 **Goal**: Bring the app into visual alignment with the intended design system and add the safety net needed for ongoing work.
