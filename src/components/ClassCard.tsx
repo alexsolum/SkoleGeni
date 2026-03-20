@@ -98,8 +98,11 @@ export function getChemistryStatusByPupil({
     }
 
     const fromStatus = ensureStatus(fromPupilId);
+    const toStatus = ensureStatus(toPupilId);
     fromStatus.positiveSatisfied = true;
+    toStatus.positiveSatisfied = true;
     fromStatus.positiveTargets.push(toPupilId);
+    toStatus.positiveTargets.push(fromPupilId);
   });
 
   chemistry.negative.forEach(([fromPupilId, toPupilId]) => {
