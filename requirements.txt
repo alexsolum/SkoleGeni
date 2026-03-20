@@ -1,0 +1,6 @@
+fastapi
+ortools
+uvicorn
+httpx
+pytest
+
