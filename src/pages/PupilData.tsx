@@ -7,9 +7,11 @@ import { CsvMappingModal } from "../components/pupil/CsvMappingModal";
 import { IssuesPanel } from "../components/pupil/IssuesPanel";
 import { WorkflowStatusHeader } from "../components/project/WorkflowStatusHeader";
 import {
+  OptimizerRequestError,
   optimizeProject,
   saveProjectRosterState,
   type Chemistry,
+  type DiagnosticResponse,
   type OptimizationConstraints,
   type Pupil
 } from "../lib/api";
@@ -120,6 +122,7 @@ export default function PupilData() {
   );
   const [chemSearch, setChemSearch] = useState("");
   const [optimizerLoading, setOptimizerLoading] = useState(false);
+  const [optimizerDiagnostics, setOptimizerDiagnostics] = useState<DiagnosticResponse | null>(null);
 
   const pupilsRef = useRef<Pupil[]>([]);
   const chemistryRef = useRef<Chemistry>({ positive: [], negative: [] });
@@ -442,6 +445,7 @@ export default function PupilData() {
     }
 
     setOptimizerLoading(true);
+    setOptimizerDiagnostics(null);
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -463,7 +467,17 @@ export default function PupilData() {
 
       navigate(`/results/${projectId}`);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Optimizer failed.");
+      if (error instanceof OptimizerRequestError && error.status === 400 && error.diagnostic) {
+        setOptimizerDiagnostics(error.diagnostic);
+        toast.error(
+          error.diagnostic.violations
+            .map((violation) => `${violation.message}\nSuggestion: ${violation.suggestion}`)
+            .join("\n\n"),
+          { duration: 8000 }
+        );
+      } else {
+        toast.error(error instanceof Error ? error.message : "Optimizer failed.");
+      }
     } finally {
       setOptimizerLoading(false);
     }
@@ -521,6 +535,24 @@ export default function PupilData() {
         </div>
 
         {saveState !== "idle" && <WorkflowStatusHeader state={saveState} />}
+
+        {optimizerDiagnostics && (
+          <div className="mt-6 rounded-[4px] border border-red-500/60 bg-red-50 p-4 text-red-900">
+            <div className="font-heading text-sm font-bold">Optimizer constraints need adjustment</div>
+            <div className="mt-1 text-sm">
+              The current setup cannot produce a valid roster. Review the flagged constraints, adjust them, and run the optimizer again.
+            </div>
+            <ul className="mt-3 space-y-3 text-sm">
+              {optimizerDiagnostics.violations.map((violation, index) => (
+                <li key={`${violation.category}-${index}`} className="rounded-[4px] border border-red-200 bg-white/70 p-3">
+                  <div className="font-heading font-bold">{violation.category}</div>
+                  <div className="mt-1">{violation.message}</div>
+                  <div className="mt-1 text-red-800">Suggestion: {violation.suggestion}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="mt-6 rounded-[4px] border border-muted/50 bg-surface p-4">
           <div className="flex items-start justify-between gap-6">

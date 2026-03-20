@@ -46,6 +46,18 @@ export type DiagnosticResponse = {
   violations: Violation[];
 };
 
+export class OptimizerRequestError extends Error {
+  status: number;
+  diagnostic?: DiagnosticResponse;
+
+  constructor(message: string, status: number, diagnostic?: DiagnosticResponse) {
+    super(message);
+    this.name = "OptimizerRequestError";
+    this.status = status;
+    this.diagnostic = diagnostic;
+  }
+}
+
 export type OptimizedClass = {
   classIndex: number;
   pupilIds: string[];
@@ -71,6 +83,58 @@ export type OptimizeResponse = {
 
 function getOptimizerBaseUrl() {
   return ((import.meta.env.VITE_OPTIMIZER_URL as string | undefined) ?? "/api/optimizer").replace(/\/$/, "");
+}
+
+function isViolation(value: unknown): value is Violation {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as Violation).category === "string" &&
+    typeof (value as Violation).message === "string" &&
+    typeof (value as Violation).suggestion === "string"
+  );
+}
+
+function parseDiagnosticResponse(payload: unknown): DiagnosticResponse | undefined {
+  if (typeof payload !== "object" || payload === null) {
+    return undefined;
+  }
+
+  const detail = "detail" in payload ? (payload as { detail?: unknown }).detail : payload;
+  if (typeof detail !== "object" || detail === null || !("violations" in detail)) {
+    return undefined;
+  }
+
+  const violations = (detail as { violations?: unknown }).violations;
+  if (!Array.isArray(violations) || !violations.every(isViolation)) {
+    return undefined;
+  }
+
+  return { violations };
+}
+
+async function throwOptimizerRequestError(res: Response): Promise<never> {
+  const text = await res.text().catch(() => "");
+  let payload: unknown;
+
+  if (text) {
+    try {
+      payload = JSON.parse(text) as unknown;
+    } catch {
+      payload = undefined;
+    }
+  }
+
+  const diagnostic = parseDiagnosticResponse(payload);
+  const fallbackMessage =
+    typeof payload === "object" && payload !== null && "detail" in payload && typeof (payload as { detail?: unknown }).detail === "string"
+      ? (payload as { detail: string }).detail
+      : text || `Optimizer failed (${res.status}).`;
+
+  const message =
+    diagnostic?.violations[0]?.message ?? `Optimizer failed (${res.status}): ${fallbackMessage}`;
+
+  throw new OptimizerRequestError(message, res.status, diagnostic);
 }
 
 async function getAuthHeaders(signal?: AbortSignal) {
@@ -145,8 +209,7 @@ export async function optimizeProject(
   });
 
   if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Optimizer failed (${res.status}): ${text}`);
+    await throwOptimizerRequestError(res);
   }
 
   return (await res.json()) as OptimizeResponse;
@@ -166,8 +229,7 @@ export async function optimizeClasses(
   });
 
   if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Optimizer failed (${res.status}): ${text}`);
+    await throwOptimizerRequestError(res);
   }
 
   return (await res.json()) as OptimizeResponse;
