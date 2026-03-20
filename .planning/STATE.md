@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-20T20:24:36.9171792+01:00"
+status: planning
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-03-20T20:42:05+01:00"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 12
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # Project State
@@ -19,20 +19,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** School staff can generate balanced, defensible class rosters quickly without losing control over the final result.
-**Current focus:** Phase 04 — durable-class-editing
+**Current focus:** Phase 05 — polish-and-release-readiness
 
 ## Current Position
 
-Phase: 04 (durable-class-editing) — EXECUTING
-Plan: 3 of 3
+Phase: 05 (polish-and-release-readiness) — NOT STARTED
+Plan: 0 of 3
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 11
-- Average duration: 8 min
-- Total execution time: 1.5 hours
+- Total plans completed: 12
+- Average duration: 9 min
+- Total execution time: 1.8 hours
 
 **By Phase:**
 
@@ -40,10 +40,11 @@ Plan: 3 of 3
 |-------|-------|-------|----------|
 | 1 | 3 | 3 | 0 min |
 | 2 | 3 | 44 | 15 min |
+| 4 | 3 | 45 | 15 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 03-01, 03-02, 03-03, 04-01, 04-02
+- Last 5 plans: 03-02, 03-03, 04-01, 04-02, 04-03
 - Trend: Positive
 
 | Phase 02 P01 | 10 | 2 tasks | 11 files |
@@ -54,6 +55,7 @@ Plan: 3 of 3
 | Phase 03 P03 | 7 | 3 tasks | 6 files |
 | Phase 04 P01 | 20min | 3 tasks | 6 files |
 | Phase 04 P02 | 10min | 3 tasks | 5 files |
+| Phase 04 P03 | 15min | 4 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -86,6 +88,9 @@ Recent decisions affecting current work:
 - [Phase 04]: Subscribed the Class Editor header to zundo temporal history so undo and redo availability reflects real past and future state.
 - [Phase 04]: Guarded autosave with a persisted assignment snapshot key to avoid rewriting hydrated or reset state immediately.
 - [Phase 04]: Used the latest pupils.created_at timestamp as the available pupil-change marker because the schema does not expose pupils.updated_at.
+- [Phase 04]: Allow manual edits into invalid states and explain them immediately instead of hard-blocking drag-and-drop.
+- [Phase 04]: Use an authenticated /project/score endpoint so silent Python verification checks the user’s current manual assignment without rerunning optimization.
+- [Phase 04]: Keep manual validation in a shared rosterValidation engine so cards, sidebar issues, and score warnings stay aligned with the parity-tested scoring model.
 
 ### Pending Todos
 
@@ -97,6 +102,6 @@ None currently.
 
 ## Session Continuity
 
-Last session: 2026-03-20T20:24:36.9171792+01:00
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-03-20T20:42:05+01:00
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None

@@ -13,7 +13,7 @@ This roadmap takes the existing SkoleGeni MVP and turns it into a more trustwort
 - [x] **Phase 1: Secure Data Foundation** - Lock down access and remove destructive persistence patterns
 - [x] **Phase 2: Reliable Project Workflow** - Make project setup, constraints, import, and saving trustworthy
 - [x] **Phase 3: Trustworthy Optimization Results** - Improve optimizer validation, outcomes, and explainability
-- [ ] **Phase 4: Durable Class Editing** - Turn manual class editing into a persistent, dependable feature
+- [x] **Phase 4: Durable Class Editing** - Turn manual class editing into a persistent, dependable feature
 - [ ] **Phase 5: Polish and Release Readiness** - Align the UI, test stack, and toolchain for safer ongoing delivery
 
 ## Phase Details
@@ -76,7 +76,7 @@ Plans:
 Plans:
 - [x] 04-01-PLAN.md — Design and implement a saved assignment model and temporal state store
 - [x] 04-02-PLAN.md — Connect the class editor to durable persistence and Undo/Redo behavior
-- [ ] 04-03-PLAN.md — Implement exhaustive validation, Red Card states, issues sidebar, and official verification
+- [x] 04-03-PLAN.md — Implement exhaustive validation, Red Card states, issues sidebar, and official verification
 
 ### Phase 5: Polish and Release Readiness
 **Goal**: Bring the app into visual alignment with the intended design system and add the safety net needed for ongoing work.
@@ -103,5 +103,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Secure Data Foundation | 3/3 | Complete | 2026-03-19 |
 | 2. Reliable Project Workflow | 3/3 | Complete | 2026-03-20 |
 | 3. Trustworthy Optimization Results | 3/3 | Complete | 2026-03-20 |
-| 4. Durable Class Editing | 2/3 | In progress | 2026-03-20 |
+| 4. Durable Class Editing | 3/3 | Complete | 2026-03-20 |
 | 5. Polish and Release Readiness | 0/3 | Not started | - |
