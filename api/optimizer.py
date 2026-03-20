@@ -51,6 +51,16 @@ class OptimizeProjectRequest(BaseModel):
     projectId: str
 
 
+class Violation(BaseModel):
+    category: str
+    message: str
+    suggestion: str
+
+
+class DiagnosticResponse(BaseModel):
+    violations: List[Violation]
+
+
 class OptimizedClass(BaseModel):
     classIndex: int
     pupilIds: List[str]
@@ -69,6 +79,14 @@ class OptimizeResponse(BaseModel):
     classes: List[OptimizedClass]
     score: Score
     debug: Dict[str, object] = {}
+
+
+def _diagnostic_detail(violations: List[Violation]) -> Dict[str, object]:
+    return DiagnosticResponse(violations=violations).model_dump()
+
+
+def _raise_diagnostic_error(violations: List[Violation]) -> None:
+    raise HTTPException(status_code=400, detail=_diagnostic_detail(violations))
 
 
 def _supabase_url() -> str:
@@ -462,7 +480,15 @@ def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
 
     k_options = _derive_k_options(n, min_size, max_size)
     if not k_options:
-        raise ValueError("No feasible class count for given min/max sizes.")
+        _raise_diagnostic_error(
+            [
+                Violation(
+                    category="class_size",
+                    message="Current minimum and maximum class sizes do not allow any valid class count.",
+                    suggestion="Lower the minimum class size or raise the maximum class size before rerunning the optimizer.",
+                )
+            ]
+        )
 
     # Negative blocks: treat directed edges as undirected blocks
     undirected_negative_blocks: set[str] = set()
@@ -492,7 +518,15 @@ def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
             best_k = k
 
     if best_solution is None or best_debug is None or best_k is None:
-        raise ValueError("Optimizer could not find a feasible solution.")
+        _raise_diagnostic_error(
+            [
+                Violation(
+                    category="optimizer",
+                    message="The optimizer could not find a feasible solution with the current hard constraints.",
+                    suggestion="Relax one or more strict priorities or class-size limits and try again.",
+                )
+            ]
+        )
 
     # Convert to pupil IDs for output
     classes_out: List[OptimizedClass] = []

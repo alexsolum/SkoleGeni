@@ -36,6 +36,16 @@ export type OptimizeRequest = {
   chemistry: Chemistry;
 };
 
+export type Violation = {
+  category: string;
+  message: string;
+  suggestion: string;
+};
+
+export type DiagnosticResponse = {
+  violations: Violation[];
+};
+
 export type OptimizedClass = {
   classIndex: number;
   pupilIds: string[];
