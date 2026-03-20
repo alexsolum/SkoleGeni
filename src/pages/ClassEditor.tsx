@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DndContext, type DragEndEvent, useDraggable, useDroppable } from "@dnd-kit/core";
 import debounce from "lodash.debounce";
 
-import type { Chemistry, OptimizationConstraints, OptimizeResponse, Pupil, Score } from "../lib/api";
+import { scoreProjectAssignment, type Chemistry, type OptimizationConstraints, type OptimizeResponse, type Pupil, type Score } from "../lib/api";
 import { clearEditorDraft, useEditorStore, useEditorTemporalStore, readEditorDraft } from "../lib/editorStore";
 import { validateRoster, type ValidationViolation } from "../lib/rosterValidation";
 import { supabase } from "../lib/supabase";
@@ -151,6 +151,7 @@ const SCORE_LABELS: Array<{ key: keyof Score; label: string }> = [
   { key: "locationBalance", label: "Location" },
   { key: "chemistry", label: "Chemistry" }
 ];
+const PYTHON_VERIFICATION_THRESHOLD = 0.05;
 
 function ClassColumn({
   classIndex,
@@ -277,6 +278,8 @@ export default function ClassEditor() {
   const [optimizerAssignment, setOptimizerAssignment] = useState<string[][]>([]);
   const [optimizerScoreBaseline, setOptimizerScoreBaseline] = useState<Score | null>(null);
   const [score, setScore] = useState<Score | null>(null);
+  const [officialScore, setOfficialScore] = useState<Score | null>(null);
+  const [verificationState, setVerificationState] = useState<"idle" | "checking" | "ok" | "warning" | "error">("idle");
   const [hoveredIssuePupilId, setHoveredIssuePupilId] = useState<string | null>(null);
   const [resetting, setResetting] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -444,6 +447,8 @@ export default function ClassEditor() {
       setChemistry(nextChemistry);
       setOptimizerAssignment(optimizerBaseline);
       setOptimizerScoreBaseline(optimizerBaselineScore);
+      setOfficialScore(null);
+      setVerificationState("idle");
       initialize(projectId, nextAssignment, { lastSaved: nextLastSaved, timestamp: nextTimestamp });
       lastPersistedAssignmentKeyRef.current = JSON.stringify(nextAssignment);
       setScore(nextScore);
@@ -496,6 +501,31 @@ export default function ClassEditor() {
 
     setScore(validation.scores);
   }, [assignment, loading, validation.scores]);
+
+  const verifyWithPython = useMemo(
+    () =>
+      debounce(async (nextAssignment: string[][], quickScore: Score) => {
+        if (!projectId) {
+          return;
+        }
+
+        setVerificationState("checking");
+
+        try {
+          const nextOfficialScore = await scoreProjectAssignment({
+            projectId,
+            assignment: nextAssignment
+          });
+          setOfficialScore(nextOfficialScore);
+          setVerificationState(
+            Math.abs(nextOfficialScore.overall - quickScore.overall) > PYTHON_VERIFICATION_THRESHOLD ? "warning" : "ok"
+          );
+        } catch {
+          setVerificationState("error");
+        }
+      }, 5000),
+    [projectId]
+  );
 
   const autosaveAssignment = useMemo(
     () =>
@@ -563,6 +593,22 @@ export default function ClassEditor() {
   useEffect(() => {
     return () => autosaveAssignment.cancel();
   }, [autosaveAssignment]);
+
+  useEffect(() => {
+    if (loading || !projectId || assignment.length === 0 || !score) {
+      return;
+    }
+
+    verifyWithPython(assignment.map((groupClass) => [...groupClass]), score);
+
+    return () => {
+      verifyWithPython.cancel();
+    };
+  }, [assignment, loading, projectId, score, verifyWithPython]);
+
+  useEffect(() => {
+    return () => verifyWithPython.cancel();
+  }, [verifyWithPython]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -722,6 +768,15 @@ export default function ClassEditor() {
             <div>
               <div className="font-heading font-bold text-primary">Global Score</div>
               <div className="mt-1 font-mono text-xs text-muted">Manual validation uses the same category math as the Python solver.</div>
+              <div className="mt-2 font-mono text-xs text-muted" aria-live="polite">
+                {verificationState === "idle" && "Python verification: waiting for manual edits"}
+                {verificationState === "checking" && "Python verification: checking official score..."}
+                {verificationState === "ok" &&
+                  `Python verification: OK${officialScore ? ` · Verified score: ${Math.round(officialScore.overall * 100)}%` : ""}`}
+                {verificationState === "warning" &&
+                  `Python verification: drift detected${officialScore ? ` · Verified score: ${Math.round(officialScore.overall * 100)}%` : ""}`}
+                {verificationState === "error" && "Python verification: unavailable"}
+              </div>
             </div>
             <div className="text-[26px] font-heading font-bold text-primary">{score ? Math.round(score.overall * 100) : 0}%</div>
           </div>
@@ -732,6 +787,11 @@ export default function ClassEditor() {
                   {label} score dropped
                 </span>
               ))}
+            </div>
+          ) : null}
+          {verificationState === "warning" ? (
+            <div className="mt-3 rounded-[4px] border border-amber-500/40 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+              The quick manual score differs from the Python verification by more than 5 percentage points.
             </div>
           ) : null}
         </div>

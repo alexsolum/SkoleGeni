@@ -36,6 +36,11 @@ export type OptimizeRequest = {
   chemistry: Chemistry;
 };
 
+export type ScoreProjectAssignmentRequest = {
+  projectId: string;
+  assignment: string[][];
+};
+
 export type Violation = {
   category: string;
   message: string;
@@ -221,6 +226,30 @@ export async function optimizeProject(
   }
 
   return (await res.json()) as OptimizeResponse;
+}
+
+export async function scoreProjectAssignment(
+  payload: ScoreProjectAssignmentRequest,
+  signal?: AbortSignal
+): Promise<Score> {
+  const url = `${getOptimizerBaseUrl()}/project/score`;
+  const authHeaders = await getAuthHeaders(signal);
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      ...authHeaders
+    },
+    body: JSON.stringify(payload),
+    signal
+  });
+
+  if (!res.ok) {
+    await throwOptimizerRequestError(res);
+  }
+
+  return (await res.json()) as Score;
 }
 
 export async function optimizeClasses(

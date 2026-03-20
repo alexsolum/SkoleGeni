@@ -51,6 +51,11 @@ class OptimizeProjectRequest(BaseModel):
     projectId: str
 
 
+class ScoreProjectAssignmentRequest(BaseModel):
+    projectId: str
+    assignment: List[List[str]]
+
+
 class Violation(BaseModel):
     category: str
     message: str
@@ -891,6 +896,89 @@ def _optimize_request(req: OptimizeRequest) -> OptimizeResponse:
     )
 
 
+def _score_assignment(req: OptimizeRequest, assignment: List[List[str]]) -> Score:
+    if not req.pupils:
+        return Score(overall=0, genderBalance=0, originMix=0, needsBalance=0, locationBalance=0, chemistry=0)
+
+    pupils = req.pupils
+    idx_by_id = {p.id: i for i, p in enumerate(pupils)}
+    n = len(pupils)
+    seen_ids: set[str] = set()
+    classes: List[List[int]] = []
+
+    for class_ids in assignment:
+        class_indexes: List[int] = []
+        for pupil_id in class_ids:
+            if pupil_id not in idx_by_id:
+                raise HTTPException(status_code=400, detail=f"Unknown pupil in assignment: {pupil_id}")
+            if pupil_id in seen_ids:
+                raise HTTPException(status_code=400, detail=f"Duplicate pupil in assignment: {pupil_id}")
+            seen_ids.add(pupil_id)
+            class_indexes.append(idx_by_id[pupil_id])
+        classes.append(class_indexes)
+
+    expected_ids = set(idx_by_id.keys())
+    if seen_ids != expected_ids:
+        missing_ids = sorted(expected_ids - seen_ids)
+        extra_ids = sorted(seen_ids - expected_ids)
+        detail_parts: List[str] = []
+        if missing_ids:
+            detail_parts.append(f"missing pupils: {', '.join(missing_ids)}")
+        if extra_ids:
+            detail_parts.append(f"unexpected pupils: {', '.join(extra_ids)}")
+        raise HTTPException(status_code=400, detail=f"Assignment does not cover the saved roster ({'; '.join(detail_parts)})")
+
+    pos_pairs = {
+        (min(idx_by_id[a], idx_by_id[b]), max(idx_by_id[a], idx_by_id[b]))
+        for a, b in req.chemistry.positive
+        if a in idx_by_id and b in idx_by_id and a != b
+    }
+    if len(pos_pairs) == 0:
+        chemistry_score = 1.0
+    else:
+        pos_total = len(pos_pairs)
+        class_of: Dict[int, int] = {}
+        for ci, class_idxs in enumerate(classes):
+            for i in class_idxs:
+                class_of[i] = ci
+        pos_together = sum(1 for i, j in pos_pairs if class_of.get(i) == class_of.get(j))
+        chemistry_score = _clamp_score(float(pos_together / pos_total))
+
+    gender_penalty = 0.0 if req.constraints.genderPriority == "ignore" else sum(
+        _group_penalties_by_class(pupils, classes, lambda p: p.gender)
+    )
+    origin_penalty = 0.0 if req.constraints.originPriority == "ignore" else sum(
+        _group_penalties_by_class(pupils, classes, lambda p: p.originSchool)
+    )
+    needs_penalty = sum(_group_penalties_by_class(pupils, classes, lambda p: p.needs))
+    location_penalty = 0.0 if req.constraints.locationPriority in ("ignore", "not_considered") else sum(
+        _group_penalties_by_class(pupils, classes, lambda p: p.zone)
+    )
+
+    gender_score = 1.0 if req.constraints.genderPriority == "ignore" else _score_from_penalty(gender_penalty, scale=max(1, n))
+    origin_score = 1.0 if req.constraints.originPriority == "ignore" else _score_from_penalty(origin_penalty, scale=max(1, n))
+    needs_score = _score_from_penalty(needs_penalty, scale=max(1, n))
+    location_score = 1.0 if req.constraints.locationPriority in ("ignore", "not_considered") else _score_from_penalty(
+        location_penalty, scale=max(1, n)
+    )
+    overall = _clamp_score(
+        gender_score * 0.2
+        + origin_score * 0.25
+        + needs_score * 0.2
+        + location_score * 0.15
+        + chemistry_score * 0.2
+    )
+
+    return Score(
+        overall=_clamp_score(overall),
+        genderBalance=_clamp_score(gender_score),
+        originMix=_clamp_score(origin_score),
+        needsBalance=_clamp_score(needs_score),
+        locationBalance=_clamp_score(location_score),
+        chemistry=_clamp_score(chemistry_score),
+    )
+
+
 @app.post("/")
 def optimize(req: OptimizeRequest) -> OptimizeResponse:
     return _optimize_request(req)
@@ -904,4 +992,14 @@ def optimize_project(req: OptimizeProjectRequest, request: Request) -> OptimizeR
 
     project_request = _load_project_optimize_request(req.projectId, auth_header)
     return _optimize_request(project_request)
+
+
+@app.post("/project/score")
+def score_project_assignment(req: ScoreProjectAssignmentRequest, request: Request) -> Score:
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        raise HTTPException(status_code=401, detail="Missing Authorization header.")
+
+    project_request = _load_project_optimize_request(req.projectId, auth_header)
+    return _score_assignment(project_request, req.assignment)
 
