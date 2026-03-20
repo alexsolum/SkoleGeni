@@ -1,6 +1,8 @@
 import type { StoreApi } from "zustand";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { useStoreWithEqualityFn } from "zustand/traditional";
+import type { TemporalState } from "zundo";
 import { temporal } from "zundo";
 
 const EDITOR_STORAGE_NAME = "roster-draft-storage";
@@ -24,6 +26,8 @@ export type EditorStore = EditorStoreState & EditorStoreActions;
 type TemporalControls = StoreApi<{
   clear: () => void;
 }>;
+
+type EditorTemporalState = TemporalState<Pick<EditorStoreState, "assignment">>;
 
 const initialState: EditorStoreState = {
   assignment: [],
@@ -90,6 +94,13 @@ export const useEditorStore = create<EditorStore>()(
     }
   )
 );
+
+export function useEditorTemporalStore<T>(
+  selector: (state: EditorTemporalState) => T,
+  equality?: (a: T, b: T) => boolean
+) {
+  return useStoreWithEqualityFn(useEditorStore.temporal, selector, equality);
+}
 
 export function readEditorDraft(projectId: string) {
   const state = useEditorStore.getState();

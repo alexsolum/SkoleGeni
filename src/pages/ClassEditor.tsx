@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DndContext, type DragEndEvent, useDraggable, useDroppable } from "@dnd-kit/core";
 
 import type { Chemistry, OptimizationConstraints, OptimizeResponse, Pupil, Score } from "../lib/api";
-import { useEditorStore, readEditorDraft } from "../lib/editorStore";
+import { useEditorStore, useEditorTemporalStore, readEditorDraft } from "../lib/editorStore";
 import { supabase } from "../lib/supabase";
 
 type ConstraintsRow = {
@@ -259,6 +259,12 @@ export default function ClassEditor() {
   const assignment = useEditorStore((state) => state.assignment);
   const initialize = useEditorStore((state) => state.initialize);
   const setAssignment = useEditorStore((state) => state.setAssignment);
+  const { undo, redo, canUndo, canRedo } = useEditorTemporalStore((state) => ({
+    undo: state.undo,
+    redo: state.redo,
+    canUndo: state.pastStates.length > 0,
+    canRedo: state.futureStates.length > 0
+  }));
 
   const [loading, setLoading] = useState(true);
   const [constraints, setConstraints] = useState<OptimizationConstraints>(DEFAULT_CONSTRAINTS);
@@ -395,6 +401,48 @@ export default function ClassEditor() {
 
   const hasOptimizerBaseline = optimizerAssignment.length > 0;
 
+  useEffect(() => {
+    if (loading || assignment.length === 0) {
+      return;
+    }
+
+    setScore(
+      computeQuickScore({
+        pupilsById,
+        classes: assignment,
+        constraints,
+        chemistry
+      })
+    );
+  }, [assignment, chemistry, constraints, loading, pupilsById]);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      const modifierPressed = event.metaKey || event.ctrlKey;
+      if (!modifierPressed || event.key.toLowerCase() !== "z") {
+        return;
+      }
+
+      if (event.shiftKey) {
+        if (!canRedo) {
+          return;
+        }
+        event.preventDefault();
+        redo();
+        return;
+      }
+
+      if (!canUndo) {
+        return;
+      }
+      event.preventDefault();
+      undo();
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [canRedo, canUndo, redo, undo]);
+
   function isNegativePair(pupilIdA: string, pupilIdB: string) {
     const key = pupilIdA < pupilIdB ? `${pupilIdA}|${pupilIdB}` : `${pupilIdB}|${pupilIdA}`;
     return negativeSet.has(key);
@@ -406,14 +454,6 @@ export default function ClassEditor() {
 
   function recalc(nextAssignment: string[][]) {
     setAssignment(nextAssignment);
-    setScore(
-      computeQuickScore({
-        pupilsById,
-        classes: nextAssignment,
-        constraints,
-        chemistry
-      })
-    );
   }
 
   function checkDropConflict(targetClassIndex: number, pupilId: string) {
@@ -511,13 +551,30 @@ export default function ClassEditor() {
           </div>
           <div className="flex items-center gap-3">
             <button
+              type="button"
+              className="rounded-[4px] border border-muted bg-surface px-4 py-2 text-sm font-heading font-bold text-primary hover:bg-background/70 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={() => undo()}
+              disabled={!canUndo}
+            >
+              Undo
+            </button>
+            <button
+              type="button"
+              className="rounded-[4px] border border-muted bg-surface px-4 py-2 text-sm font-heading font-bold text-primary hover:bg-background/70 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={() => redo()}
+              disabled={!canRedo}
+            >
+              Redo
+            </button>
+            <button
+              type="button"
               className="rounded-[4px] border border-muted bg-surface px-4 py-2 text-sm font-heading font-bold text-primary hover:bg-background/70 disabled:opacity-60"
               onClick={resetToOptimizerResult}
               disabled={!hasOptimizerBaseline || resetting}
             >
               {resetting ? "Resetting..." : "Reset to Optimizer Result"}
             </button>
-            <button className="font-heading text-sm text-accent hover:underline" onClick={() => navigate(`/results/${projectId}`)}>
+            <button type="button" className="font-heading text-sm text-accent hover:underline" onClick={() => navigate(`/results/${projectId}`)}>
               Back to Results
             </button>
           </div>
