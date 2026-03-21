@@ -4,6 +4,7 @@ import Papa from "papaparse";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { CsvMappingModal } from "../components/pupil/CsvMappingModal";
+import { ChemistryStatCards } from "../components/pupil/ChemistryStatCards";
 import { IssuesPanel } from "../components/pupil/IssuesPanel";
 import { WorkflowStatusHeader } from "../components/project/WorkflowStatusHeader";
 import {
@@ -506,7 +507,7 @@ export default function PupilData() {
 
   if (loading) {
     return (
-      <div className="min-h-screen p-6">
+      <div className="p-6">
         <div className="mx-auto max-w-[1180px] pt-10">
           <div className="h-10 w-[380px] animate-pulse rounded-[4px] bg-muted/20" />
           <div className="mt-4 h-10 w-[620px] animate-pulse rounded-[4px] bg-muted/20" />
@@ -516,7 +517,7 @@ export default function PupilData() {
   }
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="p-6">
       <div className="mx-auto max-w-[1180px]">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -707,6 +708,8 @@ export default function PupilData() {
             warnings={issues.warnings}
             failedImports={failedImports}
           />
+
+          <ChemistryStatCards chemistry={chemistry} totalPupils={pupils.length} />
 
           <div className="mt-5 flex items-center justify-end gap-3">
             {saveState === "error" && (

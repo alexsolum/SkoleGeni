@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { supabase } from "../lib/supabase";
 import ClassCard from "../components/ClassCard";
 import type { Chemistry, OptimizeResponse, Pupil, Score } from "../lib/api";
+import { ClassBreakdownTable } from "../components/results/ClassBreakdownTable";
 
 type OptimizationRunRow = {
   result_json: OptimizeResponse;
@@ -157,6 +158,9 @@ export default function Results() {
   const score = run?.score;
   const sacrificedPriorities = run?.debug?.sacrificed_priorities ?? [];
   const worstClassHighlights = run?.debug?.worst_class_highlights ?? {};
+  const classScores = (
+    run?.debug as (OptimizeResponse["debug"] & { class_scores?: Record<number, Score> }) | undefined
+  )?.class_scores;
   const highlightedCategoriesByClass = useMemo(() => {
     const highlights = new Map<number, Array<keyof Score>>();
 
@@ -181,7 +185,7 @@ export default function Results() {
 
   if (loading) {
     return (
-      <div className="min-h-screen p-6">
+      <div className="p-6">
         <div className="mx-auto max-w-[1180px] pt-10">
           <div className="h-10 bg-muted/20 rounded-[4px] animate-pulse w-[280px]" />
           <div className="mt-4 h-10 bg-muted/20 rounded-[4px] animate-pulse w-[620px]" />
@@ -192,7 +196,7 @@ export default function Results() {
 
   if (!run || !score) {
     return (
-      <div className="min-h-screen p-6">
+      <div className="p-6">
         <div className="mx-auto max-w-[1180px] pt-10 text-muted">
           No results yet.
         </div>
@@ -201,7 +205,7 @@ export default function Results() {
   }
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="p-6">
       <div className="mx-auto max-w-[1180px]">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -296,6 +300,13 @@ export default function Results() {
             </button>
           </div>
         </div>
+
+        <ClassBreakdownTable
+          classes={run.classes}
+          classScores={classScores}
+          worstClassHighlights={worstClassHighlights}
+          projectId={projectId!}
+        />
       </div>
     </div>
   );
