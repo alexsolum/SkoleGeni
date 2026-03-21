@@ -14,7 +14,7 @@ This roadmap takes the existing SkoleGeni MVP and turns it into a more trustwort
 - [x] **Phase 2: Reliable Project Workflow** - Make project setup, constraints, import, and saving trustworthy
 - [x] **Phase 3: Trustworthy Optimization Results** - Improve optimizer validation, outcomes, and explainability
 - [x] **Phase 4: Durable Class Editing** - Turn manual class editing into a persistent, dependable feature
-- [ ] **Phase 5: Polish and Release Readiness** - Align the UI, test stack, and toolchain for safer ongoing delivery
+- [x] **Phase 5: Polish and Release Readiness** - Align the UI, test stack, and toolchain for safer ongoing delivery
 
 ## Phase Details
 
@@ -93,8 +93,8 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md — Upgrade and document the frontend toolchain and design-token implementation
-- [ ] 05-02-PLAN.md — Apply final UI and interaction polish across all core screens
-- [ ] 05-03-PLAN.md — Add automated tests and smoke checks for the critical user journey
+- [x] 05-02-PLAN.md — Apply final UI and interaction polish across all core screens
+- [x] 05-03-PLAN.md — Add automated tests and smoke checks for the critical user journey
 
 ## Progress
 
@@ -107,4 +107,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Reliable Project Workflow | 3/3 | Complete | 2026-03-20 |
 | 3. Trustworthy Optimization Results | 3/3 | Complete | 2026-03-20 |
 | 4. Durable Class Editing | 5/6 | In progress | - |
-| 5. Polish and Release Readiness | 2/3 | In Progress|  |
+| 5. Polish and Release Readiness | 3/3 | Complete | 2026-03-21 |

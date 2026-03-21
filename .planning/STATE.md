@@ -4,15 +4,15 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 5
 current_plan: 3
-status: Ready for Phase 05 Plan 02 execution
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-21T07:37:38.913Z"
+status: Phase 05 complete
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-03-21T07:40:27.182Z"
 last_activity: 2026-03-21
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 18
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -22,13 +22,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** School staff can generate balanced, defensible class rosters quickly without losing control over the final result.
-**Current focus:** Phase 05 — polish-and-release-readiness
+**Current focus:** Phase 05 complete — remaining milestone work is the open Phase 04 regression follow-up
 
 ## Current Position
 
-Phase: 05 (polish-and-release-readiness) — EXECUTING
-Plan: 2 of 3 in current phase
-Status: Ready for Phase 05 Plan 02 execution
+Phase: 05 (polish-and-release-readiness) — COMPLETE
+Plan: 3 of 3 in current phase
+Status: Completed 05-03-PLAN.md
 Last activity: 2026-03-21
 Current Phase: 5
 Current Plan: 3
@@ -68,6 +68,7 @@ Last Activity: 2026-03-21
 | Phase 04-durable-class-editing P05 | 6 | 2 tasks | 6 files |
 | Phase 05 P01 | 12 | 2 tasks | 6 files |
 | Phase 05 P02 | 11 | 2 tasks | 6 files |
+| Phase 05 P03 | 11 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,9 @@ Recent decisions affecting current work:
 - [Phase 05]: Kept Welcome outside AppShell and wrapped only project-scoped routes with a shared sidebar layout.
 - [Phase 05]: Handled missing debug.class_scores typing locally in Results.tsx to keep this wave inside owned files.
 - [Phase 05]: Used a sticky full-height sidebar shell instead of forcing nested page scrolling because Configuration and ClassEditor were outside this wave's ownership.
+- [Phase 05]: Kept zero-pupil feasibility coverage aligned with the current API contract, which returns an empty successful response instead of a 400.
+- [Phase 05]: Used seeded auth storage plus page.route Supabase and optimizer stubs so the Playwright journey exercises the real UI flow deterministically.
+- [Phase 05]: Captured concrete Python reference scores from api/test_scores_explainability.py and asserted JS parity against those values.
 
 ### Pending Todos
 
@@ -121,6 +125,6 @@ None currently.
 
 ## Session Continuity
 
-Last session: 2026-03-21T07:37:38.873Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-03-21T07:40:27.174Z
+Stopped at: Completed 05-03-PLAN.md
 Resume file: None
