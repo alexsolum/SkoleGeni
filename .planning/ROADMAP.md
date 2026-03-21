@@ -91,9 +91,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: Upgrade and document the frontend toolchain and design-token implementation
-- [ ] 05-02: Apply final UI and interaction polish across all core screens
-- [ ] 05-03: Add automated tests and smoke checks for the critical user journey
+- [ ] 05-01-PLAN.md — Upgrade and document the frontend toolchain and design-token implementation
+- [ ] 05-02-PLAN.md — Apply final UI and interaction polish across all core screens
+- [ ] 05-03-PLAN.md — Add automated tests and smoke checks for the critical user journey
 
 ## Progress
 
