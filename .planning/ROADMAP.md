@@ -15,7 +15,7 @@ This roadmap takes the existing SkoleGeni MVP and turns it into a more trustwort
 - [x] **Phase 3: Trustworthy Optimization Results** - Improve optimizer validation, outcomes, and explainability
 - [x] **Phase 4: Durable Class Editing** - Turn manual class editing into a persistent, dependable feature
 - [x] **Phase 5: Polish and Release Readiness** - Align the UI, test stack, and toolchain for safer ongoing delivery
-- [ ] **Phase 6: Restore Phase 2 Verification Coverage** - Close the missing milestone evidence gap around the trustworthy setup and save workflow
+- [x] **Phase 6: Restore Phase 2 Verification Coverage** - Close the missing milestone evidence gap around the trustworthy setup and save workflow
 
 ## Phase Details
 
@@ -110,7 +110,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 06-01-PLAN.md — Rebuild Phase 2 verification evidence and close the milestone audit gap
+- [x] 06-01-PLAN.md — Rebuild Phase 2 verification evidence and close the milestone audit gap
 
 ## Progress
 
@@ -124,4 +124,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 3. Trustworthy Optimization Results | 3/3 | Complete | 2026-03-20 |
 | 4. Durable Class Editing | 5/6 | In progress | - |
 | 5. Polish and Release Readiness | 4/4 | Complete   | 2026-03-21 |
-| 6. Restore Phase 2 Verification Coverage | 0/1 | Not started | - |
+| 6. Restore Phase 2 Verification Coverage | 1/1 | Complete | 2026-03-21 |
