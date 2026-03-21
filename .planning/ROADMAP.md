@@ -36,7 +36,11 @@ Delivered: authenticated project access, setup and pupil-entry persistence, trus
   2. `GET /health` returns HTTP 200 with a JSON body, confirming the service and OR-Tools are ready to accept requests
   3. The optimizer `POST /` direct endpoint is either removed or protected so it is not a public unauthenticated entry point in the cloud
   4. The Docker image starts up and serves requests without buffering stdout/stderr (PYTHONUNBUFFERED=1 present)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Add hardening tests, readiness-backed FastAPI routes, and remove the public root POST surface
+- [ ] 07-02-PLAN.md — Harden the optimizer Docker runtime and finalize the Phase 7 validation contract
 
 ### Phase 8: GCP Setup and Manual Deploy
 **Goal**: The optimizer container is live on Cloud Run and reachable over HTTPS
