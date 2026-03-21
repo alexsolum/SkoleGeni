@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 5
-current_plan: 2
-status: executing
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-21T07:28:29.105Z"
+current_plan: 3
+status: Ready for Phase 05 Plan 02 execution
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-21T07:37:38.913Z"
 last_activity: 2026-03-21
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 18
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -31,7 +31,7 @@ Plan: 2 of 3 in current phase
 Status: Ready for Phase 05 Plan 02 execution
 Last activity: 2026-03-21
 Current Phase: 5
-Current Plan: 2
+Current Plan: 3
 Total Plans in Phase: 3
 Last Activity: 2026-03-21
 
@@ -67,6 +67,7 @@ Last Activity: 2026-03-21
 | Phase 04 P03 | 15min | 4 tasks | 7 files |
 | Phase 04-durable-class-editing P05 | 6 | 2 tasks | 6 files |
 | Phase 05 P01 | 12 | 2 tasks | 6 files |
+| Phase 05 P02 | 11 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,9 @@ Recent decisions affecting current work:
 - [Phase 04-durable-class-editing]: Assert durable editor recovery through storage payloads and dedicated test ids instead of ambiguous visible text queries.
 - [Phase 05]: Scoped strict TypeScript lint errors away from declaration and test files so npm run lint succeeds while still enforcing the main React/TypeScript rules on app code.
 - [Phase 05]: Installed the new lint stack with --no-package-lock because this execution wave did not own package-lock.json.
+- [Phase 05]: Kept Welcome outside AppShell and wrapped only project-scoped routes with a shared sidebar layout.
+- [Phase 05]: Handled missing debug.class_scores typing locally in Results.tsx to keep this wave inside owned files.
+- [Phase 05]: Used a sticky full-height sidebar shell instead of forcing nested page scrolling because Configuration and ClassEditor were outside this wave's ownership.
 
 ### Pending Todos
 
@@ -117,6 +121,6 @@ None currently.
 
 ## Session Continuity
 
-Last session: 2026-03-21T07:28:29.098Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-21T07:37:38.873Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
