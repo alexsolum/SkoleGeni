@@ -15,8 +15,8 @@ Requirements for the Optimizer in Cloud milestone. Each maps to roadmap phases.
 
 ### Hardening
 
-- [ ] **HARD-01**: Optimizer responds to cross-origin requests from the Vercel frontend domain with correct CORS headers
-- [ ] **HARD-02**: Cloud Run can health-check the optimizer via a dedicated GET /health endpoint
+- [x] **HARD-01**: Optimizer responds to cross-origin requests from the Vercel frontend domain with correct CORS headers
+- [x] **HARD-02**: Cloud Run can health-check the optimizer via a dedicated GET /health endpoint
 
 ### Wiring
 
@@ -63,8 +63,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HARD-01 | Phase 7 | Pending |
-| HARD-02 | Phase 7 | Pending |
+| HARD-01 | Phase 7 | Complete |
+| HARD-02 | Phase 7 | Complete |
 | INFRA-01 | Phase 8 | Pending |
 | INFRA-02 | Phase 8 | Pending |
 | WIRE-01 | Phase 9 | Pending |
