@@ -71,15 +71,16 @@ Plans:
 1. Manual moves persist and are restored when the user returns to the editor.
 2. Invalid moves are visually flagged (Red Card state) with clear explanations.
 3. Users can continue refining a saved roster without losing the last accepted assignment state.
-**Plans**: 6 plans
+**Plans**: 7 plans
 
 Plans:
 - [x] 04-01-PLAN.md — Design and implement a saved assignment model and temporal state store
 - [x] 04-02-PLAN.md — Connect the class editor to durable persistence and Undo/Redo behavior
-- [x] 04-03-PLAN.md — Implement exhaustive validation, Red Card states, issues sidebar, and official verification
+- [x] 04-03-PLAN.md — Implement exhaustive validation, Red Card states, issues sidebar, and inline score-drop warnings
 - [x] 04-04-PLAN.md — Align the warn-only requirement contract and sidebar regression coverage
 - [x] 04-05-PLAN.md — Close the remaining Phase 4 verification gaps
 - [ ] 04-06-PLAN.md — Close the autosave-induced double-undo regression in durable class editing
+- [ ] 04-07-PLAN.md — Add the Results-style detailed score dashboard and automated Python verification coverage
 
 ### Phase 5: Polish and Release Readiness
 **Goal**: Bring the app into visual alignment with the intended design system and add the safety net needed for ongoing work.
@@ -106,5 +107,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Secure Data Foundation | 3/3 | Complete | 2026-03-19 |
 | 2. Reliable Project Workflow | 3/3 | Complete | 2026-03-20 |
 | 3. Trustworthy Optimization Results | 3/3 | Complete | 2026-03-20 |
-| 4. Durable Class Editing | 5/5 | Complete | 2026-03-20 |
+| 4. Durable Class Editing | 5/7 | In progress | - |
 | 5. Polish and Release Readiness | 0/3 | Not started | - |
