@@ -26,13 +26,19 @@ School staff can generate balanced, defensible class rosters quickly without los
 - ✓ User can run the optimizer and receive a clear success or infeasibility outcome instead of a generic failure — validated in Phase 3
 - ✓ User can review generated classes using pupil names and class summaries rather than opaque identifiers — validated in Phase 3
 - ✓ User can understand optimizer tradeoffs and weakest-class highlights in the results UI — validated in Phase 3
+- ✓ User can manually edit classes, keep those edits durably saved, and reopen the editor without losing the accepted assignment state — validated in Phase 4
+- ✓ User can continue editing invalid intermediate states while seeing immediate conflict explanations and verified backend score feedback — validated in Phase 4
 
 ### Active
 
-- [ ] Polish the existing five-screen workflow so the product feels coherent and production-ready
-- [ ] Close MVP gaps where data handling, persistence, and output clarity are still weak
-- [ ] Bring the UI into tighter alignment with the intended SkoleGeni design language and interaction model
-- [ ] Add the minimum testing and verification needed to make further iteration safer
+(No active requirements — all v1.0 milestone requirements validated)
+
+### Validated in Phase 5
+
+- ✓ Polish the existing five-screen workflow so the product feels coherent and production-ready — validated in Phase 5
+- ✓ Close MVP gaps where data handling, persistence, and output clarity are still weak — validated in Phase 5
+- ✓ Bring the UI into tighter alignment with the intended SkoleGeni design language and interaction model — validated in Phase 5
+- ✓ Add the minimum testing and verification needed to make further iteration safer — validated in Phase 5
 
 ### Out of Scope
 
@@ -51,6 +57,10 @@ This project should therefore be planned as a brownfield product-shaping effort:
 Phase 1 established the security and persistence baseline for the rest of the roadmap. The product now uses authenticated ownership for project access, a safer trusted boundary for multi-step roster saves, and a server-backed optimizer path based on saved project state.
 
 Phase 3 completed the optimization trust pass. Optimizer runs now return structured diagnostics for infeasible requests, results render with real pupil names and explainability details, and the live local stack is verified against the real Supabase-backed project flow.
+
+Phase 4 completed the durable editing pass. Manual class edits now persist in Supabase, survive reload and return flows, expose warn-only conflict explanations, and verify against the live score endpoint.
+
+Phase 5 completed the polish and release readiness pass. The frontend toolchain is pinned and documented, all five screens share a coherent SkoleGeni design language with a heavier AppShell sidebar and denser page compositions, and automated test coverage now includes scoring parity tests, class editor unit tests, and a Playwright full-journey smoke test. The v1.0 milestone is complete.
 
 ## Constraints
 
@@ -73,4 +83,4 @@ Phase 3 completed the optimization trust pass. Optimizer runs now return structu
 | Present optimizer outcomes with explicit diagnostics and explainability metadata | Staff need to understand infeasible requests, score tradeoffs, and weak classes before trusting generated rosters | ✓ Good |
 
 ---
-*Last updated: 2026-03-20 after Phase 3 completion*
+*Last updated: 2026-03-21 after Phase 5 completion — v1.0 milestone complete*
