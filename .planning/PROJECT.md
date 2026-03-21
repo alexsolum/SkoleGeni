@@ -1,10 +1,16 @@
 # SkoleGeni
 
+## Current State
+
+SkoleGeni v1.0 MVP shipped on 2026-03-21.
+
+The shipped product now covers the full desktop-first roster workflow: authenticated project access, trustworthy setup and pupil-entry persistence, explainable optimization results, durable manual editing, and a coherent five-screen UI backed by automated regression coverage.
+
+The primary deferred item is the Phase 4 double-undo regression captured in `04-06-PLAN.md`. Milestone audit marked it as minor tech debt rather than a blocker.
+
 ## What This Is
 
 SkoleGeni is a desktop-first web app for school administrators and grade-level coordinators who need to generate balanced class rosters under real-world constraints. It combines direct data entry, configurable balancing rules, and an algorithmic optimizer so staff can move from raw pupil data to a proposed class structure and then refine the result manually.
-
-The current repository already contains an MVP covering the core five-screen workflow. The current project focus is not inventing a new product from scratch, but finishing, hardening, and polishing that MVP into a more reliable and more production-ready version of the same product.
 
 ## Core Value
 
@@ -14,73 +20,52 @@ School staff can generate balanced, defensible class rosters quickly without los
 
 ### Validated
 
-- ✓ User can create or reopen a roster project from a welcome screen — existing MVP
-- ✓ User can define class-balancing constraints before optimization — existing MVP
-- ✓ User can enter pupil data manually or import it from CSV — existing MVP
-- ✓ User can define positive and negative pupil chemistry links — existing MVP
-- ✓ User can run an optimizer that generates class assignments and score outputs — existing MVP
-- ✓ User can review generated classes in a results view — existing MVP
-- ✓ User can manually drag pupils between classes in a class editor — existing MVP
-- ✓ Authorized staff access to roster data is now enforced through owner-based project access and RLS — validated in Phase 1
-- ✓ Roster saves no longer rely on destructive browser-side replace-all writes — validated in Phase 1
-- ✓ User can run the optimizer and receive a clear success or infeasibility outcome instead of a generic failure — validated in Phase 3
-- ✓ User can review generated classes using pupil names and class summaries rather than opaque identifiers — validated in Phase 3
-- ✓ User can understand optimizer tradeoffs and weakest-class highlights in the results UI — validated in Phase 3
-- ✓ User can manually edit classes, keep those edits durably saved, and reopen the editor without losing the accepted assignment state — validated in Phase 4
-- ✓ User can continue editing invalid intermediate states while seeing immediate conflict explanations and verified backend score feedback — validated in Phase 4
+- ✓ Authorized staff access to roster data is enforced through owner-based project access and RLS — v1.0
+- ✓ Roster saves no longer rely on destructive browser-side replace-all writes — v1.0
+- ✓ Users can create, reopen, and continue a roster project without losing saved setup data — v1.0
+- ✓ Users can save validated constraints, import pupil data with actionable feedback, and rely on predictable autosave/retry behavior — v1.0
+- ✓ Users can run the optimizer and receive clear success or infeasibility outcomes with explainability and readable class summaries — v1.0
+- ✓ Users can manually edit classes, keep those edits durably saved, and continue through warn-only invalid intermediate states with clear feedback — v1.0
+- ✓ The product ships with a coherent desktop UI plus automated Python, Vitest, and Playwright coverage for critical flows — v1.0
 
 ### Active
 
-(No active requirements — all v1.0 milestone requirements validated)
-
-### Validated in Phase 5
-
-- ✓ Polish the existing five-screen workflow so the product feels coherent and production-ready — validated in Phase 5
-- ✓ Close MVP gaps where data handling, persistence, and output clarity are still weak — validated in Phase 5
-- ✓ Bring the UI into tighter alignment with the intended SkoleGeni design language and interaction model — validated in Phase 5
-- ✓ Add the minimum testing and verification needed to make further iteration safer — validated in Phase 5
+- [ ] SCEN-01: Compare multiple generated roster scenarios for the same project
+- [ ] SCEN-02: Keep alternate manual-edit branches before choosing a final roster
+- [ ] EXPT-01: Export roster results in a staff-friendly format for review and handoff
+- [ ] EXPT-02: Print or share a summary of score tradeoffs and constraint satisfaction
+- [ ] INTG-01: Import pupil data directly from an SIS or district data source
+- [ ] INTG-02: Sync finalized classes back to an external system
 
 ### Out of Scope
 
 - Native mobile support — product direction and design docs are explicitly desktop-first
-- Broad feature expansion beyond the class-generation workflow — current priority is finishing and polishing the baseline MVP
-- Replacing the core optimization approach with a different paradigm — the existing solver-based model is the baseline to improve, not discard
+- Broad feature expansion beyond roster generation, balancing, review, and refinement
+- Replacing the current solver-centered product model
 
 ## Context
 
-The repository already contains a working brownfield MVP built with Vite, React, Tailwind, Supabase-style persistence, and a FastAPI + OR-Tools optimizer. The intended product flow is documented in `PRD.md`, while `DESIGN.md` and the current implementation establish the visual direction: dense, high-utility screens with restrained colors, strong typography, and desktop-oriented layouts.
+Shipped v1.0 after 6 phases, 20 plans, and 42 documented tasks across 2026-03-19 through 2026-03-21.
 
-The codebase map in `.planning/codebase/` shows that the product already implements the main journey, but the current MVP has important gaps. The main concerns are broad anonymous database access, delete-and-reinsert persistence in the pupil workflow, no automated tests, weak persistence semantics around class editing, and some UX roughness in how optimization output is presented.
+The product now runs on the existing React + Vite frontend, FastAPI + OR-Tools optimizer, and Supabase-style persistence stack with stronger access control, safer persistence boundaries, durable editing state, and milestone-level verification coverage.
 
-This project should therefore be planned as a brownfield product-shaping effort: preserve what already works, strengthen fragile areas, and polish the end-to-end experience so the baseline MVP becomes dependable enough to extend.
+## Next Milestone Goals
 
-Phase 1 established the security and persistence baseline for the rest of the roadmap. The product now uses authenticated ownership for project access, a safer trusted boundary for multi-step roster saves, and a server-backed optimizer path based on saved project state.
-
-Phase 3 completed the optimization trust pass. Optimizer runs now return structured diagnostics for infeasible requests, results render with real pupil names and explainability details, and the live local stack is verified against the real Supabase-backed project flow.
-
-Phase 4 completed the durable editing pass. Manual class edits now persist in Supabase, survive reload and return flows, expose warn-only conflict explanations, and verify against the live score endpoint.
-
-Phase 5 completed the polish and release readiness pass. The frontend toolchain is pinned and documented, all five screens share a coherent SkoleGeni design language with a heavier AppShell sidebar and denser page compositions, and automated test coverage now includes scoring parity tests, class editor unit tests, and a Playwright full-journey smoke test. The v1.0 milestone is complete.
-
-## Constraints
-
-- **Platform**: Desktop-first only — product and design docs do not target mobile support
-- **Baseline**: Current MVP is the starting point — effort should finish and polish existing flows before expanding scope
-- **Tech stack**: React frontend + Python optimizer + Supabase-style persistence — this stack already exists and should be improved rather than replaced
-- **Product scope**: Focus on roster generation, balancing, review, and refinement — avoid unrelated admin features for now
-- **Design direction**: High-density, minimalist UI with strong typographic hierarchy — must stay aligned with `PRD.md` and current SkoleGeni identity
+- Define the first post-MVP milestone scope.
+- Prioritize scenario planning versus export/reporting based on immediate user value.
+- Decide whether SIS integrations belong in the next milestone or remain deferred behind product validation.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Treat the existing MVP as validated baseline | The repository already implements the product’s core workflow end to end | — Pending |
-| Focus planning on finishing and polishing rather than broad expansion | The biggest current value comes from reliability, clarity, and trust in the baseline workflow | — Pending |
-| Keep the product desktop-first | The target users work in admin-heavy desktop contexts and the design spec explicitly excludes mobile | — Pending |
-| Preserve the current solver-centered product model | The optimizer is core to the product value and already exists in the codebase | ✓ Good |
-| Keep browser reads direct under RLS and move risky multi-step writes behind a trusted boundary | This improves safety materially without forcing a full backend rewrite in Phase 1 | ✓ Good |
-| Use single authenticated staff ownership in Phase 1 while leaving room for future team concepts | This matches the immediate access model while preserving future collaboration paths | ✓ Good |
-| Present optimizer outcomes with explicit diagnostics and explainability metadata | Staff need to understand infeasible requests, score tradeoffs, and weak classes before trusting generated rosters | ✓ Good |
+| Treat the existing MVP as the validated baseline | The repository already implemented the core workflow end to end | ✓ Good |
+| Focus on finishing and polishing before broad expansion | Reliability and trust were the highest-value gaps in the baseline product | ✓ Good |
+| Keep the product desktop-first | The user context and dense workflow remain desktop-oriented | ✓ Good |
+| Preserve the solver-centered product model | Optimization is still the core product value | ✓ Good |
+| Keep browser reads direct under RLS and move risky writes behind a trusted boundary | This materially improved safety without a full backend rewrite | ✓ Good |
+| Use shared workflow state banners and route-stubbed browser verification for trust-sensitive flows | The workflow needed reusable save-state semantics and deterministic regression coverage | ✓ Good |
+| Allow warn-only invalid manual edit states with immediate explanations and backend score verification | Users need control while still seeing clear rule violations and tradeoffs | ✓ Good |
 
 ---
-*Last updated: 2026-03-21 after Phase 5 completion — v1.0 milestone complete*
+*Last updated: 2026-03-21 after v1.0 milestone completion*
