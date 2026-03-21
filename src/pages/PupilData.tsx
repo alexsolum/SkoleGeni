@@ -519,14 +519,15 @@ export default function PupilData() {
   return (
     <div className="p-6">
       <div className="mx-auto max-w-[1180px]">
-        <div className="flex items-center justify-between gap-4">
+        {/* Page header */}
+        <div className="mb-6 flex items-start justify-between gap-4 border-b border-[#E2E8F0] pb-5">
           <div>
-            <h1 className="font-heading text-[30px] font-bold text-primary">Pupil Mode</h1>
+            <h1 className="font-heading text-[28px] font-bold leading-tight text-[#0F172A]">Pupil Mode</h1>
             <p className="mt-1 text-sm text-muted">Bulk entry and relationship dynamics.</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 pt-1">
             <button
-              className="font-heading text-sm text-accent hover:underline"
+              className="rounded-md border border-[#E2E8F0] bg-surface px-3.5 py-2 text-sm font-medium text-[#475569] hover:bg-[#F1F5F9] disabled:opacity-60"
               onClick={() => navigate(`/configure/${projectId}`)}
               disabled={saveState === "saving" || optimizerLoading}
             >
@@ -555,17 +556,19 @@ export default function PupilData() {
           </div>
         )}
 
-        <div className="mt-6 rounded-[4px] border border-muted/50 bg-surface p-4">
-          <div className="flex items-start justify-between gap-6">
+        {/* Roster section */}
+        <section className="rounded-lg border border-[#E2E8F0] bg-surface shadow-sm">
+          {/* Section header */}
+          <div className="flex items-center justify-between gap-4 border-b border-[#E2E8F0] px-5 py-4">
             <div>
-              <div className="font-heading text-sm font-bold text-primary">Students</div>
-              <div className="mt-1 font-mono text-xs text-muted">
-                Positive Links: {positiveCount} · Negative Blocks: {negativeCount}
+              <div className="font-heading text-sm font-bold text-[#0F172A]">Students</div>
+              <div className="mt-0.5 font-mono text-xs text-muted">
+                {pupils.length} {pupils.length === 1 ? "pupil" : "pupils"} · {positiveCount} positive link{positiveCount !== 1 ? "s" : ""} · {negativeCount} negative block{negativeCount !== 1 ? "s" : ""}
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <label className="flex h-11 cursor-pointer items-center rounded-[4px] border border-primary bg-surface px-4 text-sm font-heading font-bold text-primary">
+            <div className="flex items-center gap-2">
+              <label className="flex h-9 cursor-pointer items-center rounded-md border border-[#CBD5E1] bg-surface px-3.5 text-sm font-medium text-[#334155] hover:bg-[#F8FAFC] disabled:opacity-60">
                 Import CSV
                 <input
                   type="file"
@@ -584,7 +587,7 @@ export default function PupilData() {
               </label>
 
               <button
-                className="h-11 rounded-[4px] border border-muted bg-background px-4 text-sm font-heading font-bold text-primary hover:bg-background/70 disabled:opacity-60"
+                className="h-9 rounded-md border border-[#CBD5E1] bg-surface px-3.5 text-sm font-medium text-[#334155] hover:bg-[#F8FAFC] disabled:opacity-60"
                 onClick={addBlankRow}
                 disabled={saveState === "saving" || optimizerLoading}
               >
@@ -594,29 +597,36 @@ export default function PupilData() {
           </div>
 
           {pupils.length === 0 ? (
-            <div className="mt-6 rounded-[4px] border border-dashed border-muted p-8 text-center">
-              <div className="font-heading font-bold text-primary">Upload CSV or add row manually</div>
-              <div className="mt-2 text-sm text-muted">We’ll parse your CSV and generate classes.</div>
+            <div className="px-5 py-12 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#F1F5F9]">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="8" r="4" />
+                  <path d="M2 20c0-4 3.13-7 7-7h4c3.87 0 7 3 7 7" />
+                  <path d="M16 3v6M13 6h6" />
+                </svg>
+              </div>
+              <div className="font-heading font-semibold text-[#0F172A]">Upload CSV or add row manually</div>
+              <div className="mt-1.5 text-sm text-muted">We’ll parse your CSV and generate classes.</div>
             </div>
           ) : (
-            <div className="mt-4 overflow-x-auto">
+            <div className="overflow-x-auto">
               <table className="min-w-[980px] w-full border-collapse">
                 <thead>
-                  <tr className="text-left font-mono text-xs text-muted">
-                    <th className="border-b border-muted/50 p-3">Student Name</th>
-                    <th className="border-b border-muted/50 p-3">Origin School</th>
-                    <th className="border-b border-muted/50 p-3">Gender</th>
-                    <th className="border-b border-muted/50 p-3">Needs</th>
-                    <th className="border-b border-muted/50 p-3">Location / Zone</th>
-                    <th className="border-b border-muted/50 p-3">Chemistry</th>
+                  <tr className="bg-[#F8FAFC] text-left">
+                    <th className="border-b border-[#E2E8F0] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted">Student Name</th>
+                    <th className="border-b border-[#E2E8F0] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted">Origin School</th>
+                    <th className="border-b border-[#E2E8F0] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted">Gender</th>
+                    <th className="border-b border-[#E2E8F0] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted">Needs</th>
+                    <th className="border-b border-[#E2E8F0] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted">Location / Zone</th>
+                    <th className="border-b border-[#E2E8F0] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted">Chemistry</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pupils.map((pupil, index) => (
-                    <tr key={pupil.id} className={index % 2 === 0 ? "bg-background/40" : ""}>
-                      <td className="border-b border-muted/30 p-2">
+                    <tr key={pupil.id} className={index % 2 === 0 ? "bg-white" : "bg-[#F8FAFC]/60"}>
+                      <td className="border-b border-[#E2E8F0] px-4 py-2">
                         <input
-                          className={`w-full rounded-[4px] border border-muted/50 bg-transparent px-2 py-2 text-sm font-body outline-none focus:ring-2 focus:ring-accent ${isCellInvalid(pupil.id, "name") ? CELL_ERROR_CLASS : ""}`}
+                          className={`w-full rounded-md border border-[#CBD5E1] bg-transparent px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-accent ${isCellInvalid(pupil.id, "name") ? CELL_ERROR_CLASS : ""}`}
                           value={pupil.name}
                           onChange={(event) => updatePupil(pupil.id, { name: event.target.value })}
                           onBlur={() => touchField(pupil.id, "name")}
@@ -624,9 +634,9 @@ export default function PupilData() {
                           disabled={saveState === "saving" || optimizerLoading}
                         />
                       </td>
-                      <td className="border-b border-muted/30 p-2">
+                      <td className="border-b border-[#E2E8F0] px-4 py-2">
                         <input
-                          className={`w-full rounded-[4px] border border-muted/50 bg-transparent px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-accent ${isCellInvalid(pupil.id, "originSchool") ? CELL_ERROR_CLASS : ""}`}
+                          className={`w-full rounded-md border border-[#CBD5E1] bg-transparent px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-accent ${isCellInvalid(pupil.id, "originSchool") ? CELL_ERROR_CLASS : ""}`}
                           value={pupil.originSchool}
                           onChange={(event) => updatePupil(pupil.id, { originSchool: event.target.value })}
                           onBlur={() => touchField(pupil.id, "originSchool")}
@@ -634,9 +644,9 @@ export default function PupilData() {
                           disabled={saveState === "saving" || optimizerLoading}
                         />
                       </td>
-                      <td className="border-b border-muted/30 p-2">
+                      <td className="border-b border-[#E2E8F0] px-4 py-2">
                         <select
-                          className="w-full rounded-[4px] border border-muted/50 bg-transparent px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-accent"
+                          className="w-full rounded-md border border-[#CBD5E1] bg-transparent px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-accent"
                           value={pupil.gender}
                           onChange={(event) => updatePupil(pupil.id, { gender: event.target.value as Pupil["gender"] })}
                           disabled={saveState === "saving" || optimizerLoading}
@@ -646,9 +656,9 @@ export default function PupilData() {
                           <option value="Other">Other</option>
                         </select>
                       </td>
-                      <td className="border-b border-muted/30 p-2">
+                      <td className="border-b border-[#E2E8F0] px-4 py-2">
                         <input
-                          className={`w-full rounded-[4px] border border-muted/50 bg-transparent px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-accent ${isCellInvalid(pupil.id, "needs") ? CELL_ERROR_CLASS : ""}`}
+                          className={`w-full rounded-md border border-[#CBD5E1] bg-transparent px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-accent ${isCellInvalid(pupil.id, "needs") ? CELL_ERROR_CLASS : ""}`}
                           value={pupil.needs}
                           onChange={(event) => updatePupil(pupil.id, { needs: event.target.value })}
                           onBlur={() => touchField(pupil.id, "needs")}
@@ -656,9 +666,9 @@ export default function PupilData() {
                           disabled={saveState === "saving" || optimizerLoading}
                         />
                       </td>
-                      <td className="border-b border-muted/30 p-2">
+                      <td className="border-b border-[#E2E8F0] px-4 py-2">
                         <input
-                          className={`w-full rounded-[4px] border border-muted/50 bg-transparent px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-accent ${isCellInvalid(pupil.id, "zone") ? CELL_ERROR_CLASS : ""}`}
+                          className={`w-full rounded-md border border-[#CBD5E1] bg-transparent px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-accent ${isCellInvalid(pupil.id, "zone") ? CELL_ERROR_CLASS : ""}`}
                           value={pupil.zone}
                           onChange={(event) => updatePupil(pupil.id, { zone: event.target.value })}
                           onBlur={() => touchField(pupil.id, "zone")}
@@ -666,10 +676,10 @@ export default function PupilData() {
                           disabled={saveState === "saving" || optimizerLoading}
                         />
                       </td>
-                      <td className="border-b border-muted/30 p-2">
-                        <div className="flex items-center gap-2">
+                      <td className="border-b border-[#E2E8F0] px-4 py-2">
+                        <div className="flex items-center gap-1.5">
                           <button
-                            className="h-9 w-9 rounded-[4px] border border-muted bg-surface font-heading font-bold text-primary"
+                            className="flex h-7 w-7 items-center justify-center rounded-md border border-green-200 bg-green-50 text-sm font-bold text-green-700 hover:bg-green-100 disabled:opacity-50"
                             onClick={() => {
                               setChemSearch("");
                               setChemModalFor({ pupilId: pupil.id, kind: "positive" });
@@ -680,7 +690,7 @@ export default function PupilData() {
                             +
                           </button>
                           <button
-                            className="h-9 w-9 rounded-[4px] border border-muted bg-surface font-heading font-bold text-primary"
+                            className="flex h-7 w-7 items-center justify-center rounded-md border border-red-200 bg-red-50 text-sm font-bold text-red-600 hover:bg-red-100 disabled:opacity-50"
                             onClick={() => {
                               setChemSearch("");
                               setChemModalFor({ pupilId: pupil.id, kind: "negative" });
@@ -691,9 +701,8 @@ export default function PupilData() {
                             -
                           </button>
                         </div>
-                        <div className="mt-2 font-mono text-xs text-muted">
-                          +{chemistry.positive.filter(([fromId]) => fromId === pupil.id).length} / -
-                          {chemistry.negative.filter(([fromId]) => fromId === pupil.id).length}
+                        <div className="mt-1.5 font-mono text-xs text-muted">
+                          +{chemistry.positive.filter(([fromId]) => fromId === pupil.id).length} / -{chemistry.negative.filter(([fromId]) => fromId === pupil.id).length}
                         </div>
                       </td>
                     </tr>
@@ -703,32 +712,37 @@ export default function PupilData() {
             </div>
           )}
 
-          <IssuesPanel
-            errors={issues.errors}
-            warnings={issues.warnings}
-            failedImports={failedImports}
-          />
+          <div className="px-5 pb-2">
+            <IssuesPanel
+              errors={issues.errors}
+              warnings={issues.warnings}
+              failedImports={failedImports}
+            />
+          </div>
 
-          <ChemistryStatCards chemistry={chemistry} totalPupils={pupils.length} />
+          <div className="px-5">
+            <ChemistryStatCards chemistry={chemistry} totalPupils={pupils.length} />
+          </div>
 
-          <div className="mt-5 flex items-center justify-end gap-3">
+          {/* Action footer */}
+          <div className="flex items-center justify-end gap-3 border-t border-[#E2E8F0] px-5 py-4">
             {saveState === "error" && (
               <button
-                className="h-11 rounded-[4px] border border-muted bg-surface px-4 text-sm font-heading font-bold text-primary hover:bg-background"
+                className="h-9 rounded-md border border-[#CBD5E1] bg-surface px-4 text-sm font-medium text-[#334155] hover:bg-[#F8FAFC]"
                 onClick={retrySave}
               >
                 Retry save
               </button>
             )}
             <button
-              className="h-12 rounded-[4px] bg-accent px-6 text-sm font-heading font-bold text-surface disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-10 rounded-md bg-accent px-6 text-sm font-heading font-bold text-surface disabled:cursor-not-allowed disabled:opacity-60"
               onClick={runOptimizer}
               disabled={optimizerDisabled}
             >
               {optimizerLoading ? "Running Optimizer..." : "Run Optimizer"}
             </button>
           </div>
-        </div>
+        </section>
 
         {pendingImport && (
           <CsvMappingModal
