@@ -12,10 +12,10 @@
 
 ### Project Workflow
 
-- [x] **FLOW-01**: User can create, reopen, and continue a roster project without losing previously saved setup data
-- [x] **FLOW-02**: User can save and update class constraints with clear validation before moving to pupil entry
-- [x] **FLOW-03**: User can import pupil data from CSV and immediately see validation feedback for missing or malformed fields
-- [x] **FLOW-04**: User can save pupil and chemistry changes without destructive data-loss behavior during normal edits
+- [ ] **FLOW-01**: User can create, reopen, and continue a roster project without losing previously saved setup data
+- [ ] **FLOW-02**: User can save and update class constraints with clear validation before moving to pupil entry
+- [ ] **FLOW-03**: User can import pupil data from CSV and immediately see validation feedback for missing or malformed fields
+- [ ] **FLOW-04**: User can save pupil and chemistry changes without destructive data-loss behavior during normal edits
 
 ### Optimization Results
 
@@ -67,10 +67,10 @@
 |-------------|-------|--------|
 | SECU-01 | Phase 1 | Complete |
 | SECU-02 | Phase 1 | Complete |
-| FLOW-01 | Phase 2 | Complete |
-| FLOW-02 | Phase 2 | Complete |
-| FLOW-03 | Phase 2 | Complete |
-| FLOW-04 | Phase 2 | Complete |
+| FLOW-01 | Phase 6 | Pending |
+| FLOW-02 | Phase 6 | Pending |
+| FLOW-03 | Phase 6 | Pending |
+| FLOW-04 | Phase 6 | Pending |
 | OPTI-01 | Phase 3 | Complete |
 | OPTI-02 | Phase 3 | Complete |
 | OPTI-03 | Phase 3 | Complete |

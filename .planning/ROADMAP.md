@@ -15,6 +15,7 @@ This roadmap takes the existing SkoleGeni MVP and turns it into a more trustwort
 - [x] **Phase 3: Trustworthy Optimization Results** - Improve optimizer validation, outcomes, and explainability
 - [x] **Phase 4: Durable Class Editing** - Turn manual class editing into a persistent, dependable feature
 - [x] **Phase 5: Polish and Release Readiness** - Align the UI, test stack, and toolchain for safer ongoing delivery
+- [ ] **Phase 6: Restore Phase 2 Verification Coverage** - Close the missing milestone evidence gap around the trustworthy setup and save workflow
 
 ## Phase Details
 
@@ -97,6 +98,20 @@ Plans:
 - [x] 05-03-PLAN.md — Add automated tests and smoke checks for the critical user journey
 - [x] 05-04-PLAN.md — Close the screenshot-driven shell and Pupil Data visual coherence gap
 
+### Phase 6: Restore Phase 2 Verification Coverage
+**Goal**: Reconstruct the missing verification evidence for the setup, save, reload, and retry workflow so milestone audit can close the remaining FLOW requirements.
+**Depends on**: Phase 5
+**Requirements**: [FLOW-01, FLOW-02, FLOW-03, FLOW-04]
+**Gap Closure**: Closes the v1.0 milestone audit blocker caused by the missing `02-VERIFICATION.md` artifact.
+**Success Criteria** (what must be TRUE):
+1. `.planning/phases/02-reliable-project-workflow/02-VERIFICATION.md` exists and explicitly verifies the shipped Phase 2 behaviors against `FLOW-01` through `FLOW-04`.
+2. The setup-to-save journey has clear artifact-level evidence for create, reload, retry, validation, and autosave trust states.
+3. Rerunning milestone audit no longer reports Phase 2 as an unverified blocker.
+**Plans**: 1 plan
+
+Plans:
+- [ ] 06-01-PLAN.md — Rebuild Phase 2 verification evidence and close the milestone audit gap
+
 ## Progress
 
 **Execution Order:**
@@ -109,3 +124,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 3. Trustworthy Optimization Results | 3/3 | Complete | 2026-03-20 |
 | 4. Durable Class Editing | 5/6 | In progress | - |
 | 5. Polish and Release Readiness | 4/4 | Complete   | 2026-03-21 |
+| 6. Restore Phase 2 Verification Coverage | 0/1 | Not started | - |
