@@ -71,7 +71,7 @@ Plans:
 1. Manual moves persist and are restored when the user returns to the editor.
 2. Invalid moves are visually flagged (Red Card state) with clear explanations.
 3. Users can continue refining a saved roster without losing the last accepted assignment state.
-**Plans**: 5 plans
+**Plans**: 6 plans
 
 Plans:
 - [x] 04-01-PLAN.md — Design and implement a saved assignment model and temporal state store
@@ -79,6 +79,7 @@ Plans:
 - [x] 04-03-PLAN.md — Implement exhaustive validation, Red Card states, issues sidebar, and official verification
 - [x] 04-04-PLAN.md — Align the warn-only requirement contract and sidebar regression coverage
 - [x] 04-05-PLAN.md — Close the remaining Phase 4 verification gaps
+- [ ] 04-06-PLAN.md — Close the autosave-induced double-undo regression in durable class editing
 
 ### Phase 5: Polish and Release Readiness
 **Goal**: Bring the app into visual alignment with the intended design system and add the safety net needed for ongoing work.
