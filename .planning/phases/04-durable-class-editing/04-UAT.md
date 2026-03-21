@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 04-durable-class-editing
 source:
   - 04-01-SUMMARY.md
@@ -8,7 +8,7 @@ source:
   - 04-04-SUMMARY.md
   - 04-05-SUMMARY.md
 started: 2026-03-21T07:15:06.2268792+01:00
-updated: 2026-03-21T07:52:07.8130400+01:00
+updated: 2026-03-21T08:02:00+01:00
 ---
 
 ## Current Test
@@ -62,7 +62,15 @@ skipped: 0
   reason: "User reported: I have to press undo two times for the change to be undone"
   severity: major
   test: 4
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "zundo records autosave metadata writes as undo history entries, so setLastSaved(updatedAt) adds a duplicate assignment snapshot after each move and the first undo lands on an identical state."
+  artifacts:
+    - path: "src/lib/editorStore.ts"
+      issue: "Temporal history uses partialize but no unchanged-state guard, so metadata-only setter calls still create undo frames."
+    - path: "src/pages/ClassEditor.tsx"
+      issue: "Autosave success calls setLastSaved(updatedAt) in the temporal-tracked store after each move."
+    - path: "src/pages/__tests__/class-editor-undo.test.tsx"
+      issue: "Regression coverage exercises direct assignment updates but misses the autosave path that inserts the duplicate undo frame."
+  missing:
+    - "Prevent zundo from saving unchanged assignment snapshots when non-assignment metadata changes."
+    - "Add regression coverage for undo behavior after autosave updates lastSaved."
+  debug_session: ".planning/debug/phase4-undo-double-press.md"
