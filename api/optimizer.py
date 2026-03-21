@@ -1,19 +1,103 @@
 from __future__ import annotations
 
 import json
+import logging
 import math
 import os
-from typing import Dict, List, Literal, Optional, Tuple
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Literal, Optional, Tuple
 from urllib import error as urllib_error
 from urllib import parse as urllib_parse
 from urllib import request as urllib_request
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from ortools.sat.python import cp_model
 
-app = FastAPI()
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Readiness state computed once at startup
+# ---------------------------------------------------------------------------
+
+_readiness: Dict[str, Any] = {}
+
+
+def _compute_readiness() -> Dict[str, Any]:
+    """Compute startup readiness payload.
+
+    Required env groups:
+    - SUPABASE_URL  (SUPABASE_URL or VITE_SUPABASE_URL)
+    - SUPABASE_ANON_KEY (SUPABASE_ANON_KEY or VITE_SUPABASE_ANON_KEY)
+    """
+    missing: List[str] = []
+
+    if not (os.getenv("SUPABASE_URL") or os.getenv("VITE_SUPABASE_URL")):
+        missing.append("SUPABASE_URL")
+
+    if not (os.getenv("SUPABASE_ANON_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY")):
+        missing.append("SUPABASE_ANON_KEY")
+
+    try:
+        # OR-Tools is considered ready when cp_model is importable and the
+        # module-level import already succeeded.
+        cp_model.CpModel()
+        ortools_ready = True
+    except Exception:
+        ortools_ready = False
+
+    is_ready = ortools_ready and len(missing) == 0
+    status = "ready" if is_ready else "not_ready"
+
+    return {
+        "status": status,
+        "service": "skolegeni-optimizer",
+        "ortools_ready": ortools_ready,
+        "missing_env": missing,
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global _readiness
+    _readiness = _compute_readiness()
+    if _readiness["status"] == "ready":
+        logger.info(
+            "Optimizer startup readiness: ready — ortools_ready=%s, missing_env=[]",
+            _readiness["ortools_ready"],
+        )
+    else:
+        missing_str = ", ".join(_readiness["missing_env"])
+        logger.warning(
+            "Optimizer startup not-ready — missing env groups: %s; ortools_ready=%s",
+            missing_str,
+            _readiness["ortools_ready"],
+        )
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=".*",
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "Accept",
+        "Origin",
+        "X-Requested-With",
+        "Access-Control-Request-Headers",
+        "Access-Control-Request-Method",
+    ],
+)
 
 
 class Constraints(BaseModel):
@@ -979,9 +1063,23 @@ def _score_assignment(req: OptimizeRequest, assignment: List[List[str]]) -> Scor
     )
 
 
-@app.post("/")
-def optimize(req: OptimizeRequest) -> OptimizeResponse:
-    return _optimize_request(req)
+@app.get("/")
+def root() -> JSONResponse:
+    return JSONResponse(
+        {
+            "service": "skolegeni-optimizer",
+            "description": "Class roster optimizer for SkoleGeni.",
+            "usage": "POST /project with a bearer token to optimize a saved project.",
+        }
+    )
+
+
+@app.get("/health")
+def health() -> JSONResponse:
+    payload = dict(_readiness)
+    if payload.get("status") == "ready":
+        return JSONResponse(payload, status_code=200)
+    return JSONResponse(payload, status_code=503)
 
 
 @app.post("/project")
