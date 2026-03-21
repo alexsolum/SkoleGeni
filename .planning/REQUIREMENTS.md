@@ -63,19 +63,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | — | Pending |
-| INFRA-02 | — | Pending |
-| INFRA-03 | — | Pending |
-| HARD-01 | — | Pending |
-| HARD-02 | — | Pending |
-| WIRE-01 | — | Pending |
-| WIRE-02 | — | Pending |
+| HARD-01 | Phase 7 | Pending |
+| HARD-02 | Phase 7 | Pending |
+| INFRA-01 | Phase 8 | Pending |
+| INFRA-02 | Phase 8 | Pending |
+| WIRE-01 | Phase 9 | Pending |
+| WIRE-02 | Phase 9 | Pending |
+| INFRA-03 | Phase 10 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 7 total
-- Mapped to phases: 0
-- Unmapped: 7
+- Mapped to phases: 7
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-21 after initial definition*
+*Last updated: 2026-03-21 after roadmap creation (phases 7-10 assigned)*
