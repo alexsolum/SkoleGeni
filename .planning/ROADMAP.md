@@ -95,7 +95,7 @@ Plans:
 - [x] 05-01-PLAN.md — Upgrade and document the frontend toolchain and design-token implementation
 - [x] 05-02-PLAN.md — Apply final UI and interaction polish across all core screens
 - [x] 05-03-PLAN.md — Add automated tests and smoke checks for the critical user journey
-- [ ] 05-04-PLAN.md — Close the screenshot-driven shell and Pupil Data visual coherence gap
+- [x] 05-04-PLAN.md — Close the screenshot-driven shell and Pupil Data visual coherence gap
 
 ## Progress
 
