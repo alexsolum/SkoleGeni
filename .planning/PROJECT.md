@@ -1,5 +1,15 @@
 # SkoleGeni
 
+## Current Milestone: v1.1 Optimizer in Cloud
+
+**Goal:** Deploy the FastAPI + OR-Tools optimizer to Google Cloud Run so the Vercel-hosted frontend can call a cloud-hosted optimization endpoint instead of requiring a local Docker stack.
+
+**Target features:**
+- Deploy optimizer container to Cloud Run with the existing Dockerfile
+- Wire the Vercel frontend to call the cloud optimizer endpoint
+- Support synchronous long-running optimizations via Cloud Run's generous timeout
+- Maintain authenticated access (Supabase auth headers forwarded to optimizer)
+
 ## Current State
 
 SkoleGeni v1.0 MVP shipped on 2026-03-21.
@@ -30,12 +40,19 @@ School staff can generate balanced, defensible class rosters quickly without los
 
 ### Active
 
-- [ ] SCEN-01: Compare multiple generated roster scenarios for the same project
-- [ ] SCEN-02: Keep alternate manual-edit branches before choosing a final roster
-- [ ] EXPT-01: Export roster results in a staff-friendly format for review and handoff
-- [ ] EXPT-02: Print or share a summary of score tradeoffs and constraint satisfaction
-- [ ] INTG-01: Import pupil data directly from an SIS or district data source
-- [ ] INTG-02: Sync finalized classes back to an external system
+- [ ] Deploy the optimizer as a cloud-hosted service accessible from the Vercel frontend
+- [ ] Maintain authenticated optimizer access with Supabase auth forwarding
+- [ ] Support long-running synchronous optimizations without timeout failures
+
+### Future (deferred from v1.1)
+
+- SCEN-01: Compare multiple generated roster scenarios for the same project
+- SCEN-02: Keep alternate manual-edit branches before choosing a final roster
+- EXPT-01: Export roster results in a staff-friendly format for review and handoff
+- EXPT-02: Print or share a summary of score tradeoffs and constraint satisfaction
+- INTG-01: Import pupil data directly from an SIS or district data source
+- INTG-02: Sync finalized classes back to an external system
+- Async optimization with job queuing and progress tracking (deferred until sync timeout proves insufficient)
 
 ### Out of Scope
 
@@ -51,9 +68,8 @@ The product now runs on the existing React + Vite frontend, FastAPI + OR-Tools o
 
 ## Next Milestone Goals
 
-- Define the first post-MVP milestone scope.
-- Prioritize scenario planning versus export/reporting based on immediate user value.
-- Decide whether SIS integrations belong in the next milestone or remain deferred behind product validation.
+- Validate that the cloud-hosted optimizer works reliably for real school-sized datasets before expanding feature scope.
+- Revisit scenario planning vs export/reporting priorities after cloud deployment is stable.
 
 ## Key Decisions
 
@@ -68,4 +84,4 @@ The product now runs on the existing React + Vite frontend, FastAPI + OR-Tools o
 | Allow warn-only invalid manual edit states with immediate explanations and backend score verification | Users need control while still seeing clear rule violations and tradeoffs | ✓ Good |
 
 ---
-*Last updated: 2026-03-21 after v1.0 milestone completion*
+*Last updated: 2026-03-21 after v1.1 milestone start*
