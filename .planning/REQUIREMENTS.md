@@ -32,7 +32,7 @@
 ### Quality & Experience
 
 - [ ] **QUAL-01**: Team can run automated tests that cover optimizer logic, import/persistence behavior, and a basic end-to-end roster flow
-- [ ] **QUAL-02**: Team can run the project on a current, documented toolchain without relying on outdated frontend build conventions
+- [x] **QUAL-02**: Team can run the project on a current, documented toolchain without relying on outdated frontend build conventions
 - [ ] **UX-01**: User experiences a visually consistent desktop-first interface aligned with the SkoleGeni design language across all five screens
 
 ## v2 Requirements
@@ -78,7 +78,7 @@
 | EDIT-02 | Phase 4 | Complete |
 | EDIT-03 | Phase 4 | Complete |
 | QUAL-01 | Phase 5 | Pending |
-| QUAL-02 | Phase 5 | Pending |
+| QUAL-02 | Phase 5 | Complete |
 | UX-01 | Phase 5 | Pending |
 
 **Coverage:**
