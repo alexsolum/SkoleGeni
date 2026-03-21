@@ -53,14 +53,17 @@ Source: PRD.md Design Tokens, 05-CONTEXT.md dense spacing directive.
 
 ## Typography
 
+4 sizes, 2 weights. The `Button` row shares the Body size (14px) and is listed separately for usage clarity only — it does not constitute a fifth size.
+
 | Role | Size | Weight | Line Height | Font | Usage |
 |------|------|--------|-------------|------|-------|
 | Display | 32px | 700 | 1.2 | Cabinet Grotesk | Welcome screen heading, page-level titles |
 | Heading | 24px | 700 | 1.2 | Cabinet Grotesk | Section headings, card titles, class names |
-| Body | 14px | 500 | 1.5 | Satoshi | Table content, form labels, descriptions, nav labels |
+| Body | 14px | 400 | 1.5 | Satoshi | Table content, form labels, descriptions, nav labels |
 | Small | 12px | 400 | 1.5 | Satoshi | Helper text, muted subtitles, sidebar app subtitle |
-| Data | 13px | 400 | 1.0 | JetBrains Mono | All numeric values: scores, counts, capacity (e.g., 24/24), percentages |
-| Button | 14px | 700 | — | Cabinet Grotesk | All button labels (matches existing Button.tsx pattern) |
+| Button | 14px | 700 | — | Cabinet Grotesk | All button labels (matches existing Button.tsx pattern) — same size as Body |
+
+Numeric data (scores, counts, capacity values, percentages) uses JetBrains Mono at 14px weight 400. The monospace font-family alone distinguishes numeric data from body text — no separate size tier is needed.
 
 Source: PRD.md Typography section, 05-CONTEXT.md font decisions.
 
@@ -112,7 +115,7 @@ Source: PRD.md Color Palette, 05-CONTEXT.md decisions, 05-RESEARCH.md health bar
 - Position: fixed left, full height, does NOT animate or collapse
 - Top section: SkoleGeni app name (Cabinet Grotesk 700 16px #0F172A) + "Roster Optimizer" subtitle (Satoshi 400 12px #94A3B8), 24px vertical padding, bottom border 1px #E2E8F0
 - Nav items: icon + label, 36px height, 4px border radius, active state = `bg-accent/10 text-accent border-l-2 border-accent`, inactive = `text-text hover:bg-background`
-- Nav labels: Satoshi 14px 500
+- Nav labels: Satoshi 14px 400
 
 Nav links (project-scoped only):
 1. Configuration
@@ -158,6 +161,8 @@ Three stat cards added below the pupil table in a horizontal row.
 
 Card style: #FFFFFF, 1px #E2E8F0 border, 4px radius, 16px padding, Satoshi 12px 400 muted label below the value.
 
+Note: The stat card value uses JetBrains Mono at 24px (the Heading size tier) to give numeric prominence. This is a permitted use of an existing declared size — not a new size tier.
+
 ### Results — New: Class Breakdown Table
 
 Positioned below the existing score metric cards. Full-width table.
@@ -166,10 +171,10 @@ Table columns:
 
 | Column | Format |
 |--------|--------|
-| Class Name | Cabinet Grotesk 14px 600 #0F172A |
-| Capacity | JetBrains Mono 13px 400 (e.g., `24/24`) |
-| Health Score | Percentage (JetBrains Mono) + progress bar (see health thresholds) |
-| Action | "VIEW" — Satoshi 14px 500 #2563EB text link, routes to Class Editor |
+| Class Name | Cabinet Grotesk 14px 700 #0F172A |
+| Capacity | JetBrains Mono 14px 400 (e.g., `24/24`) |
+| Health Score | Percentage (JetBrains Mono 14px 400) + progress bar (see health thresholds) |
+| Action | "View Classes" — Satoshi 14px 400 #2563EB text link, routes to Class Editor |
 
 Worst-class row: highlighted with a subtle `bg-amber-50` row background. Data sourced from `debug.worst_class_highlights` in optimizer response.
 
@@ -205,7 +210,7 @@ Drop zone highlight: #EFF6FF background.
 | Error toast (general) | "{Action} failed. Please try again." — red (#DC2626) toast, top-right |
 | Chemistry stat card labels | "Pupils with chemistry links", "Positive pairs", "Negative pairs" |
 | Class breakdown table header | "Class Breakdown" (Cabinet Grotesk 20px 700) |
-| Class breakdown action column | "VIEW" |
+| Class breakdown action column | "View Classes" |
 | Worst-class badge | "Worst class" — amber badge inline with class name |
 
 Destructive actions in this phase: none. Phase 5 adds no destructive user-facing operations.
@@ -226,10 +231,10 @@ Source: PRD.md screen specs, 05-CONTEXT.md decisions.
 
 - Read-only display — no interactions. Derived from in-memory chemistry state already loaded by PupilData.tsx.
 
-### Class Breakdown Table — VIEW Link
+### Class Breakdown Table — View Classes Link
 
 - Click: routes to `/editor/:projectId` for the corresponding class
-- Hover: underline on "VIEW" text
+- Hover: underline on "View Classes" text
 
 ### Health Progress Bar
 
@@ -264,7 +269,7 @@ Components to create in Phase 5:
 | AppShell | `src/components/layout/AppShell.tsx` | Persistent sidebar layout wrapper for project-scoped routes |
 | SidebarLink | inside AppShell | NavLink wrapper with active/inactive styling |
 | ChemistryStatCards | `src/components/pupil/ChemistryStatCards.tsx` | Three read-only stat cards below pupil table |
-| ClassBreakdownTable | `src/components/results/ClassBreakdownTable.tsx` | Class breakdown with health bars and VIEW links |
+| ClassBreakdownTable | `src/components/results/ClassBreakdownTable.tsx` | Class breakdown with health bars and View Classes links |
 
 Components to modify:
 
@@ -283,8 +288,9 @@ Components to modify:
 - Do not animate the sidebar (no slide-in, no collapse)
 - Do not apply AppShell to the Welcome route (`/`)
 - Do not use `drop-shadow` utilities — use `border border-[#E2E8F0]` exclusively
-- Do not add new font weights beyond what is imported (400, 500, 700 for Satoshi; 400, 500, 700 for Cabinet Grotesk; 400, 600 for JetBrains Mono)
+- Do not add new font weights beyond what is imported (400, 700 for Satoshi; 400, 700 for Cabinet Grotesk; 400 for JetBrains Mono)
 - Do not use color values outside the declared palette without documenting the exception
+- Do not introduce a fifth font size tier — numeric data uses JetBrains Mono at existing declared sizes (14px body, 24px heading)
 
 ---
 
