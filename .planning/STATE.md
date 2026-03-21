@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Optimizer in Cloud
 status: unknown
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-03-21T19:55:40.334Z"
+stopped_at: Completed 07-02-PLAN.md
+last_updated: "2026-03-21T20:00:08.352Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 
 ## Current Position
 
-Phase: 07 (code-hardening) — EXECUTING
-Plan: 2 of 2
+Phase: 07 (code-hardening) — COMPLETE
+Plan: 2 of 2 (all plans complete)
 
 ## Accumulated Context
 
@@ -37,6 +37,7 @@ Key milestone decisions are recorded in `.planning/PROJECT.md`.
 - v1.1: Cloud Run Gen 2, memory=2 GiB, timeout=300 s, concurrency=1 as safe baseline for OR-Tools
 - [Phase 07-code-hardening]: Use allow_origin_regex='.*' for CORS rather than an allowlist — tighten in Phase 9
 - [Phase 07-code-hardening]: Remove POST / outright rather than adding a shared-secret; app stays live with missing env for health probe inspection
+- [Phase 07-02]: Use shell-form CMD with ${PORT:-8000} in Dockerfile for Cloud Run port injection
 
 ### Deferred Tech Debt
 
@@ -55,6 +56,6 @@ Key milestone decisions are recorded in `.planning/PROJECT.md`.
 
 ## Session Continuity
 
-Last session: 2026-03-21T19:55:40.330Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-03-21T20:00:08.348Z
+Stopped at: Completed 07-02-PLAN.md
 Resume file: None
