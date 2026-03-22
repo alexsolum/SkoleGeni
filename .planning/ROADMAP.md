@@ -21,7 +21,7 @@ Delivered: authenticated project access, setup and pupil-entry persistence, trus
 **Milestone Goal:** Deploy the FastAPI + OR-Tools optimizer to Google Cloud Run so the Vercel-hosted frontend can call a cloud-hosted optimization endpoint instead of requiring a local Docker stack.
 
 - [x] **Phase 7: Code Hardening** — Add CORS middleware and a health endpoint before any cloud deploy (completed 2026-03-21)
-- [ ] **Phase 8: GCP Setup and Manual Deploy** — Provision Artifact Registry and Cloud Run, push image, smoke test
+- [x] **Phase 8: GCP Setup and Manual Deploy** — Provision Artifact Registry and Cloud Run, push image, smoke test (completed 2026-03-22)
 - [ ] **Phase 9: Frontend Wiring** — Point the Vercel frontend at the Cloud Run endpoint and validate end-to-end
 - [ ] **Phase 10: CI/CD Automation** — Automate future optimizer deploys via GitHub Actions with Workload Identity Federation
 
@@ -55,7 +55,7 @@ Plans:
 
 Plans:
 - [x] 08-01-PLAN.md — Provision Artifact Registry and push the first timestamped optimizer image (completed 2026-03-22)
-- [ ] 08-02-PLAN.md — Deploy Cloud Run service and verify functionality with authenticated smoke tests
+- [x] 08-02-PLAN.md — Deploy Cloud Run service and verify functionality with authenticated smoke tests (completed 2026-03-22)
 
 ### Phase 9: Frontend Wiring
 **Goal**: The Vercel-hosted frontend calls the Cloud Run optimizer and authenticated optimization works end-to-end
@@ -86,6 +86,6 @@ Plans:
 |-------|-----------|----------------|--------|-----------|
 | 1-6. MVP Phases | v1.0 | 20/20 | Complete | 2026-03-21 |
 | 7. Code Hardening | v1.1 | 2/2 | Complete | 2026-03-21 |
-| 8. GCP Setup and Manual Deploy | v1.1 | 1/2 | In Progress | 2026-03-22 |
+| 8. GCP Setup and Manual Deploy | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 9. Frontend Wiring | v1.1 | 0/TBD | Not started | - |
 | 10. CI/CD Automation | v1.1 | 0/TBD | Not started | - |
