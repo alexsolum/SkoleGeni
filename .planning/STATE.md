@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Optimizer in Cloud
-status: unknown
-stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-03-22T13:46:52.003Z"
+status: phase-complete
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-03-22T15:30:00.000Z"
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** School staff can generate balanced, defensible class rosters quickly without losing control over the final result.
-**Current focus:** Phase 09 — frontend-wiring
+**Current focus:** Phase 10 — ci-cd (next)
 
 ## Current Position
 
-Phase: 09 (frontend-wiring) — EXECUTING
-Plan: 2 of 2
+Phase: 09 (frontend-wiring) — COMPLETE
+Plan: 2 of 2 — COMPLETE
 
 ## Accumulated Context
 
@@ -40,6 +40,8 @@ Key milestone decisions are recorded in `.planning/PROJECT.md`.
 - [Phase 07-02]: Use shell-form CMD with ${PORT:-8000} in Dockerfile for Cloud Run port injection
 - [Phase 09-frontend-wiring]: waitFor timeout extended to 8s for optimizer 401 test to handle 3s runOptimizer delay without fake timer interference
 - [Phase 09-frontend-wiring]: 401 branch placed as first catch condition before 400 diagnostic path in PupilData.runOptimizer
+- [Phase 09-02]: VITE_OPTIMIZER_URL set for both Production AND Preview in Vercel (not production-only); preview deploys also get Cloud Run access
+- [Phase 09-02]: Vercel redeploy required after env var addition — Vite bakes VITE_* values at build time; existing bundle had no value and fell back to /api/optimizer
 
 ### Deferred Tech Debt
 
@@ -53,11 +55,11 @@ Key milestone decisions are recorded in `.planning/PROJECT.md`.
 
 ### Blockers/Concerns
 
-- Research gap: Vercel preview URL CORS — decide at Phase 9 whether preview deploys need optimizer access or production-only is acceptable
 - [RESOLVED 07-01] `POST /` removed outright in Phase 7 — no longer a concern
+- [RESOLVED 09-02] Vercel preview URL CORS — resolved by setting VITE_OPTIMIZER_URL for Preview environment too; Cloud Run is --allow-unauthenticated so preview deploys work
 
 ## Session Continuity
 
-Last session: 2026-03-22T13:46:51.998Z
-Stopped at: Completed 09-01-PLAN.md
+Last session: 2026-03-22T15:30:00.000Z
+Stopped at: Completed 09-02-PLAN.md
 Resume file: None

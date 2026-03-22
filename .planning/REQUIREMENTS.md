@@ -9,8 +9,8 @@ Requirements for the Optimizer in Cloud milestone. Each maps to roadmap phases.
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Optimizer container is deployed to Google Cloud Run and accessible via a public HTTPS endpoint
-- [ ] **INFRA-02**: Optimizer container image is stored in Google Artifact Registry
+- [x] **INFRA-01**: Optimizer container is deployed to Google Cloud Run and accessible via a public HTTPS endpoint
+- [x] **INFRA-02**: Optimizer container image is stored in Google Artifact Registry
 - [ ] **INFRA-03**: Pushes to main automatically build and deploy the optimizer via GitHub Actions with Workload Identity Federation
 
 ### Hardening
@@ -65,8 +65,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | HARD-01 | Phase 7 | Complete |
 | HARD-02 | Phase 7 | Complete |
-| INFRA-01 | Phase 8 | Pending |
-| INFRA-02 | Phase 8 | Pending |
+| INFRA-01 | Phase 8 | Complete |
+| INFRA-02 | Phase 8 | Complete |
 | WIRE-01 | Phase 9 | Complete |
 | WIRE-02 | Phase 9 | Complete |
 | INFRA-03 | Phase 10 | Pending |
@@ -78,4 +78,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-21 after roadmap creation (phases 7-10 assigned)*
+*Last updated: 2026-03-22 after Phase 9 completion (INFRA-01, INFRA-02, WIRE-01, WIRE-02 all complete)*

@@ -22,7 +22,7 @@ Delivered: authenticated project access, setup and pupil-entry persistence, trus
 
 - [x] **Phase 7: Code Hardening** — Add CORS middleware and a health endpoint before any cloud deploy (completed 2026-03-21)
 - [x] **Phase 8: GCP Setup and Manual Deploy** — Provision Artifact Registry and Cloud Run, push image, smoke test (completed 2026-03-22)
-- [ ] **Phase 9: Frontend Wiring** — Point the Vercel frontend at the Cloud Run endpoint and validate end-to-end
+- [x] **Phase 9: Frontend Wiring** — Point the Vercel frontend at the Cloud Run endpoint and validate end-to-end (completed 2026-03-22)
 - [ ] **Phase 10: CI/CD Automation** — Automate future optimizer deploys via GitHub Actions with Workload Identity Federation
 
 ## Phase Details
@@ -69,8 +69,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — Add 401 error handling, create unit tests for env var wiring and auth error flow, update .env.example
-- [ ] 09-02-PLAN.md — Set Vercel env var and validate end-to-end with production smoke test
+- [x] 09-01-PLAN.md — Add 401 error handling, create unit tests for env var wiring and auth error flow, update .env.example (completed 2026-03-22)
+- [x] 09-02-PLAN.md — Set Vercel env var and validate end-to-end with production smoke test (completed 2026-03-22)
 
 ### Phase 10: CI/CD Automation
 **Goal**: Future optimizer code changes are automatically built and deployed to Cloud Run on push to main
@@ -91,5 +91,5 @@ Plans:
 | 1-6. MVP Phases | v1.0 | 20/20 | Complete | 2026-03-21 |
 | 7. Code Hardening | v1.1 | 2/2 | Complete | 2026-03-21 |
 | 8. GCP Setup and Manual Deploy | v1.1 | 2/2 | Complete | 2026-03-22 |
-| 9. Frontend Wiring | 1/2 | In Progress|  | - |
+| 9. Frontend Wiring | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 10. CI/CD Automation | v1.1 | 0/TBD | Not started | - |
