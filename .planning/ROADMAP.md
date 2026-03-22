@@ -96,4 +96,4 @@ Plans:
 | 7. Code Hardening | v1.1 | 2/2 | Complete | 2026-03-21 |
 | 8. GCP Setup and Manual Deploy | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 9. Frontend Wiring | v1.1 | 2/2 | Complete | 2026-03-22 |
-| 10. CI/CD Automation | v1.1 | 0/2 | Not started | - |
+| 10. CI/CD Automation | 1/2 | In Progress|  | - |
