@@ -1,6 +1,6 @@
-# SkoleGeni (Academic Clarity)
+# SkoleGeni 
 
-Web app for algorithmic class generation and balancing.
+Web app for algorithmic class generation and balancing, for the school admin.
 
 ## What’s included (MVP)
 
