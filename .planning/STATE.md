@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Optimizer in Cloud
 status: unknown
-stopped_at: Phase 9 context gathered
-last_updated: "2026-03-22T12:40:34.103Z"
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-03-22T13:46:52.003Z"
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** School staff can generate balanced, defensible class rosters quickly without losing control over the final result.
-**Current focus:** Phase 08 — gcp-setup-and-manual-deploy
+**Current focus:** Phase 09 — frontend-wiring
 
 ## Current Position
 
-Phase: 08 (gcp-setup-and-manual-deploy) — COMPLETED
-Plan: 2 of 2 — COMPLETED
+Phase: 09 (frontend-wiring) — EXECUTING
+Plan: 2 of 2
 
 ## Accumulated Context
 
@@ -38,6 +38,8 @@ Key milestone decisions are recorded in `.planning/PROJECT.md`.
 - [Phase 07-code-hardening]: Use allow_origin_regex='.*' for CORS rather than an allowlist — tighten in Phase 9
 - [Phase 07-code-hardening]: Remove POST / outright rather than adding a shared-secret; app stays live with missing env for health probe inspection
 - [Phase 07-02]: Use shell-form CMD with ${PORT:-8000} in Dockerfile for Cloud Run port injection
+- [Phase 09-frontend-wiring]: waitFor timeout extended to 8s for optimizer 401 test to handle 3s runOptimizer delay without fake timer interference
+- [Phase 09-frontend-wiring]: 401 branch placed as first catch condition before 400 diagnostic path in PupilData.runOptimizer
 
 ### Deferred Tech Debt
 
@@ -56,6 +58,6 @@ Key milestone decisions are recorded in `.planning/PROJECT.md`.
 
 ## Session Continuity
 
-Last session: 2026-03-22T12:40:34.098Z
-Stopped at: Phase 9 context gathered
-Resume file: .planning/phases/09-frontend-wiring/09-CONTEXT.md
+Last session: 2026-03-22T13:46:51.998Z
+Stopped at: Completed 09-01-PLAN.md
+Resume file: None

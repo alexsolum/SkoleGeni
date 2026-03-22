@@ -20,8 +20,8 @@ Requirements for the Optimizer in Cloud milestone. Each maps to roadmap phases.
 
 ### Wiring
 
-- [ ] **WIRE-01**: Vercel-hosted frontend calls the Cloud Run optimizer endpoint instead of localhost
-- [ ] **WIRE-02**: Supabase auth tokens are forwarded end-to-end from browser through Cloud Run to Supabase with RLS preserved
+- [x] **WIRE-01**: Vercel-hosted frontend calls the Cloud Run optimizer endpoint instead of localhost
+- [x] **WIRE-02**: Supabase auth tokens are forwarded end-to-end from browser through Cloud Run to Supabase with RLS preserved
 
 ## Future Requirements
 
@@ -67,8 +67,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HARD-02 | Phase 7 | Complete |
 | INFRA-01 | Phase 8 | Pending |
 | INFRA-02 | Phase 8 | Pending |
-| WIRE-01 | Phase 9 | Pending |
-| WIRE-02 | Phase 9 | Pending |
+| WIRE-01 | Phase 9 | Complete |
+| WIRE-02 | Phase 9 | Complete |
 | INFRA-03 | Phase 10 | Pending |
 
 **Coverage:**
