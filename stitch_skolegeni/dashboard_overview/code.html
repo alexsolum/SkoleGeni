@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Academic Clarity - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-fixed": "#360f00",
+              "on-tertiary": "#ffffff",
+              "tertiary-container": "#bc4800",
+              "on-tertiary-container": "#ffede6",
+              "on-background": "#191b24",
+              "inverse-primary": "#b4c5ff",
+              "on-error": "#ffffff",
+              "background": "#faf8ff",
+              "surface-variant": "#e2e1ee",
+              "surface-bright": "#faf8ff",
+              "on-primary-container": "#eeefff",
+              "primary-fixed": "#dbe1ff",
+              "on-secondary-fixed-variant": "#31447b",
+              "on-tertiary-fixed-variant": "#7d2d00",
+              "outline": "#737686",
+              "on-secondary-container": "#394c84",
+              "surface-container-low": "#f3f2ff",
+              "tertiary-fixed": "#ffdbcd",
+              "on-surface": "#191b24",
+              "tertiary": "#943700",
+              "on-secondary-fixed": "#00174a",
+              "primary-container": "#2463eb",
+              "on-secondary": "#ffffff",
+              "error": "#ba1a1a",
+              "surface-container-highest": "#e2e1ee",
+              "tertiary-fixed-dim": "#ffb596",
+              "error-container": "#ffdad6",
+              "secondary": "#495c94",
+              "on-error-container": "#93000a",
+              "outline-variant": "#c3c6d7",
+              "inverse-surface": "#2e3039",
+              "surface-tint": "#0053da",
+              "surface-container-high": "#e7e7f4",
+              "on-primary": "#ffffff",
+              "surface-container": "#ededf9",
+              "on-surface-variant": "#434655",
+              "primary-fixed-dim": "#b4c5ff",
+              "secondary-fixed": "#dbe1ff",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-fixed": "#00174b",
+              "surface-dim": "#d9d9e5",
+              "primary": "#004bc6",
+              "inverse-on-surface": "#f0f0fc",
+              "secondary-container": "#acbffe",
+              "on-primary-fixed-variant": "#003ea7",
+              "surface": "#faf8ff",
+              "secondary-fixed-dim": "#b3c5ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased flex">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col py-4 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-slate-900 dark:text-white tracking-tight">Organization</h1>
+<p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Management Console</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard Tab (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20 border-r-2 border-blue-600 font-sans text-sm font-medium duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Inactive Tabs -->
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100 font-sans text-sm font-medium duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Pupil Data</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100 font-sans text-sm font-medium duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span>Class Groups</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100 font-sans text-sm font-medium duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span>Optimizer</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100 font-sans text-sm font-medium duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>Reports</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="p-4 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary text-xs font-bold">AC</div>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Academic Clarity</p>
+<p class="text-[10px] text-slate-500">Premium Account</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 min-h-screen bg-surface">
+<!-- TopAppBar Component -->
+<header class="w-full top-0 sticky border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm dark:shadow-none flex items-center justify-between px-8 h-16 z-40">
+<div class="flex items-center gap-4">
+<h2 class="text-xl font-extrabold text-blue-600 dark:text-blue-400 font-headline tracking-tight">Pupil Mode</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-sm" data-icon="search">search</span>
+</div>
+<input class="pl-10 pr-4 py-1.5 bg-slate-50 dark:bg-slate-800 border-none rounded text-sm focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="Search projects..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 ml-2 overflow-hidden border border-slate-300">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="User profile professional avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTsksckKa9HlpjPkp5-CZhv71ZcKdxitnKRUKyQRHsQDYXy9EYOphBQAvkW_aNTlfhcYtMrJgywFoB-P2d_6oLI0dalJO004R-m-VXfOHJzE2LAH2IxJ7FJeJ29SSUMe2M2ZYCbg97nPiQXQZGNvamtTEmK3Ygl6abjKBZXWn2jTDrVxGdXJBkwZgLTTcnoQiam1ebHWmkP76GBCcfL37zQvEs0AgRwbDMKkxGzkEu-K5znierdWNDW7g57ciEUvtsYnyrCuCpXtaU"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-8">
+<div>
+<h1 class="text-3xl font-black text-on-surface tracking-tight font-headline">Dashboard</h1>
+<p class="text-on-surface-variant mt-1">Manage your academic optimization projects and pupil performance data.</p>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded font-semibold text-sm flex items-center gap-2 hover:opacity-90 transition-opacity active:opacity-80">
+<span class="material-symbols-outlined text-sm" data-icon="add" style="font-variation-settings: 'wght' 700;">add</span>
+                    Create New Project
+                </button>
+</div>
+<!-- Bento Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="bg-white dark:bg-slate-900 p-6 rounded border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<span class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded">
+<span class="material-symbols-outlined text-blue-600" data-icon="folder_special">folder_special</span>
+</span>
+<span class="text-xs font-bold text-slate-400">TOTAL</span>
+</div>
+<p class="text-slate-500 text-xs font-medium uppercase tracking-wider mb-1">Total Projects</p>
+<h3 class="text-4xl font-black text-on-surface">12</h3>
+<div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-emerald-600">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span>+2 THIS MONTH</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<span class="p-2 bg-purple-50 dark:bg-purple-900/30 rounded">
+<span class="material-symbols-outlined text-purple-600" data-icon="person_search">person_search</span>
+</span>
+<span class="text-xs font-bold text-slate-400">VOLUME</span>
+</div>
+<p class="text-slate-500 text-xs font-medium uppercase tracking-wider mb-1">Pupils Processed</p>
+<h3 class="text-4xl font-black text-on-surface">1,420</h3>
+<div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-slate-400">
+<span>LIFETIME ANALYTICS</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<span class="p-2 bg-tertiary-container/10 rounded">
+<span class="material-symbols-outlined text-tertiary" data-icon="bolt">bolt</span>
+</span>
+<span class="text-xs font-bold text-slate-400">EFFICIENCY</span>
+</div>
+<p class="text-slate-500 text-xs font-medium uppercase tracking-wider mb-1">Average Optimization Score</p>
+<h3 class="text-4xl font-black text-on-surface">92%</h3>
+<div class="mt-4 w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary-container h-full w-[92%]"></div>
+</div>
+</div>
+</div>
+<!-- Recent Projects Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-extrabold text-on-surface tracking-tight">Recent Projects</h2>
+<button class="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
+                        View All
+                        <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Project Card 1 -->
+<div class="bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800 hover:border-primary/40 transition-all group">
+<div class="p-6">
+<div class="flex items-start justify-between mb-4">
+<h4 class="font-bold text-on-surface group-hover:text-primary transition-colors">Fall 2024 - 8th Grade</h4>
+<span class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-black px-2 py-1 rounded uppercase">Optimized</span>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="calendar_today">calendar_today</span>
+<span>Modified Oct 12, 2023</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="layers">layers</span>
+<span>8 Class Groups</span>
+</div>
+</div>
+</div>
+<div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 flex items-center justify-center text-[8px] font-bold">JD</div>
+<div class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-900 bg-blue-100 flex items-center justify-center text-[8px] font-bold">MS</div>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Project Card 2 -->
+<div class="bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800 hover:border-primary/40 transition-all group">
+<div class="p-6">
+<div class="flex items-start justify-between mb-4">
+<h4 class="font-bold text-on-surface group-hover:text-primary transition-colors">STEM Intake - Q3</h4>
+<span class="bg-slate-100 dark:bg-slate-800 text-slate-500 text-[10px] font-black px-2 py-1 rounded uppercase">Draft</span>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="calendar_today">calendar_today</span>
+<span>Modified Oct 10, 2023</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="layers">layers</span>
+<span>4 Class Groups</span>
+</div>
+</div>
+</div>
+<div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 flex items-center justify-center text-[8px] font-bold">AK</div>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Project Card 3 -->
+<div class="bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800 hover:border-primary/40 transition-all group">
+<div class="p-6">
+<div class="flex items-start justify-between mb-4">
+<h4 class="font-bold text-on-surface group-hover:text-primary transition-colors">Gifted Program 2024</h4>
+<span class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-black px-2 py-1 rounded uppercase">Optimized</span>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="calendar_today">calendar_today</span>
+<span>Modified Oct 05, 2023</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="layers">layers</span>
+<span>2 Class Groups</span>
+</div>
+</div>
+</div>
+<div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 flex items-center justify-center text-[8px] font-bold">JD</div>
+<div class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-900 bg-blue-100 flex items-center justify-center text-[8px] font-bold">RK</div>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Context Bar (Optional) -->
+<div class="mt-12 p-8 rounded bg-gradient-to-r from-blue-600 to-blue-800 text-white relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="text-2xl font-black mb-2 tracking-tight">Ready to optimize?</h3>
+<p class="text-blue-100 mb-6 max-w-lg">Our proprietary optimizer algorithm has been updated with new 2024 academic standards. Run a simulation to see improved class distributions.</p>
+<button class="bg-white text-blue-600 px-6 py-2 rounded font-bold text-sm hover:bg-blue-50 transition-colors">Launch Optimizer</button>
+</div>
+<!-- Abstract pattern overlay -->
+<div class="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[180px] absolute -right-10 -bottom-10" data-icon="psychology">psychology</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

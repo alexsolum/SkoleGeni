@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pupil Mode - Inline Entry</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#F1F5F9",
+                        "secondary-container": "#f1f5f9",
+                        "tertiary-fixed-dim": "#bae6fd",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#F8FAFC",
+                        "on-error-container": "#991b1b",
+                        "tertiary-container": "#e0f2fe",
+                        "primary-container": "#DBEafe",
+                        "on-primary-fixed": "#1e3a8a",
+                        "tertiary": "#0ea5e9",
+                        "on-secondary-fixed": "#0f172a",
+                        "on-secondary-container": "#1e293b",
+                        "tertiary-fixed": "#e0f2fe",
+                        "on-tertiary-fixed-variant": "#0369a1",
+                        "error": "#DC2626",
+                        "on-tertiary-container": "#0369a1",
+                        "error-container": "#FEF2F2",
+                        "on-surface-variant": "#334155",
+                        "on-primary-fixed-variant": "#1d4ed8",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#2463eb",
+                        "inverse-primary": "#93c5fd",
+                        "surface": "#F8FAFC",
+                        "on-background": "#0F172A",
+                        "surface-container-high": "#E2E8F0",
+                        "secondary-fixed": "#f1f5f9",
+                        "inverse-on-surface": "#F1F5F9",
+                        "inverse-surface": "#0F172A",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#F1F5F9",
+                        "primary-fixed-dim": "#bfdbfe",
+                        "primary-fixed": "#dbeafe",
+                        "on-surface": "#0F172A",
+                        "on-primary-container": "#1e40af",
+                        "surface-bright": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#2463eb",
+                        "surface-container-highest": "#94A3B8",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#E2E8F0",
+                        "outline-variant": "#94A3B8",
+                        "outline": "#E2E8F0",
+                        "on-secondary-fixed-variant": "#334155",
+                        "secondary-fixed-dim": "#e2e8f0",
+                        "secondary": "#475569",
+                        "on-tertiary-fixed": "#0c4a6e",
+                        "background": "#F8FAFC"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .tonal-shift {
+            background-color: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="bg-surface-container font-body text-on-surface antialiased">
+<!-- TopAppBar Shell -->
+<header class="flex items-center justify-between px-6 h-16 w-full sticky top-0 z-50 bg-white border-b border-slate-200">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold tracking-tight text-slate-900">ClassOptimizer</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-1 text-slate-500 hover:bg-slate-50 transition-colors px-3 py-1 rounded cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="search">search</span>
+<span class="text-sm font-medium">Quick Search</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-900 cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-slate-900 cursor-pointer" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<div class="flex">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-4 h-screen w-64 border-r tonal-shift border-slate-200 z-40">
+<div class="px-6 mb-8">
+<h2 class="text-xl font-bold text-slate-900">Optimizer Pro</h2>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mt-1">Academic Management</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-blue-50 text-blue-700 border-r-2 border-blue-600 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Pupil Data</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="architecture">architecture</span>
+<span class="font-['Inter'] text-sm font-medium">Class Groups</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-['Inter'] text-sm font-medium">Optimizer</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-['Inter'] text-sm font-medium">Reports</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 p-8">
+<header class="mb-8 flex justify-between items-end">
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-slate-900">Pupil Mode - Inline Entry</h1>
+<p class="text-slate-500 mt-1">Directly manage social dynamics and chemistry mappings.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-white border border-outline text-slate-700 font-bold text-sm rounded shadow-none hover:bg-slate-50 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="file_download">file_download</span>
+                        Export CSV
+                    </button>
+<button class="px-4 py-2 bg-primary text-white font-bold text-sm rounded shadow-none hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="person_add">person_add</span>
+                        Add New Pupil
+                    </button>
+</div>
+</header>
+<!-- Table Container -->
+<div class="bg-surface-bright rounded shadow-none overflow-hidden border border-outline">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Student Name</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Origin School</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Gender</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Chemistry</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline">
+<!-- Student Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 border border-slate-200">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+<span class="font-semibold text-slate-900">Aris Alexander</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">Oakridge Elem.</td>
+<td class="px-6 py-4 text-slate-600 text-sm">Male</td>
+<td class="px-6 py-4">
+<div class="flex flex-wrap gap-2 items-center">
+<div class="flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded text-xs font-medium">
+<span class="material-symbols-outlined text-xs" data-icon="add_circle">add_circle</span> Lia G.
+</div>
+<div class="flex items-center gap-1 bg-red-50 text-red-700 border border-red-200 px-2 py-1 rounded text-xs font-medium">
+<span class="material-symbols-outlined text-xs" data-icon="do_not_disturb_on">do_not_disturb_on</span> Marc V.
+</div>
+<button class="h-7 w-7 rounded bg-slate-100 border border-slate-200 text-slate-400 hover:text-primary hover:border-primary/50 transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+</button>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-slate-900" data-icon="more_vert">more_vert</span>
+</td>
+</tr>
+<!-- Student Row 2 (Active/Inline Search State) -->
+<tr class="bg-primary/5">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white border border-primary/20 shadow-sm">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+<span class="font-semibold text-slate-900">Lia Gerrickson</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">Maple Academy</td>
+<td class="px-6 py-4 text-slate-600 text-sm">Female</td>
+<td class="px-6 py-4 relative">
+<div class="flex flex-wrap gap-2 items-center">
+<div class="flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded text-xs font-medium">
+<span class="material-symbols-outlined text-xs" data-icon="add_circle">add_circle</span> Aris A.
+</div>
+<div class="relative">
+<div class="flex items-center border-2 border-primary bg-white px-2 py-1 rounded-sm w-48 shadow-sm">
+<span class="material-symbols-outlined text-slate-400 text-sm mr-1" data-icon="search">search</span>
+<input class="w-full text-xs border-none focus:ring-0 p-0 text-slate-900" placeholder="Map student..." type="text" value="Ma"/>
+</div>
+<div class="absolute top-full left-0 mt-1 w-56 bg-white border border-outline shadow-lg z-10 rounded-sm">
+<div class="p-1 border-b border-outline bg-slate-50">
+<div class="flex gap-1">
+<button class="flex-1 text-[10px] font-bold py-1 bg-blue-600 text-white rounded-sm">POS (+)</button>
+<button class="flex-1 text-[10px] font-bold py-1 text-slate-500 hover:bg-slate-100 rounded-sm">NEG (-)</button>
+</div>
+</div>
+<div class="max-h-40 overflow-y-auto">
+<div class="px-3 py-2 text-xs hover:bg-primary/5 cursor-pointer flex justify-between items-center group">
+<span class="text-slate-900"><strong>Ma</strong>rc Valera</span>
+<span class="text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">Select</span>
+</div>
+<div class="px-3 py-2 text-xs hover:bg-primary/5 cursor-pointer flex justify-between items-center group border-t border-slate-100">
+<span class="text-slate-900"><strong>Ma</strong>ra Jade</span>
+<span class="text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">Select</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-primary cursor-pointer" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</td>
+</tr>
+<!-- Student Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 border border-slate-200">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+<span class="font-semibold text-slate-900">Marc Valera</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">Pine Heights</td>
+<td class="px-6 py-4 text-slate-600 text-sm">Male</td>
+<td class="px-6 py-4">
+<div class="flex flex-wrap gap-2 items-center">
+<div class="flex items-center gap-1 bg-red-50 text-red-700 border border-red-200 px-2 py-1 rounded text-xs font-medium">
+<span class="material-symbols-outlined text-xs" data-icon="do_not_disturb_on">do_not_disturb_on</span> Aris A.
+</div>
+<button class="h-7 w-7 rounded bg-slate-100 border border-slate-200 text-slate-400 hover:text-primary hover:border-primary/50 transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+</button>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-red-600" data-icon="delete">delete</span>
+</td>
+</tr>
+<!-- Student Row 4 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 border border-slate-200">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+<span class="font-semibold text-slate-900">Sarah Kinsley</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">Oakridge Elem.</td>
+<td class="px-6 py-4 text-slate-600 text-sm">Female</td>
+<td class="px-6 py-4">
+<div class="flex flex-wrap gap-2 items-center">
+<span class="text-xs italic text-slate-400">No constraints defined</span>
+<button class="h-7 w-7 rounded bg-slate-100 border border-slate-200 text-slate-400 hover:text-primary hover:border-primary/50 transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+</button>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-slate-900" data-icon="more_vert">more_vert</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Dashboard Stats Grid -->
+<div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-white p-6 border border-outline rounded shadow-none">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Complex Mappings</span>
+<span class="material-symbols-outlined text-blue-600 bg-blue-50 p-2 rounded" data-icon="schema">schema</span>
+</div>
+<div class="text-2xl font-bold text-slate-900">12 Pupils</div>
+<p class="text-xs text-slate-500 mt-1">Requiring algorithm attention</p>
+</div>
+<div class="bg-white p-6 border border-outline rounded shadow-none">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Positive Links</span>
+<span class="material-symbols-outlined text-emerald-600 bg-emerald-50 p-2 rounded" data-icon="add_task">add_task</span>
+</div>
+<div class="text-2xl font-bold text-slate-900">34 Pairs</div>
+<p class="text-xs text-slate-500 mt-1">High-synergy combinations</p>
+</div>
+<div class="bg-white p-6 border border-outline rounded shadow-none">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Negative Blocks</span>
+<span class="material-symbols-outlined text-red-600 bg-red-50 p-2 rounded" data-icon="block">block</span>
+</div>
+<div class="text-2xl font-bold text-slate-900">08 Pairs</div>
+<p class="text-xs text-slate-500 mt-1">Must-separate constraints</p>
+</div>
+</div>
+<!-- Footer Meta -->
+<footer class="mt-8 pt-8 border-t border-outline flex justify-between items-center text-xs text-slate-500 font-mono">
+<div class="flex gap-4">
+<span>SCHEMA_V2.4</span>
+<span>ALGO_TYPE: BLUEPRINT_PRECISION</span>
+</div>
+<div>LAST SYNC: 2023-11-27 14:32 UTC</div>
+</footer>
+</main>
+</div>
+</body></html>

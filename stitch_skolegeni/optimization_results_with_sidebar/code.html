@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Academic Clarity - Optimization Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2463eb",
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#111621",
+                        "surface": "#FFFFFF",
+                        "slate-900": "#0F172A",
+                        "slate-700": "#334155",
+                        "slate-400": "#94A3B8",
+                        "border-light": "#E2E8F0"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.25rem",
+                        "xl": "0.25rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8FAFC; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-700 min-h-screen flex">
+<!-- Side Navigation Sidebar -->
+<aside class="fixed left-0 top-0 h-screen w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col py-6 z-20">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="size-8 text-primary shrink-0">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<div class="flex flex-col">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Academic Clarity</h2>
+<span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Optimizer v1.0</span>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition-all duration-150 text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-xl">settings_input_component</span>
+<span>Setup</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition-all duration-150 text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-xl">tune</span>
+<span>Configuration</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition-all duration-150 text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-xl">groups</span>
+<span>Pupil Data</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600 rounded-l transition-all duration-150 text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-xl">analytics</span>
+<span>Results</span>
+</a>
+</nav>
+<div class="px-3 pt-6 mt-6 border-t border-slate-200 dark:border-slate-800 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition-all duration-150 text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-xl">description</span>
+<span>Documentation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition-all duration-150 text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</aside>
+<div class="flex-1 ml-64 flex flex-col min-w-0">
+<!-- Top App Bar -->
+<header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex items-center justify-between px-8 sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Results Overview</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-400">
+<span class="material-symbols-outlined text-base">check_circle</span>
+                    Auto-saved
+                </div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 overflow-hidden ml-2 cursor-pointer border border-slate-300">
+<span class="material-symbols-outlined text-3xl text-slate-400">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 p-8 lg:p-12 max-w-[1400px] mx-auto w-full">
+<div class="flex flex-col gap-8">
+<!-- Page Header & Action -->
+<div class="flex items-end justify-between">
+<div class="flex flex-col gap-2">
+<h1 class="text-slate-900 text-3xl font-bold leading-tight tracking-tight">Optimization Results</h1>
+<p class="text-slate-700 text-sm font-normal">Algorithmically generated class rosters based on your constraints.</p>
+</div>
+<button class="flex cursor-pointer items-center justify-center overflow-hidden rounded h-10 px-6 bg-slate-900 hover:bg-slate-800 transition-colors text-white text-sm font-bold leading-normal tracking-wide">
+<span class="truncate">Refine Classes</span>
+</button>
+</div>
+<!-- Warning Banner -->
+<div class="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded text-amber-900">
+<span class="material-symbols-outlined text-amber-500 mt-0.5">warning</span>
+<div>
+<h4 class="text-sm font-bold">Constraint Warning</h4>
+<p class="text-sm mt-1">The algorithm could not achieve 100% strict constraints for Student Chemistry due to conflicting data. Manual review recommended.</p>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<!-- Overall Score (Radial) -->
+<div class="col-span-1 md:col-span-2 lg:col-span-1 bg-surface border border-border-light rounded p-6 h-[140px] flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<h3 class="text-slate-700 text-sm font-bold uppercase tracking-wider">Overall Score</h3>
+<p class="text-xs text-slate-400">Aggregated health metric</p>
+</div>
+<div class="relative size-[100px] flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 120 120">
+<circle cx="60" cy="60" fill="none" r="54" stroke="#E2E8F0" stroke-width="12"></circle>
+<circle class="transition-all duration-1000 ease-out" cx="60" cy="60" fill="none" r="54" stroke="#2463eb" stroke-dasharray="339.292" stroke-dashoffset="20.357" stroke-width="12"></circle> <!-- 94% -->
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="text-slate-900 font-mono text-2xl font-bold">94%</span>
+</div>
+</div>
+</div>
+<!-- Sub-score: Gender Balance -->
+<div class="bg-surface border border-border-light rounded p-6 h-[140px] flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<h3 class="text-slate-700 text-sm font-bold uppercase tracking-wider">Gender Balance</h3>
+<p class="text-xs text-slate-400">Deviation from ideal ratio</p>
+</div>
+<span class="text-slate-900 font-mono text-xl font-bold">98%</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 98%;"></div>
+</div>
+</div>
+<!-- Sub-score: Origin Mix -->
+<div class="bg-surface border border-border-light rounded p-6 h-[140px] flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<h3 class="text-slate-700 text-sm font-bold uppercase tracking-wider">Origin Mix</h3>
+<p class="text-xs text-slate-400">Previous school distribution</p>
+</div>
+<span class="text-slate-900 font-mono text-xl font-bold">92%</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 92%;"></div>
+</div>
+</div>
+<!-- Sub-score: Student Chemistry -->
+<div class="bg-surface border border-border-light rounded p-6 h-[140px] flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<h3 class="text-slate-700 text-sm font-bold uppercase tracking-wider">Student Chemistry</h3>
+<p class="text-xs text-slate-400">Positive/Negative matches</p>
+</div>
+<span class="text-slate-900 font-mono text-xl font-bold">85%</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+<!-- Sub-score: Size Variance -->
+<div class="bg-surface border border-border-light rounded p-6 h-[140px] flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<h3 class="text-slate-700 text-sm font-bold uppercase tracking-wider">Size Variance</h3>
+<p class="text-xs text-slate-400">Class capacity limits</p>
+</div>
+<span class="text-slate-900 font-mono text-xl font-bold">100%</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+<!-- Summary Stat -->
+<div class="bg-surface border border-border-light rounded p-6 h-[140px] flex flex-col justify-center items-center text-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-3xl">groups</span>
+<div class="flex items-baseline gap-2">
+<span class="text-slate-900 font-mono text-3xl font-bold">12</span>
+<span class="text-slate-700 text-sm font-medium uppercase tracking-wider">Classes Generated</span>
+</div>
+<p class="text-xs text-slate-400 font-mono">Total Pupils: 284</p>
+</div>
+</div>
+<!-- Class Roster Summary -->
+<div class="flex flex-col gap-4">
+<h2 class="text-slate-900 text-lg font-bold">Class Breakdown</h2>
+<div class="bg-surface border border-border-light rounded overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-background-light border-b border-border-light text-slate-700 text-xs uppercase tracking-wider font-bold">
+<th class="py-3 px-6 font-bold">Class Name</th>
+<th class="py-3 px-6 font-bold">Capacity</th>
+<th class="py-3 px-6 font-bold">Health Score</th>
+<th class="py-3 px-6 font-bold">Action</th>
+</tr>
+</thead>
+<tbody class="text-sm font-mono text-slate-900 divide-y divide-border-light">
+<tr class="hover:bg-background-light transition-colors">
+<td class="py-4 px-6 font-display font-medium">Class 1A</td>
+<td class="py-4 px-6">24/24</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span class="text-emerald-600 w-10">98%</span>
+<div class="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 98%;"></div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<button class="text-primary hover:text-blue-800 font-display font-medium text-xs uppercase tracking-wide flex items-center gap-1">
+                                            View <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-background-light transition-colors">
+<td class="py-4 px-6 font-display font-medium">Class 1B</td>
+<td class="py-4 px-6">23/24</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span class="text-emerald-600 w-10">95%</span>
+<div class="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 95%;"></div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<button class="text-primary hover:text-blue-800 font-display font-medium text-xs uppercase tracking-wide flex items-center gap-1">
+                                            View <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-background-light transition-colors">
+<td class="py-4 px-6 font-display font-medium">Class 1C</td>
+<td class="py-4 px-6 text-amber-600">24/24</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span class="text-amber-600 w-10">82%</span>
+<div class="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full rounded-full" style="width: 82%;"></div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<button class="text-primary hover:text-blue-800 font-display font-medium text-xs uppercase tracking-wide flex items-center gap-1">
+                                            View <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-background-light transition-colors">
+<td class="py-4 px-6 font-display font-medium">Class 1D</td>
+<td class="py-4 px-6">24/24</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span class="text-emerald-600 w-10">96%</span>
+<div class="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 96%;"></div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<button class="text-primary hover:text-blue-800 font-display font-medium text-xs uppercase tracking-wide flex items-center gap-1">
+                                            View <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex justify-center mt-6">
+<button class="flex cursor-pointer items-center justify-center overflow-hidden rounded h-12 px-8 bg-slate-900 hover:bg-slate-800 transition-colors text-white text-sm font-bold leading-normal tracking-wide shadow-sm">
+                            Open Class Editor
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

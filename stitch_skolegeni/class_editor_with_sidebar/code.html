@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Class Editor - Academic Clarity</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700&amp;family=Inter:wght@400;500;700&amp;family=JetBrains+Mono:wght@400&amp;family=Satoshi:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2463eb",
+                        "primary-dark": "#0F172A",
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#111621",
+                        "surface": "#FFFFFF",
+                        "text-main": "#334155",
+                        "text-muted": "#94A3B8",
+                        "border-color": "#E2E8F0",
+                        "success": "#10B981",
+                        "danger": "#EF4444",
+                        "danger-light": "#FEE2E2",
+                        "dropzone": "#EFF6FF"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "heading": ["Cabinet Grotesk", "sans-serif"],
+                        "body": ["Satoshi", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "4px",
+                        "sm": "4px",
+                        "md": "8px",
+                        "lg": "12px",
+                        "xl": "16px",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'drag': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-heading { font-family: 'Cabinet Grotesk', sans-serif; }
+        .font-body { font-family: 'Satoshi', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+        
+        .scrolling-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+        .scrolling-wrapper::-webkit-scrollbar-track {
+            background: #F8FAFC; 
+            border-radius: 4px;
+        }
+        .scrolling-wrapper::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .scrolling-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main h-screen flex overflow-hidden">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col py-6 z-30">
+<div class="px-6 mb-8">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white font-inter">Academic Clarity</h2>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-inter">Optimizer v1.0</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">settings_input_component</span>
+                Setup
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+                Configuration
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+                Pupil Data
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-sm font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+                Results
+            </a>
+</nav>
+<div class="mt-auto border-t border-slate-100 dark:border-slate-800 pt-4">
+<a class="flex items-center gap-3 px-6 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+                Documentation
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+                Settings
+            </a>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex-1 ml-64 flex flex-col min-w-0 h-screen relative">
+<!-- Global Score Header -->
+<header class="h-16 bg-surface border-b border-border-color flex items-center justify-between px-6 shrink-0 z-20">
+<div class="flex items-center gap-4">
+<button aria-label="Back to Results" class="text-text-muted hover:text-primary-dark transition-colors flex items-center justify-center rounded p-1">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h1 class="font-heading text-xl text-primary-dark leading-none">Class Editor</h1>
+<p class="font-body text-xs text-text-muted mt-1">Manual Refinement</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="font-body text-xs text-text-muted uppercase tracking-wider font-semibold">Overall Match</span>
+<div class="flex items-baseline gap-2">
+<span class="font-mono text-2xl font-bold text-primary-dark">94%</span>
+<span class="font-mono text-sm text-success font-medium flex items-center">
+<span class="material-symbols-outlined text-[14px]">arrow_drop_up</span>2%
+                            </span>
+</div>
+</div>
+<div class="h-8 w-px bg-border-color"></div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="font-body text-[10px] text-text-muted uppercase">Gender</span>
+<span class="font-mono text-sm font-medium">98%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body text-[10px] text-text-muted uppercase">Origin</span>
+<span class="font-mono text-sm font-medium">92%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body text-[10px] text-text-muted uppercase">Chemistry</span>
+<span class="font-mono text-sm font-medium text-danger">88%</span>
+</div>
+</div>
+</div>
+<button class="bg-primary-dark hover:bg-slate-800 text-surface font-heading text-sm px-4 py-2 rounded transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                    Save Changes
+                </button>
+</div>
+</header>
+<!-- Main Canvas (Horizontal Scroll) -->
+<main class="flex-1 overflow-y-hidden overflow-x-auto scrolling-wrapper p-6 flex gap-6 items-start relative">
+<!-- Class Column 1 -->
+<div class="w-[320px] shrink-0 flex flex-col h-full bg-surface border border-border-color rounded">
+<div class="p-4 border-b border-border-color bg-background-light rounded-t flex justify-between items-start">
+<div>
+<h2 class="font-heading text-lg text-primary-dark">Class 1A</h2>
+<div class="flex items-center gap-3 mt-1 font-body text-xs text-text-muted">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span> 22/24</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">analytics</span> 96%</span>
+</div>
+</div>
+<button class="text-text-muted hover:text-primary-dark p-1"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+<div class="p-3 flex-1 overflow-y-auto flex flex-col gap-2">
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-blue-500" title="Origin: Lincoln Elementary"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">Emma Thompson</span>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Female">female</span>
+</div>
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-emerald-500" title="Origin: Oakridge"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">Liam Chen</span>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Male">male</span>
+</div>
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-blue-500" title="Origin: Lincoln Elementary"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">Sophia Patel</span>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Female">female</span>
+</div>
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-purple-500" title="Origin: Westside"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">Noah Williams</span>
+<div class="flex gap-1">
+<span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded font-mono" title="IEP">IEP</span>
+</div>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Male">male</span>
+</div>
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-emerald-500" title="Origin: Oakridge"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">Olivia Garcia</span>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Female">female</span>
+</div>
+</div>
+</div>
+<!-- Class Column 2 (Active Dropzone Example) -->
+<div class="w-[320px] shrink-0 flex flex-col h-full bg-dropzone border-2 border-dashed border-primary rounded relative">
+<div class="absolute inset-0 bg-primary/5 z-0 pointer-events-none rounded"></div>
+<div class="p-4 border-b border-primary/20 bg-transparent rounded-t flex justify-between items-start relative z-10">
+<div>
+<h2 class="font-heading text-lg text-primary-dark">Class 1B</h2>
+<div class="flex items-center gap-3 mt-1 font-body text-xs text-text-muted">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span> 23/24</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">analytics</span> 91%</span>
+</div>
+</div>
+<button class="text-text-muted hover:text-primary-dark p-1"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+<div class="p-3 flex-1 overflow-y-auto flex flex-col gap-2 relative z-10">
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-amber-500" title="Origin: Pinecrest"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">Mason Rodriguez</span>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Male">male</span>
+</div>
+<div class="h-12 bg-danger-light border border-danger rounded flex items-center px-3 gap-3 cursor-grab group relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary-dark text-white text-[10px] px-2 py-1 rounded hidden group-hover:block whitespace-nowrap z-20">
+                            Do Not Match: Mason Rodriguez
+                        </div>
+<span class="material-symbols-outlined text-danger text-[16px] cursor-grab">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-blue-500"></div>
+<span class="font-body text-sm font-medium text-danger-900 flex-1 truncate">Isabella Martinez</span>
+<span class="material-symbols-outlined text-danger text-[18px]" title="Conflict">warning</span>
+</div>
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-emerald-500" title="Origin: Oakridge"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">William Kim</span>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Male">male</span>
+</div>
+<div class="h-12 bg-primary/10 border border-primary border-dashed rounded flex items-center justify-center">
+<span class="font-body text-xs text-primary font-medium">Drop to move student here</span>
+</div>
+</div>
+</div>
+<!-- Class Column 3 -->
+<div class="w-[320px] shrink-0 flex flex-col h-full bg-surface border border-border-color rounded">
+<div class="p-4 border-b border-border-color bg-background-light rounded-t flex justify-between items-start">
+<div>
+<h2 class="font-heading text-lg text-primary-dark">Class 1C</h2>
+<div class="flex items-center gap-3 mt-1 font-body text-xs text-text-muted">
+<span class="flex items-center gap-1 text-danger"><span class="material-symbols-outlined text-[14px]">group</span> 25/24</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">analytics</span> 89%</span>
+</div>
+</div>
+<button class="text-text-muted hover:text-primary-dark p-1"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+<div class="p-3 flex-1 overflow-y-auto flex flex-col gap-2">
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-amber-500" title="Origin: Pinecrest"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">Mia Nguyen</span>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Female">female</span>
+</div>
+<div class="h-12 bg-surface border border-border-color rounded flex items-center px-3 gap-3 hover:border-primary cursor-grab transition-colors group">
+<span class="material-symbols-outlined text-text-muted text-[16px] cursor-grab group-hover:text-primary">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-purple-500" title="Origin: Westside"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">James Wilson</span>
+<div class="flex gap-1">
+<span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded font-mono" title="ESL">ESL</span>
+</div>
+<span class="material-symbols-outlined text-text-muted text-[16px]" title="Male">male</span>
+</div>
+</div>
+</div>
+<!-- Add Class Button -->
+<div class="w-[320px] shrink-0 flex flex-col h-full items-center justify-center border-2 border-dashed border-border-color rounded bg-background-light/50 hover:bg-background-light hover:border-text-muted cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-text-muted text-3xl mb-2">add_circle</span>
+<span class="font-heading text-sm text-text-muted">Add New Class</span>
+</div>
+</main>
+<!-- Actively Dragged Card -->
+<div class="fixed top-[45%] left-[50%] w-[296px] h-12 bg-surface border border-primary rounded flex items-center px-3 gap-3 shadow-drag z-50 pointer-events-none rotate-2 opacity-90">
+<span class="material-symbols-outlined text-primary text-[16px]">drag_indicator</span>
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="font-body text-sm font-medium text-primary-dark flex-1 truncate">Lucas Taylor</span>
+<span class="material-symbols-outlined text-text-muted text-[16px]">male</span>
+</div>
+<!-- Conflict Toast (Absolute Bottom Right of content area) -->
+<div aria-live="polite" class="absolute bottom-6 right-6 w-80 bg-surface border border-danger rounded shadow-lg overflow-hidden flex flex-col z-40">
+<div class="bg-danger-light px-4 py-2 flex items-center gap-2 border-b border-danger/20">
+<span class="material-symbols-outlined text-danger text-[18px]">error</span>
+<span class="font-heading text-sm text-danger font-bold">1 Constraint Violation</span>
+</div>
+<div class="p-4 bg-surface flex flex-col gap-2">
+<div class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-danger mt-1.5 shrink-0"></span>
+<p class="font-body text-xs text-text-main leading-relaxed">
+<strong class="font-semibold text-primary-dark">Class 1B:</strong> "Do Not Match" conflict between Isabella Martinez and Mason Rodriguez.
+                    </p>
+</div>
+<div class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span>
+<p class="font-body text-xs text-text-main leading-relaxed">
+<strong class="font-semibold text-primary-dark">Class 1C:</strong> Exceeds maximum class size (25 &gt; 24).
+                    </p>
+</div>
+</div>
+</div>
+</div>
+</body></html>

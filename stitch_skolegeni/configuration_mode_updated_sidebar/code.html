@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Configuration Mode - Academic Clarity</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#2463eb",
+          "background-light": "#F8FAFC",
+          "background-dark": "#111621",
+          "slate-900": "#0F172A",
+          "slate-700": "#334155",
+          "slate-500": "#64748B",
+          "slate-400": "#94A3B8",
+          "slate-200": "#E2E8F0",
+          "slate-100": "#F1F5F9",
+          "slate-50": "#F8FAFC",
+          "red-600": "#DC2626",
+          "red-50": "#FEF2F2",
+        },
+        fontFamily: {
+          "display": ["Inter", "sans-serif"]
+        },
+        borderRadius: {
+          "DEFAULT": "4px",
+          "sm": "4px",
+          "md": "4px",
+          "lg": "4px",
+          "xl": "4px",
+          "2xl": "4px",
+          "3xl": "4px",
+          "full": "4px",
+        },
+        boxShadow: {
+          'none': 'none',
+        }
+      },
+    },
+  }
+</script>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+  .tonal-shift {
+    background-color: #F1F5F9;
+  }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-700 dark:text-slate-100 font-display min-h-screen flex">
+<!-- Sidebar Navigation (Updated to match SCREEN_11 style) -->
+<aside class="w-64 border-r tonal-shift border-slate-200 dark:border-slate-800 flex-shrink-0 flex flex-col h-screen sticky top-0 z-40">
+<div class="px-6 py-8">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Optimizer Pro</h2>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mt-1">Academic Management</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="text-sm font-medium">Pupil Data</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="architecture">architecture</span>
+<span class="text-sm font-medium">Class Groups</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-blue-50 dark:bg-primary/20 text-blue-700 dark:text-blue-400 border-r-2 border-blue-600 font-medium text-sm transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span>Optimizer</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="text-sm font-medium">Reports</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- Scrollable Content -->
+<main class="flex-1 overflow-y-auto p-8 pb-32">
+<div class="max-w-4xl mx-auto">
+<!-- Header -->
+<div class="mb-8">
+<h2 class="text-slate-900 dark:text-white text-2xl font-bold tracking-tight mb-2">Algorithm Configuration</h2>
+<p class="text-slate-500 dark:text-slate-400">Define constraints and balancing weights for the optimization algorithm. These rules dictate how the engine prioritizes student placement.</p>
+</div>
+<!-- Configuration Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Class Size Limits -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 rounded shadow-none hover:border-primary/50 transition-colors col-span-1 lg:col-span-2">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-slate-900 dark:text-white text-base font-semibold mb-1">Class Size Limits</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Set the minimum and maximum number of students per class.</p>
+</div>
+</div>
+<div class="px-4 py-8">
+<!-- Custom Slider UI Implementation based on Shared Component -->
+<div class="relative w-full h-1 bg-slate-200 dark:bg-slate-700 rounded">
+<!-- Active Track -->
+<div class="absolute h-full bg-primary rounded" style="left: 20%; right: 40%;"></div>
+<!-- Min Handle -->
+<div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-primary border-2 border-white rounded cursor-pointer hover:scale-110 transition-transform shadow-sm" style="left: 20%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded font-mono">18</div>
+</div>
+<!-- Max Handle -->
+<div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-primary border-2 border-white rounded cursor-pointer hover:scale-110 transition-transform shadow-sm" style="left: 60%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded font-mono">24</div>
+</div>
+</div>
+<div class="flex justify-between mt-4 text-xs text-slate-400 font-mono">
+<span>15</span>
+<span>35</span>
+</div>
+</div>
+</div>
+<!-- Gender Balance -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 rounded shadow-none hover:border-primary/50 transition-colors">
+<h3 class="text-slate-900 dark:text-white text-base font-semibold mb-1">Gender Balance</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Maintain an equal ratio of genders across all generated classes.</p>
+<div class="flex flex-col gap-2">
+<label class="flex items-center p-3 border border-primary bg-primary/5 rounded cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary h-4 w-4" name="gender" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-900 dark:text-white">Strict</span>
+<span class="ml-auto text-xs text-slate-500">Must be exactly equal</span>
+</label>
+<label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<input class="text-primary focus:ring-primary h-4 w-4" name="gender" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">Flexible</span>
+<span class="ml-auto text-xs text-slate-500">Allow 10% variance</span>
+</label>
+<label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<input class="text-primary focus:ring-primary h-4 w-4" name="gender" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">Ignore</span>
+</label>
+</div>
+</div>
+<!-- Origin School Mix -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 rounded shadow-none hover:border-primary/50 transition-colors">
+<h3 class="text-slate-900 dark:text-white text-base font-semibold mb-1">Origin School Mix</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Distribute students from the same previous school evenly.</p>
+<div class="flex flex-col gap-2">
+<label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<input class="text-primary focus:ring-primary h-4 w-4" name="origin" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">Strict</span>
+</label>
+<label class="flex items-center p-3 border border-primary bg-primary/5 rounded cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary h-4 w-4" name="origin" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-900 dark:text-white">Flexible</span>
+<span class="ml-auto text-xs text-slate-500">Best effort distribution</span>
+</label>
+<label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<input class="text-primary focus:ring-primary h-4 w-4" name="origin" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">Ignore</span>
+</label>
+</div>
+</div>
+<!-- Location/Zone -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 rounded shadow-none hover:border-primary/50 transition-colors">
+<h3 class="text-slate-900 dark:text-white text-base font-semibold mb-1">Location / Zone Constraints</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Group students based on geographical zones or zip codes.</p>
+<div class="flex flex-col gap-2">
+<label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<input class="text-primary focus:ring-primary h-4 w-4" name="location" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">Strict</span>
+</label>
+<label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<input class="text-primary focus:ring-primary h-4 w-4" name="location" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">Flexible</span>
+</label>
+<label class="flex items-center p-3 border border-primary bg-primary/5 rounded cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary h-4 w-4" name="location" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-900 dark:text-white">Ignore</span>
+<span class="ml-auto text-xs text-slate-500">Not considered</span>
+</label>
+</div>
+</div>
+<!-- Example Error State Card -->
+<div class="bg-red-50 dark:bg-red-900/10 border border-red-600 p-6 rounded shadow-none">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-red-600 mt-0.5" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<h3 class="text-red-800 dark:text-red-400 text-base font-semibold mb-1">Academic Needs Distribution</h3>
+<p class="text-sm text-red-600 dark:text-red-400 mb-4">Conflicting constraint: Cannot set to 'Strict' while Class Size Max is below 20.</p>
+<div class="flex flex-col gap-2 w-full">
+<label class="flex items-center p-3 border border-red-600 bg-white dark:bg-slate-900 rounded cursor-pointer opacity-50">
+<input checked="" class="text-primary focus:ring-primary h-4 w-4" disabled="" name="academic" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-900 dark:text-white">Strict</span>
+</label>
+<label class="flex items-center p-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<input class="text-primary focus:ring-primary h-4 w-4" name="academic" type="radio"/>
+<span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">Flexible</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Action Bar -->
+<div class="h-16 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 absolute bottom-0 right-0 w-[calc(100%-16rem)] flex items-center justify-between px-8 z-10">
+<div class="text-sm text-slate-500 dark:text-slate-400">
+        4 Active Constraints
+      </div>
+<button class="bg-primary hover:bg-blue-700 text-white px-6 py-2.5 rounded font-bold text-sm transition-colors flex items-center gap-2">
+        Next: Pupil Data
+        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

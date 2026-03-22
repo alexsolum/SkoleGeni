@@ -1,5 +1,5 @@
 import type { Chemistry, Pupil } from "../lib/api";
-import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, Pie, PieChart, Tooltip, XAxis, YAxis } from "recharts";
 
 export type ResolvedClassPupil = Pupil & {
   missing?: boolean;
@@ -130,6 +130,11 @@ const GENDER_COLORS: Record<string, string> = {
   Unknown: "#64748B"
 };
 
+const PIE_CHART_WIDTH = 280;
+const PIE_CHART_HEIGHT = 180;
+const BAR_CHART_WIDTH = 280;
+const BAR_CHART_HEIGHT = 180;
+
 function ChemistryBadge({
   tone,
   symbol,
@@ -215,45 +220,48 @@ export function ClassCard({
       <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
         <div className="rounded-[4px] border border-muted/40 bg-surface p-3">
           <div className="text-xs font-mono text-muted">Gender</div>
-          <div className="mt-3 h-[180px]" data-testid={`gender-chart-${classIndex}`}>
+          <div className="mt-3 flex h-[180px] items-center justify-center" data-testid={`gender-chart-${classIndex}`}>
             {genderData.length === 0 ? (
               <div className="flex h-full items-center justify-center text-sm text-muted">No pupil data</div>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={genderData}
-                    dataKey="value"
-                    nameKey="name"
-                    innerRadius={44}
-                    outerRadius={68}
-                    paddingAngle={3}
-                  >
-                    {genderData.map((entry) => (
-                      <Cell key={entry.name} fill={GENDER_COLORS[entry.name] ?? "#64748B"} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+              <PieChart width={PIE_CHART_WIDTH} height={PIE_CHART_HEIGHT}>
+                <Pie
+                  data={genderData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={44}
+                  outerRadius={68}
+                  paddingAngle={3}
+                >
+                  {genderData.map((entry) => (
+                    <Cell key={entry.name} fill={GENDER_COLORS[entry.name] ?? "#64748B"} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
             )}
           </div>
         </div>
 
         <div className="rounded-[4px] border border-muted/40 bg-surface p-3">
           <div className="text-xs font-mono text-muted">Origin School</div>
-          <div className="mt-3 h-[180px]" data-testid={`origin-chart-${classIndex}`}>
+          <div className="mt-3 flex h-[180px] items-center justify-center overflow-x-auto" data-testid={`origin-chart-${classIndex}`}>
             {originData.length === 0 ? (
               <div className="flex h-full items-center justify-center text-sm text-muted">No pupil data</div>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={originData} margin={{ top: 8, right: 8, left: -18, bottom: 28 }}>
-                  <XAxis dataKey="name" angle={-20} textAnchor="end" interval={0} height={44} fontSize={11} />
-                  <YAxis allowDecimals={false} fontSize={11} />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#0F172A" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+              <BarChart
+                width={BAR_CHART_WIDTH}
+                height={BAR_CHART_HEIGHT}
+                data={originData}
+                margin={{ top: 8, right: 8, left: -18, bottom: 28 }}
+              >
+                <XAxis dataKey="name" angle={-20} textAnchor="end" interval={0} height={44} fontSize={11} />
+                <YAxis allowDecimals={false} fontSize={11} />
+                <Tooltip />
+                <Bar dataKey="value" fill="#0F172A" radius={[4, 4, 0, 0]} />
+              </BarChart>
             )}
           </div>
         </div>

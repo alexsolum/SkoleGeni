@@ -51,7 +51,11 @@ Plans:
   2. The Cloud Run service is deployed with memory 2 GiB, request timeout 300 s, concurrency 1, and `--allow-unauthenticated` flag
   3. `curl https://<cloud-run-url>/health` returns HTTP 200 from outside the local network
   4. `curl -X POST https://<cloud-run-url>/project -H "Authorization: Bearer <token>"` with a valid Supabase token returns an optimization result, not a 5xx error
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Provision Artifact Registry and push the first timestamped optimizer image
+- [ ] 08-02-PLAN.md — Deploy Cloud Run service and verify functionality with authenticated smoke tests
 
 ### Phase 9: Frontend Wiring
 **Goal**: The Vercel-hosted frontend calls the Cloud Run optimizer and authenticated optimization works end-to-end
@@ -82,6 +86,6 @@ Plans:
 |-------|-----------|----------------|--------|-----------|
 | 1-6. MVP Phases | v1.0 | 20/20 | Complete | 2026-03-21 |
 | 7. Code Hardening | 2/2 | Complete   | 2026-03-21 | - |
-| 8. GCP Setup and Manual Deploy | v1.1 | 0/TBD | Not started | - |
+| 8. GCP Setup and Manual Deploy | v1.1 | 0/2 | Not started | - |
 | 9. Frontend Wiring | v1.1 | 0/TBD | Not started | - |
 | 10. CI/CD Automation | v1.1 | 0/TBD | Not started | - |

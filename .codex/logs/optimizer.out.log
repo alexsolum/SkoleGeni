@@ -1,0 +1,11 @@
+INFO:     127.0.0.1:61412 - "POST /project HTTP/1.1" 403 Forbidden
+INFO:     127.0.0.1:61428 - "POST /project HTTP/1.1" 403 Forbidden
+INFO:     127.0.0.1:57363 - "POST /project HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59219 - "POST /project/score HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57168 - "POST /project/score HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61969 - "POST /project/score HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49973 - "POST /project/score HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54969 - "POST /project/score HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58557 - "POST /project/score HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54869 - "POST /project/score HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57636 - "POST /project/score HTTP/1.1" 200 OK

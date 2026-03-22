@@ -4,11 +4,11 @@ milestone: v1.1
 milestone_name: Optimizer in Cloud
 status: unknown
 stopped_at: Completed 07-02-PLAN.md
-last_updated: "2026-03-21T20:03:03.470Z"
+last_updated: "2026-03-22T10:16:16.882Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
+  total_plans: 4
   completed_plans: 2
 ---
 
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** School staff can generate balanced, defensible class rosters quickly without losing control over the final result.
-**Current focus:** Phase 07 — code-hardening
+**Current focus:** Phase 08 — gcp-setup-and-manual-deploy
 
 ## Current Position
 
-Phase: 07 (code-hardening) — COMPLETE
-Plan: 2 of 2 (all plans complete)
+Phase: 08 (gcp-setup-and-manual-deploy) — EXECUTING
+Plan: 1 of 2
 
 ## Accumulated Context
 

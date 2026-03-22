@@ -26,7 +26,7 @@ This phase makes the existing FastAPI optimizer container safe and deployable on
 - Missing required runtime env vars for authenticated project optimization should make `/health` return non-200 and include detail about which values are missing.
 
 ### Runtime and request posture
-- Missing required env vars should fail the container fast at startup rather than only surfacing through request-time errors.
+- Missing required env vars should keep the app in an unhealthy state and surface through `GET /health` as a non-200 response with missing-env detail rather than crashing the process before probes can inspect it.
 - Use moderate logging: a clear startup summary plus normal request/error logging, without noisy verbose diagnostics.
 - Add a small safe `GET /` response for accidental browser or platform hits rather than leaving the root path undefined.
 

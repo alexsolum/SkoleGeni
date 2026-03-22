@@ -1,0 +1,11 @@
+_format_version: "3.0"
+
+services:
+  - name: postgrest
+    url: http://rest:3000
+    routes:
+      - name: rest-v1
+        strip_path: true
+        paths:
+          - /rest/v1
+
