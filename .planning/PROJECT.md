@@ -12,9 +12,9 @@
 
 ## Current State
 
-SkoleGeni v1.0 MVP shipped on 2026-03-21. Phase 08 (GCP Setup and Manual Deploy) completed on 2026-03-22 — optimizer deployed to Google Cloud Run and verified live at https://optimizer-ek4bkd34ja-ew.a.run.app.
+SkoleGeni v1.0 MVP shipped on 2026-03-21. Phase 08 (GCP Setup and Manual Deploy) completed on 2026-03-22, and Phase 09 (Frontend Wiring) completed on 2026-03-22 — the Vercel frontend now calls the Cloud Run optimizer with full authentication and 401 error handling.
 
-The shipped product now covers the full desktop-first roster workflow: authenticated project access, trustworthy setup and pupil-entry persistence, explainable optimization results, durable manual editing, and a coherent five-screen UI backed by automated regression coverage. The cloud-hosted optimizer is now ready for frontend integration in Phase 09.
+The shipped product now covers the full end-to-end cloud-hosted roster workflow: authenticated project access, trustworthy setup and pupil-entry persistence, explainable optimization results, durable manual editing, a coherent five-screen UI backed by automated regression coverage, and production Cloud Run optimizer integration. Users can run optimizations directly from the web app against the cloud service with Supabase auth tokens forwarded and RLS preserved.
 
 The primary deferred item is the Phase 4 double-undo regression captured in `04-06-PLAN.md`. Milestone audit marked it as minor tech debt rather than a blocker.
 
@@ -39,10 +39,10 @@ School staff can generate balanced, defensible class rosters quickly without los
 - ✓ The product ships with a coherent desktop UI plus automated Python, Vitest, and Playwright coverage for critical flows — v1.0
 - ✓ Optimizer backend is deployed as a cloud-hosted service (Google Cloud Run) accessible from the Vercel frontend — Phase 08
 - ✓ Authenticated optimizer access with Supabase auth forwarding is functional and verified — Phase 08
+- ✓ Wire the Vercel frontend to call the cloud optimizer endpoint with 401 error handling — Phase 09
 
 ### Active
 
-- [ ] Wire the Vercel frontend to call the cloud optimizer endpoint (Phase 09)
 - [ ] Support long-running synchronous optimizations without timeout failures (validated: 300s timeout configured)
 
 ### Future (deferred from v1.1)
@@ -85,4 +85,4 @@ The product now runs on the existing React + Vite frontend, FastAPI + OR-Tools o
 | Allow warn-only invalid manual edit states with immediate explanations and backend score verification | Users need control while still seeing clear rule violations and tradeoffs | ✓ Good |
 
 ---
-*Last updated: 2026-03-22 after Phase 08 completion (Cloud Run deployment)*
+*Last updated: 2026-03-22 after Phase 09 completion (Frontend Wiring)*
