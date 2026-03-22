@@ -80,7 +80,11 @@ Plans:
   1. A push to main that touches `api/**` or `docker/optimizer.Dockerfile` triggers the GitHub Actions workflow and completes a successful deploy without manual steps
   2. The workflow uses Workload Identity Federation — no long-lived service account key JSON is stored in GitHub Secrets
   3. A push that does not touch optimizer files does not trigger a Cloud Run deploy
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 10-01-PLAN.md — Create the deploy-optimizer GitHub Actions workflow YAML
+- [ ] 10-02-PLAN.md — Set up GCP WIF infrastructure, configure GitHub secrets/variables, and verify the pipeline end-to-end
 
 ## Progress
 
@@ -92,4 +96,4 @@ Plans:
 | 7. Code Hardening | v1.1 | 2/2 | Complete | 2026-03-21 |
 | 8. GCP Setup and Manual Deploy | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 9. Frontend Wiring | v1.1 | 2/2 | Complete | 2026-03-22 |
-| 10. CI/CD Automation | v1.1 | 0/TBD | Not started | - |
+| 10. CI/CD Automation | v1.1 | 0/2 | Not started | - |
