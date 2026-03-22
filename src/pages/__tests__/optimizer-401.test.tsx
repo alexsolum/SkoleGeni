@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
@@ -151,9 +151,14 @@ it("401 from optimizer triggers signOut and error toast", async () => {
   const runButton = screen.getByRole("button", { name: /run optimizer/i });
   await user.click(runButton);
 
-  await waitFor(() => {
-    expect(signOutMock).toHaveBeenCalled();
-  });
+  // runOptimizer has a 3-second delay before calling optimizeProject;
+  // extend waitFor timeout to 8 seconds to accommodate it
+  await waitFor(
+    () => {
+      expect(signOutMock).toHaveBeenCalled();
+    },
+    { timeout: 8000 }
+  );
 
   expect(toastErrorMock).toHaveBeenCalledWith("Your session has expired. Please sign in again.");
 });

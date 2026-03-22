@@ -468,7 +468,11 @@ export default function PupilData() {
 
       navigate(`/results/${projectId}`);
     } catch (error) {
-      if (error instanceof OptimizerRequestError && error.status === 400 && error.diagnostic) {
+      if (error instanceof OptimizerRequestError && error.status === 401) {
+        toast.error("Your session has expired. Please sign in again.");
+        await supabase.auth.signOut();
+        navigate("/");
+      } else if (error instanceof OptimizerRequestError && error.status === 400 && error.diagnostic) {
         setOptimizerDiagnostics(error.diagnostic);
         toast.error(
           error.diagnostic.violations
