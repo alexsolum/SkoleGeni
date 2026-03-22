@@ -66,7 +66,11 @@ Plans:
   2. A logged-in user in the browser can run an optimization and receive a result without any CORS or authentication error in the browser console
   3. The Supabase Bearer token is forwarded from the browser through Cloud Run to Supabase, and RLS is enforced — the optimizer only reads data the authenticated user owns
   4. A 401 response from the optimizer (expired or missing token) triggers the correct re-authentication flow in the frontend rather than a silent failure
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 09-01-PLAN.md — Add 401 error handling, create unit tests for env var wiring and auth error flow, update .env.example
+- [ ] 09-02-PLAN.md — Set Vercel env var and validate end-to-end with production smoke test
 
 ### Phase 10: CI/CD Automation
 **Goal**: Future optimizer code changes are automatically built and deployed to Cloud Run on push to main
@@ -87,5 +91,5 @@ Plans:
 | 1-6. MVP Phases | v1.0 | 20/20 | Complete | 2026-03-21 |
 | 7. Code Hardening | v1.1 | 2/2 | Complete | 2026-03-21 |
 | 8. GCP Setup and Manual Deploy | v1.1 | 2/2 | Complete | 2026-03-22 |
-| 9. Frontend Wiring | v1.1 | 0/TBD | Not started | - |
+| 9. Frontend Wiring | v1.1 | 0/2 | Not started | - |
 | 10. CI/CD Automation | v1.1 | 0/TBD | Not started | - |
