@@ -1,3 +1,4 @@
+# CI/CD pipeline verification — deployed via GitHub Actions (WIF)
 from __future__ import annotations
 
 import json
